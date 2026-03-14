@@ -38,31 +38,6 @@
       min-height: 100dvh;
     }
 
-    /* ── OPSÆTNINGS-SKÆRM ── */
-    #setup-skærm {
-      display: none;
-      min-height: 100dvh;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 24px;
-      background: #000;
-      color: white;
-    }
-    #setup-skærm.vis { display: flex; }
-    .setup-logo { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; margin-bottom: 8px; }
-    .setup-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 40px; }
-    .setup-boks { background: #111; border: 1px solid #333; border-radius: 14px; padding: 24px; width: 100%; max-width: 440px; }
-    .setup-titel { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-    .setup-tekst { font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.7; margin-bottom: 20px; }
-    .setup-trin { display: flex; gap: 10px; margin-bottom: 12px; }
-    .setup-nr { width: 24px; height: 24px; border-radius: 12px; background: #333; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
-    .setup-trin-tekst { font-size: 13px; color: rgba(255,255,255,.7); line-height: 1.6; }
-    .setup-trin-tekst a { color: white; }
-    .setup-input { width: 100%; background: #1A1A1A; border: 1px solid #333; border-radius: 8px; padding: 12px 14px; font-size: 14px; color: white; font-family: inherit; margin-bottom: 10px; }
-    .setup-input:focus { outline: none; border-color: #666; }
-    .setup-knap { width: 100%; background: white; color: black; border: none; border-radius: 8px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 6px; touch-action: manipulation; -webkit-appearance: none; }
-    .setup-fejl { font-size: 12px; color: #FF6B6B; margin-top: 8px; display: none; }
 
     /* ── AUTH-SKÆRM ── */
     #auth-skærm {
@@ -294,33 +269,6 @@
 </head>
 <body>
 
-<!-- OPSÆTNING (vises som standard indtil JS skjuler den) -->
-<div id="setup-skærm" class="vis">
-  <div class="setup-logo">GrindrBros</div>
-  <div class="setup-sub">Første gang</div>
-  <div class="setup-boks">
-    <div class="setup-titel">Forbind til Supabase</div>
-    <div class="setup-tekst">For at gemme brugere og data skal du oprette et gratis Supabase-projekt.</div>
-    <div class="setup-trin">
-      <div class="setup-nr">1</div>
-      <div class="setup-trin-tekst">Gå til <a href="https://supabase.com" target="_blank"><strong>supabase.com</strong></a> og opret en gratis konto og et nyt projekt.</div>
-    </div>
-    <div class="setup-trin">
-      <div class="setup-nr">2</div>
-      <div class="setup-trin-tekst">Gå til <strong>Project Settings → API</strong> og kopiér <strong>Project URL</strong> og <strong>anon public</strong> nøglen.</div>
-    </div>
-    <div class="setup-trin">
-      <div class="setup-nr">3</div>
-      <div class="setup-trin-tekst">Gå til <strong>SQL Editor</strong> og kør SQL'en fra <strong>README.md</strong> i dette repository for at oprette tabellerne.</div>
-    </div>
-    <form onsubmit="event.preventDefault(); gemSetup()" style="display:contents">
-      <input class="setup-input" id="setup-url" type="url" placeholder="Project URL (https://xxx.supabase.co)" autocomplete="off" />
-      <input class="setup-input" id="setup-key" type="text" placeholder="anon public key" autocomplete="off" />
-      <button class="setup-knap" type="submit">Gem og fortsæt →</button>
-    </form>
-    <div class="setup-fejl" id="setup-fejl"></div>
-  </div>
-</div>
 
 <!-- AUTH-SKÆRM -->
 <div id="auth-skærm">
@@ -453,64 +401,35 @@
 </div>
 
 <script>
-// ── KONFIGURATION ────────────────────────────────────────
-const CONFIG_KEY = 'grindrbros_config';
-
-function hentConfig() {
-  try { return JSON.parse(localStorage.getItem(CONFIG_KEY) || 'null'); }
-  catch { return null; }
-}
-function gemConfig(url, key) {
-  localStorage.setItem(CONFIG_KEY, JSON.stringify({ url, key }));
-}
-
 // ── SUPABASE ─────────────────────────────────────────────
-let supabase = null;
+const SUPABASE_URL = 'https://ctnszohyjljhorwgrabl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0bnN6b2h5amxqaG9yd2dyYWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTk3MzEsImV4cCI6MjA4OTA3NTczMX0.kG9E_fWc_zF59o8kmfGoZ8hhaSJO0NwbKsb9Yy1Sb24';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let aktivBruger = null;
 let brugernavn = '';
 
-function initSupabase(url, key) {
-  supabase = window.supabase.createClient(url, key);
-}
-
 // ── OPSTART ──────────────────────────────────────────────
 async function start() {
-  try {
-    const config = hentConfig();
-    if (!config?.url || !config?.key) {
-      // Setup-skærm er allerede synlig som standard
-      return;
-    }
-    // Skjul setup, initialiser Supabase
-    document.getElementById('setup-skærm').classList.remove('vis');
-    initSupabase(config.url, config.key);
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
+    await indlaesBruger(session.user);
+    visApp();
+  } else {
+    document.getElementById('auth-skærm').classList.add('vis');
+  }
 
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session?.user) {
       await indlaesBruger(session.user);
       visApp();
-    } else {
+    } else if (event === 'SIGNED_OUT') {
+      aktivBruger = null;
+      brugernavn = '';
+      document.getElementById('app').style.display = 'none';
       document.getElementById('auth-skærm').classList.add('vis');
     }
-
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        await indlaesBruger(session.user);
-        visApp();
-      } else if (event === 'SIGNED_OUT') {
-        aktivBruger = null;
-        brugernavn = '';
-        document.getElementById('app').style.display = 'none';
-        document.getElementById('auth-skærm').classList.add('vis');
-      }
-    });
-  } catch (e) {
-    // Vis fejl direkte i setup-skærm
-    const fejl = document.getElementById('setup-fejl');
-    fejl.textContent = 'Fejl: ' + e.message;
-    fejl.style.display = 'block';
-    document.getElementById('setup-skærm').classList.add('vis');
-  }
+  });
 }
 
 async function indlaesBruger(user) {
@@ -535,18 +454,6 @@ function visApp() {
   gengiListe();
 }
 
-// ── SETUP ────────────────────────────────────────────────
-function gemSetup() {
-  const url = document.getElementById('setup-url').value.trim().replace(/\/$/, '');
-  const key = document.getElementById('setup-key').value.trim();
-  const fejlEl = document.getElementById('setup-fejl');
-  fejlEl.style.display = 'none';
-  if (!url || !key) { fejlEl.textContent = 'Udfyld begge felter.'; fejlEl.style.display = 'block'; return; }
-  gemConfig(url, key);
-  initSupabase(url, key);
-  document.getElementById('setup-skærm').classList.remove('vis');
-  document.getElementById('auth-skærm').classList.add('vis');
-}
 
 // ── AUTH ─────────────────────────────────────────────────
 function skiftFane(fane) {
