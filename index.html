@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Kaffeklub" />
+  <meta name="theme-color" content="#2A1200" />
+  <title>Kaffeklub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --kaffe:        #2A1200;
+      --kaffe-light:  #5C2E0E;
+      --kaffe-accent: #B8722A;
+      --kaffe-lys:    #F0DFC8;
+      --baggrund:     #F7F2EC;
+      --baggrund-2:   #EFE6D9;
+      --kort:         #FDFAF6;
+      --tekst:        #1C0C00;
+      --tekst-2:      #7A5C44;
+      --tekst-3:      #A68B70;
+      --border:       #DDD0BC;
+      --groen:        #5A8A4A;
+      --roed:         #C0392B;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--baggrund);
+      color: var(--tekst);
+      max-width: 900px;
+      margin: 0 auto;
+      min-height: 100dvh;
+    }
+
+    .serif { font-family: 'Playfair Display', Georgia, serif; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 900px;
+      background: var(--kort);
+      border-top: 1px solid var(--border);
+      display: flex;
+      padding-bottom: var(--safe-bottom);
+      z-index: 100;
+    }
+    nav button {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 10px 4px 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      color: var(--tekst-3);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      letter-spacing: .3px;
+      transition: color .15s;
+    }
+    nav button .ikon { font-size: 20px; }
+    nav button.aktiv { color: var(--kaffe-accent); font-weight: 700; }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--kaffe);
+      color: white;
+      padding: calc(var(--safe-top) + 14px) 20px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    header .logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      color: #fff;
+    }
+    header .logo-sup {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255,255,255,.5);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* ── MAIN ── */
+    main {
+      padding: 0 0 calc(70px + var(--safe-bottom)) 0;
+      min-height: 100dvh;
+    }
+
+    /* ── SIDER ── */
+    .side { display: none; }
+    .side.aktiv { display: block; }
+
+    /* ── OVERSIGT BANNER ── */
+    .oversigt {
+      background: var(--kaffe);
+      display: flex;
+      justify-content: space-around;
+      padding: 14px 24px 18px;
+    }
+    .oversigt-tal { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--kaffe-accent); }
+    .oversigt-label { font-size: 10px; font-weight: 500; letter-spacing: .8px; text-transform: uppercase; color: rgba(255,255,255,.5); margin-top: 3px; }
+    .oversigt-deler { width: 1px; background: rgba(255,255,255,.2); }
+
+    /* ── KORT ── */
+    .kaffe-liste { padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 12px; }
+    .kaffe-kort {
+      background: var(--kort);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(42,18,0,.06);
+      cursor: pointer;
+      transition: transform .1s, box-shadow .1s;
+    }
+    .kaffe-kort:active { transform: scale(.99); box-shadow: 0 1px 4px rgba(42,18,0,.04); }
+    .kort-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+    .kort-navn { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; margin-bottom: 2px; letter-spacing: .2px; }
+    .kort-meta { font-size: 12px; color: var(--tekst-2); margin-bottom: 6px; font-weight: 500; letter-spacing: .2px; }
+    .kort-tags { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .rister-tag { border-radius: 6px; padding: 2px 8px; font-size: 10px; font-weight: 600; color: white; letter-spacing: .5px; text-transform: uppercase; }
+    .vurderet-af { font-size: 11px; color: var(--tekst-3); font-style: italic; }
+    .score-badge { border-radius: 14px; padding: 8px 14px; text-align: center; flex-shrink: 0; }
+    .score-badge .score-num { color: white; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; display: block; }
+    .score-badge .score-tekst { color: rgba(255,255,255,.85); font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
+    .smags-bar { display: flex; gap: 3px; margin-bottom: 10px; }
+    .smags-bar-col { flex: 1; height: 28px; border-radius: 4px; position: relative; background: var(--kaffe-lys); overflow: hidden; }
+    .smags-bar-fill { position: absolute; bottom: 0; left: 0; right: 0; border-radius: 4px; transition: height .3s; }
+    .kort-bund { display: flex; justify-content: space-between; align-items: center; }
+    .dato { font-size: 12px; color: var(--tekst-2); }
+    .slet-knap { font-size: 13px; color: var(--roed); font-weight: 600; background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 0; }
+
+    /* ── TOM TILSTAND ── */
+    .tom {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 60vh; padding: 40px; text-align: center;
+    }
+    .tom-emoji { font-size: 72px; margin-bottom: 16px; }
+    .tom-titel { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 12px; }
+    .tom-tekst { font-size: 16px; color: var(--tekst-2); line-height: 1.6; margin-bottom: 32px; }
+    .primær-knap {
+      background: var(--kaffe-accent); color: white; border: none; border-radius: 12px;
+      padding: 14px 24px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+
+    /* ── FORM ── */
+    .form-container { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+    .sektion {
+      background: var(--kort); border-radius: 16px; padding: 18px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 6px rgba(42,18,0,.04);
+    }
+    .sektion-titel { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--kaffe); margin-bottom: 3px; letter-spacing: .2px; }
+    .sektion-under { font-size: 12px; color: var(--tekst-3); margin-bottom: 16px; font-weight: 500; letter-spacing: .3px; }
+    .felt-label { font-size: 13px; font-weight: 600; margin-bottom: 6px; margin-top: 12px; color: var(--tekst-2); letter-spacing: .3px; text-transform: uppercase; font-size: 11px; }
+    .felt-label:first-of-type { margin-top: 0; }
+    input[type=text], textarea, select {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 12px 14px; font-size: 15px; color: var(--tekst); background: var(--baggrund);
+      font-family: inherit; appearance: none;
+    }
+    input[type=text]:focus, textarea:focus { outline: none; border-color: var(--kaffe-accent); }
+    textarea { height: 90px; resize: none; }
+    .valg-raekke { display: flex; flex-wrap: wrap; gap: 8px; }
+    .valg-knap {
+      border: 1.5px solid var(--border); border-radius: 20px; padding: 7px 14px;
+      background: var(--baggrund); font-size: 13px; font-weight: 600; color: var(--tekst-2);
+      cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .valg-knap.aktiv { color: white; }
+
+    /* ── SMAGS SLIDER ── */
+    .smags-slider { background: var(--baggrund); border-radius: 12px; padding: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
+    .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+    .slider-label { font-size: 15px; font-weight: 700; }
+    .slider-badge { width: 30px; height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center; }
+    .slider-badge span { color: white; font-weight: 800; font-size: 13px; }
+    .slider-beskr { font-size: 12px; color: var(--tekst-2); margin-bottom: 8px; }
+    .skala { display: flex; gap: 3px; }
+    .skala-knap {
+      flex: 1; height: 34px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--kaffe-lys); cursor: pointer; font-size: 10px; font-weight: 600;
+      color: var(--tekst-2); font-family: inherit; transition: all .1s;
+    }
+    .skala-knap.aktiv { color: white; }
+    .skala-etiketter { display: flex; justify-content: space-between; margin-top: 3px; }
+    .skala-etiketter span { font-size: 10px; color: var(--tekst-2); }
+
+    /* ── SAMLET SCORE ── */
+    .score-knapper { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
+    .score-knap {
+      width: 48px; height: 48px; border-radius: 24px; border: 2px solid var(--border);
+      background: var(--kaffe-lys); font-size: 16px; font-weight: 700; color: var(--tekst-2);
+      cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .score-knap.aktiv { background: var(--kaffe-accent); border-color: var(--kaffe-accent); color: white; }
+    .samlet-badge-container { display: flex; justify-content: center; margin-bottom: 4px; }
+
+    /* ── GEM KNAP ── */
+    .gem-knap {
+      background: var(--kaffe); color: white; border: none; border-radius: 16px;
+      padding: 18px; font-size: 18px; font-weight: 700; width: 100%; cursor: pointer;
+      font-family: inherit; margin-bottom: 8px;
+    }
+
+    /* ── STATISTIK ── */
+    .stats-header {
+      background: var(--kaffe); padding: 20px; color: white;
+    }
+    .stats-titel { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; letter-spacing: .3px; }
+    .stats-under { font-size: 11px; font-weight: 500; letter-spacing: .8px; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 12px; }
+    .profil-boks { background: rgba(255,255,255,.1); border-radius: 12px; padding: 12px; }
+    .profil-tekst { font-size: 14px; color: rgba(255,255,255,.9); line-height: 1.6; }
+    .praef-raekke { display: flex; gap: 12px; margin-bottom: 12px; }
+    .praef-kort { flex: 1; border-radius: 12px; padding: 14px; text-align: center; }
+    .praef-emoji { font-size: 24px; margin-bottom: 6px; }
+    .praef-label { font-size: 11px; color: rgba(255,255,255,.8); margin-bottom: 4px; }
+    .praef-vaerdi { font-size: 16px; font-weight: 800; color: white; }
+    .praef-score { font-size: 11px; color: rgba(255,255,255,.7); margin-top: 2px; }
+    .praef-fuld { flex-direction: row !important; align-items: center; gap: 12px; text-align: left !important; }
+    .bar-container { margin-bottom: 12px; }
+    .bar-label-raekke { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .bar-label { font-size: 14px; font-weight: 600; }
+    .bar-vaerdi { font-size: 14px; font-weight: 700; }
+    .bar-spor { height: 12px; background: var(--kaffe-lys); border-radius: 6px; overflow: hidden; }
+    .bar-fyld { height: 100%; border-radius: 6px; transition: width .5s ease; }
+    .top-kaffe-raekke {
+      display: flex; align-items: center; padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .top-nr { font-size: 16px; font-weight: 800; color: var(--kaffe-accent); width: 36px; }
+    .top-info { flex: 1; margin-right: 12px; min-width: 0; }
+    .top-navn { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .top-meta { font-size: 12px; color: var(--tekst-2); }
+    .top-score { width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .top-score span { color: white; font-weight: 800; font-size: 16px; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.5);
+      display: none; align-items: flex-end; justify-content: center; z-index: 200;
+    }
+    .modal-overlay.aaben { display: flex; }
+    .modal {
+      background: var(--kort); border-radius: 24px 24px 0 0; padding: 24px;
+      padding-bottom: calc(24px + var(--safe-bottom)); width: 100%; max-width: 900px;
+      max-height: 90dvh; overflow-y: auto;
+    }
+    .modal-titel { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .modal-meta { font-size: 14px; color: var(--tekst-2); margin-bottom: 20px; }
+    .modal-luk { float: right; background: var(--kaffe-lys); border: none; border-radius: 20px; padding: 6px 14px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+
+    /* ── GRID TIL IPAD ── */
+    @media (min-width: 600px) {
+      .kaffe-liste { display: grid; grid-template-columns: 1fr 1fr; }
+      .form-container { max-width: 640px; margin: 0 auto; }
+      .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; padding: 0 16px; }
+      .stats-grid .sektion { margin: 16px 0 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="logo" id="header-logo">Kaffeklub</span>
+  <span class="logo-sup" id="header-sub">Smagsregistrering</span>
+</header>
+
+<main>
+  <!-- MINE KAFFER -->
+  <div class="side aktiv" id="side-liste">
+    <div class="oversigt">
+      <div>
+        <div class="oversigt-tal" id="antal-kaffer">0</div>
+        <div class="oversigt-label">Kaffer smagt</div>
+      </div>
+      <div class="oversigt-deler"></div>
+      <div>
+        <div class="oversigt-tal" id="gns-score">–</div>
+        <div class="oversigt-label">Gns. score</div>
+      </div>
+      <div class="oversigt-deler"></div>
+      <div>
+        <div class="oversigt-tal" id="bedste-score">–</div>
+        <div class="oversigt-label">Bedste score</div>
+      </div>
+    </div>
+    <div id="kaffe-liste-container"></div>
+  </div>
+
+  <!-- TILFØJ / REDIGER -->
+  <div class="side" id="side-ny">
+    <div class="form-container">
+      <div class="sektion">
+        <div class="sektion-titel">Kaffe-information</div>
+        <div class="felt-label">Kaffens navn *</div>
+        <input type="text" id="f-navn" placeholder="f.eks. Ethiopia Yirgacheffe" />
+        <div class="felt-label">Oprindelse / Producent</div>
+        <input type="text" id="f-oprindelse" placeholder="f.eks. Etiopien, La Cabra" />
+        <div class="felt-label">Risteringsgrad</div>
+        <div class="valg-raekke" id="rister-valg"></div>
+        <div class="felt-label">Brygmetode</div>
+        <div class="valg-raekke" id="bryg-valg"></div>
+        <div class="felt-label">Vurderet af</div>
+        <input type="text" id="f-navn-person" placeholder="Dit navn" />
+      </div>
+
+      <div class="sektion">
+        <div class="sektion-titel">Smagsvurdering</div>
+        <div class="sektion-under">Skala 1 (svag) → 10 (intens)</div>
+        <div id="smags-slidere"></div>
+      </div>
+
+      <div class="sektion">
+        <div class="sektion-titel">Samlet vurdering</div>
+        <div class="sektion-under">Hvor godt kan du lide denne kaffe?</div>
+        <div class="samlet-badge-container"><div id="samlet-badge"></div></div>
+        <div class="score-knapper" id="score-knapper"></div>
+      </div>
+
+      <div class="sektion">
+        <div class="sektion-titel">Noter</div>
+        <textarea id="f-noter" placeholder="Dine personlige noter om denne kaffe..."></textarea>
+      </div>
+
+      <button class="gem-knap" id="gem-knap" onclick="gemVurdering()">☕ Gem vurdering</button>
+    </div>
+  </div>
+
+  <!-- STATISTIK -->
+  <div class="side" id="side-stats">
+    <div class="stats-header" id="stats-header"></div>
+    <div class="stats-grid" id="stats-indhold"></div>
+  </div>
+</main>
+
+<nav>
+  <button class="aktiv" id="nav-liste" onclick="visSide('liste')">
+    <span class="ikon">☕</span>Mine kaffer
+  </button>
+  <button id="nav-ny" onclick="visSide('ny')">
+    <span class="ikon">➕</span>Tilføj
+  </button>
+  <button id="nav-stats" onclick="visSide('stats')">
+    <span class="ikon">📊</span>Smagsprofil
+  </button>
+</nav>
+
+<!-- DETALJE MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="lukModal(event)">
+  <div class="modal" id="modal-indhold"></div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────
+const STORAGE_KEY = 'kaffeklub_v1';
+
+const RISTERINGSGRADER = ['Lys','Medium','Mørk','Espresso'];
+const RISTER_FARVER = { Lys:'#F5C842', Medium:'#C87941', Mørk:'#6B3A1F', Espresso:'#3D1F00' };
+const BRYGMETODER = ['Filterkaffe','Espresso','Moka Pot','French Press','Pour Over','AeroPress','Cold Brew','Kapselmaskine'];
+
+const SMAG_FELTER = [
+  { key:'syre',      label:'Syre',      beskr:'Frisk og levende syre',       farve:'#E8A838' },
+  { key:'bitterhed', label:'Bitterhed', beskr:'Behagelig bitterhed',         farve:'#7B4F2E' },
+  { key:'soedme',    label:'Sødme',     beskr:'Naturlig sødme',              farve:'#D4894A' },
+  { key:'fylde',     label:'Fylde',     beskr:'Kaffens krop og tykkelse',    farve:'#8B6355' },
+  { key:'aroma',     label:'Aroma',     beskr:'Duft og aroma',               farve:'#A67C52' },
+  { key:'eftersmag', label:'Eftersmag', beskr:'Lang og god eftersmag',       farve:'#5C3D2E' },
+];
+
+function hentData() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+function gemData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+// ── FORM STATE ──────────────────────────────────────────
+let redigeringsId = null;
+let valgRister = 'Medium';
+let valgBryg = 'Filterkaffe';
+let smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
+let samletScore = 7;
+
+// ── HJÆLPERE ─────────────────────────────────────────────
+function scorefarve(s) {
+  if (s >= 8) return '#4CAF50';
+  if (s >= 6) return '#C87941';
+  if (s >= 4) return '#E8A838';
+  return '#E53935';
+}
+function scoretekst(s) {
+  if (s >= 9) return 'Fremragende';
+  if (s >= 7) return 'Meget god';
+  if (s >= 5) return 'God';
+  if (s >= 3) return 'Middel';
+  return 'Ikke min kop';
+}
+function datoTekst(iso) {
+  return new Date(iso).toLocaleDateString('da-DK', { day:'numeric', month:'short', year:'numeric' });
+}
+function gns(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
+
+// ── NAVIGATION ───────────────────────────────────────────
+function visSide(side) {
+  ['liste','ny','stats'].forEach(s => {
+    document.getElementById('side-'+s).classList.toggle('aktiv', s===side);
+    document.getElementById('nav-'+s).classList.toggle('aktiv', s===side);
+  });
+  const logoer = { liste:'Kaffeklub', ny: redigeringsId ? 'Rediger' : 'Tilføj kaffe', stats:'Smagsprofil' };
+  const subber = { liste:'Smagsregistrering', ny: redigeringsId ? 'Opdater vurdering' : 'Ny vurdering', stats:'Din kaffeprofil' };
+  document.getElementById('header-logo').textContent = logoer[side];
+  document.getElementById('header-sub').textContent = subber[side];
+  if (side === 'liste') gengiListe();
+  if (side === 'stats') gengiStats();
+  window.scrollTo(0,0);
+}
+
+// ── LISTE ────────────────────────────────────────────────
+function gengiListe() {
+  const data = hentData();
+  document.getElementById('antal-kaffer').textContent = data.length;
+  document.getElementById('gns-score').textContent = data.length ? gns(data.map(v=>v.samletScore)).toFixed(1) : '–';
+  document.getElementById('bedste-score').textContent = data.length ? Math.max(...data.map(v=>v.samletScore)) : '–';
+
+  const container = document.getElementById('kaffe-liste-container');
+  if (!data.length) {
+    container.innerHTML = `<div class="tom">
+      <div class="tom-emoji">☕</div>
+      <div class="tom-titel">Ingen kaffer endnu</div>
+      <div class="tom-tekst">Tilføj din første kaffevurdering og begynd at kortlægge din smagsprofil!</div>
+      <button class="primær-knap" onclick="visSide('ny')">Tilføj første kaffe</button>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = '<div class="kaffe-liste">' + data.map(v => `
+    <div class="kaffe-kort" onclick="visDetalje('${v.id}')">
+      <div class="kort-top">
+        <div style="flex:1;min-width:0">
+          <div class="kort-navn">${v.navn}</div>
+          <div class="kort-meta">${v.oprindelse || 'Ukendt oprindelse'} · ${v.brygmetode}</div>
+          <div class="kort-tags">
+            <span class="rister-tag" style="background:${RISTER_FARVER[v.risteringsgrad]}">${v.risteringsgrad}</span>
+            ${v.vurderedeAf ? `<span class="vurderet-af">af ${v.vurderedeAf}</span>` : ''}
+          </div>
+        </div>
+        <div class="score-badge" style="background:${scorefarve(v.samletScore)}">
+          <span class="score-num">${v.samletScore}</span>
+          <span class="score-tekst">${scoretekst(v.samletScore)}</span>
+        </div>
+      </div>
+      <div class="smags-bar">
+        ${SMAG_FELTER.map(f => `
+          <div class="smags-bar-col" title="${f.label}: ${v.smag[f.key]}/10">
+            <div class="smags-bar-fill" style="height:${v.smag[f.key]*10}%;background:${f.farve}"></div>
+          </div>`).join('')}
+      </div>
+      <div class="kort-bund">
+        <span class="dato">${datoTekst(v.dato)}</span>
+        <button class="slet-knap" onclick="event.stopPropagation();sletVurdering('${v.id}','${v.navn.replace(/'/g,"\\'")}')">Slet</button>
+      </div>
+    </div>
+  `).join('') + '</div>';
+}
+
+// ── DETALJE MODAL ────────────────────────────────────────
+function visDetalje(id) {
+  const v = hentData().find(x => x.id === id);
+  if (!v) return;
+  document.getElementById('modal-indhold').innerHTML = `
+    <button class="modal-luk" onclick="lukModal()">Luk</button>
+    <div class="modal-titel">${v.navn}</div>
+    <div class="modal-meta">${v.oprindelse || ''} · ${v.risteringsgrad} · ${v.brygmetode}${v.vurderedeAf ? ' · af '+v.vurderedeAf : ''}</div>
+    <div style="display:flex;justify-content:center;margin-bottom:20px">
+      <div class="score-badge" style="background:${scorefarve(v.samletScore)};padding:12px 24px">
+        <span class="score-num" style="font-size:28px">${v.samletScore}/10</span>
+        <span class="score-tekst">${scoretekst(v.samletScore)}</span>
+      </div>
+    </div>
+    ${SMAG_FELTER.map(f => `
+      <div class="bar-container">
+        <div class="bar-label-raekke">
+          <span class="bar-label">${f.label}</span>
+          <span class="bar-vaerdi" style="color:${f.farve}">${v.smag[f.key]}/10</span>
+        </div>
+        <div class="bar-spor"><div class="bar-fyld" style="width:${v.smag[f.key]*10}%;background:${f.farve}"></div></div>
+      </div>`).join('')}
+    ${v.noter ? `<div style="margin-top:16px;padding:12px;background:var(--baggrund);border-radius:10px;font-size:14px;color:var(--tekst-2);line-height:1.6">${v.noter}</div>` : ''}
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="gem-knap" style="background:var(--kaffe-accent);flex:1" onclick="redigerVurdering('${id}')">Rediger</button>
+    </div>
+  `;
+  document.getElementById('modal-overlay').classList.add('aaben');
+}
+function lukModal(e) {
+  if (!e || e.target === document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('aaben');
+}
+
+// ── SLET ─────────────────────────────────────────────────
+function sletVurdering(id, navn) {
+  if (!confirm(`Slet "${navn}"?`)) return;
+  const data = hentData().filter(v => v.id !== id);
+  gemData(data);
+  gengiListe();
+}
+
+// ── FORM SETUP ───────────────────────────────────────────
+function initForm() {
+  // Risteringsgrad
+  document.getElementById('rister-valg').innerHTML = RISTERINGSGRADER.map(r => `
+    <button class="valg-knap${r===valgRister?' aktiv':''}"
+      style="${r===valgRister?'background:'+RISTER_FARVER[r]+';border-color:'+RISTER_FARVER[r]:''}"
+      onclick="vaelgRister('${r}')">${r}</button>`).join('');
+
+  // Brygmetode
+  document.getElementById('bryg-valg').innerHTML = BRYGMETODER.map(b => `
+    <button class="valg-knap${b===valgBryg?' aktiv':''}"
+      style="${b===valgBryg?'background:var(--kaffe-accent);border-color:var(--kaffe-accent)':''}"
+      onclick="vaelgBryg('${b}')">${b}</button>`).join('');
+
+  // Smags-slidere
+  document.getElementById('smags-slidere').innerHTML = SMAG_FELTER.map(f => `
+    <div class="smags-slider" id="slider-${f.key}">
+      <div class="slider-header">
+        <span class="slider-label">${f.label}</span>
+        <div class="slider-badge" style="background:${f.farve}" id="badge-${f.key}">
+          <span>${smagsVaerdier[f.key]}</span>
+        </div>
+      </div>
+      <div class="slider-beskr">${f.beskr}</div>
+      <div class="skala">
+        ${[1,2,3,4,5,6,7,8,9,10].map(n => `
+          <button class="skala-knap${n<=smagsVaerdier[f.key]?' aktiv':''}"
+            style="${n<=smagsVaerdier[f.key]?'background:'+f.farve+';border-color:'+f.farve+';color:white':''}"
+            onclick="saetSmag('${f.key}',${n})">${n}</button>`).join('')}
+      </div>
+      <div class="skala-etiketter"><span>Svag</span><span>Intens</span></div>
+    </div>`).join('');
+
+  // Score knapper
+  document.getElementById('score-knapper').innerHTML = [1,2,3,4,5,6,7,8,9,10].map(n => `
+    <button class="score-knap${n===samletScore?' aktiv':''}" onclick="saetScore(${n})">${n}</button>`).join('');
+
+  opdaterSamletBadge();
+}
+
+function vaelgRister(r) {
+  valgRister = r;
+  document.querySelectorAll('#rister-valg .valg-knap').forEach((btn, i) => {
+    const grad = RISTERINGSGRADER[i];
+    btn.classList.toggle('aktiv', grad===r);
+    btn.style.background = grad===r ? RISTER_FARVER[grad] : '';
+    btn.style.borderColor = grad===r ? RISTER_FARVER[grad] : '';
+  });
+}
+function vaelgBryg(b) {
+  valgBryg = b;
+  document.querySelectorAll('#bryg-valg .valg-knap').forEach(btn => {
+    const er = btn.textContent === b;
+    btn.classList.toggle('aktiv', er);
+    btn.style.background = er ? 'var(--kaffe-accent)' : '';
+    btn.style.borderColor = er ? 'var(--kaffe-accent)' : '';
+    btn.style.color = er ? 'white' : '';
+  });
+}
+function saetSmag(key, val) {
+  smagsVaerdier[key] = val;
+  const felt = SMAG_FELTER.find(f => f.key === key);
+  document.querySelector(`#badge-${key} span`).textContent = val;
+  document.querySelectorAll(`#slider-${key} .skala-knap`).forEach((btn, i) => {
+    const n = i+1;
+    btn.classList.toggle('aktiv', n<=val);
+    btn.style.background = n<=val ? felt.farve : '';
+    btn.style.borderColor = n<=val ? felt.farve : '';
+    btn.style.color = n<=val ? 'white' : '';
+  });
+}
+function saetScore(n) {
+  samletScore = n;
+  document.querySelectorAll('.score-knap').forEach((btn, i) => {
+    btn.classList.toggle('aktiv', i+1===n);
+  });
+  opdaterSamletBadge();
+}
+function opdaterSamletBadge() {
+  document.getElementById('samlet-badge').innerHTML = `
+    <div class="score-badge" style="background:${scorefarve(samletScore)}">
+      <span class="score-num">${samletScore}/10</span>
+      <span class="score-tekst">${scoretekst(samletScore)}</span>
+    </div>`;
+}
+
+// ── GEM ──────────────────────────────────────────────────
+function gemVurdering() {
+  const navn = document.getElementById('f-navn').value.trim();
+  if (!navn) { alert('Angiv kaffens navn.'); return; }
+
+  const vurdering = {
+    id: redigeringsId ?? Date.now().toString(),
+    navn,
+    oprindelse: document.getElementById('f-oprindelse').value.trim(),
+    risteringsgrad: valgRister,
+    brygmetode: valgBryg,
+    vurderedeAf: document.getElementById('f-navn-person').value.trim(),
+    smag: { ...smagsVaerdier },
+    samletScore,
+    noter: document.getElementById('f-noter').value.trim(),
+    dato: new Date().toISOString(),
+  };
+
+  const data = hentData();
+  const idx = data.findIndex(v => v.id === vurdering.id);
+  if (idx >= 0) data[idx] = vurdering; else data.unshift(vurdering);
+  gemData(data);
+
+  // Nulstil
+  redigeringsId = null;
+  smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
+  samletScore = 7;
+  valgRister = 'Medium';
+  valgBryg = 'Filterkaffe';
+  document.getElementById('f-navn').value = '';
+  document.getElementById('f-oprindelse').value = '';
+  document.getElementById('f-navn-person').value = '';
+  document.getElementById('f-noter').value = '';
+
+  visSide('liste');
+}
+
+function redigerVurdering(id) {
+  lukModal();
+  const v = hentData().find(x => x.id === id);
+  if (!v) return;
+  redigeringsId = id;
+  valgRister = v.risteringsgrad;
+  valgBryg = v.brygmetode;
+  smagsVaerdier = { ...v.smag };
+  samletScore = v.samletScore;
+  visSide('ny');
+  document.getElementById('f-navn').value = v.navn;
+  document.getElementById('f-oprindelse').value = v.oprindelse;
+  document.getElementById('f-navn-person').value = v.vurderedeAf;
+  document.getElementById('f-noter').value = v.noter;
+  document.getElementById('gem-knap').textContent = '💾 Opdater vurdering';
+}
+
+// ── STATISTIK ────────────────────────────────────────────
+function gengiStats() {
+  const data = hentData();
+  if (!data.length) {
+    document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Min smagsprofil</div><div class="stats-under">Ingen data endnu — tilføj kaffer for at se din profil.</div>`;
+    document.getElementById('stats-indhold').innerHTML = '';
+    return;
+  }
+
+  const smagsGns = {};
+  SMAG_FELTER.forEach(f => { smagsGns[f.key] = gns(data.map(v => v.smag[f.key])); });
+
+  const sorteret = [...SMAG_FELTER].sort((a,b) => smagsGns[b.key] - smagsGns[a.key]);
+  const top = sorteret[0], anden = sorteret[1];
+
+  document.getElementById('stats-header').innerHTML = `
+    <div class="stats-titel">Din smagsprofil</div>
+    <div class="stats-under">Baseret på ${data.length} vurdering${data.length!==1?'er':''}</div>
+    <div class="profil-boks"><div class="profil-tekst">
+      Du foretrækker kaffe med <strong style="color:${top.farve}">${top.label.toLowerCase()} (${smagsGns[top.key].toFixed(1)}/10)</strong>
+      og <strong style="color:${anden.farve}">${anden.label.toLowerCase()} (${smagsGns[anden.key].toFixed(1)}/10)</strong> som fremtrædende egenskaber.
+    </div></div>`;
+
+  // Rister-præferencer
+  const risterMap = {};
+  data.forEach(v => {
+    if (!risterMap[v.risteringsgrad]) risterMap[v.risteringsgrad] = [];
+    risterMap[v.risteringsgrad].push(v.samletScore);
+  });
+  const bedsteRister = Object.entries(risterMap).sort(([,a],[,b]) => gns(b)-gns(a))[0];
+
+  // Bryg-præferencer
+  const brygMap = {};
+  data.forEach(v => {
+    if (!brygMap[v.brygmetode]) brygMap[v.brygmetode] = [];
+    brygMap[v.brygmetode].push(v.samletScore);
+  });
+  const bedsteBryg = Object.entries(brygMap).sort(([,a],[,b]) => gns(b)-gns(a))[0];
+
+  const topKaffer = [...data].sort((a,b) => b.samletScore - a.samletScore).slice(0,5);
+  const totalGns = gns(data.map(v=>v.samletScore));
+
+  document.getElementById('stats-indhold').innerHTML = `
+    <div class="sektion">
+      <div class="sektion-titel">Gennemsnitlig smagsprofil</div>
+      ${SMAG_FELTER.map(f => `
+        <div class="bar-container">
+          <div class="bar-label-raekke">
+            <span class="bar-label">${f.label}</span>
+            <span class="bar-vaerdi" style="color:${f.farve}">${smagsGns[f.key].toFixed(1)}</span>
+          </div>
+          <div class="bar-spor"><div class="bar-fyld" style="width:${smagsGns[f.key]*10}%;background:${f.farve}"></div></div>
+        </div>`).join('')}
+    </div>
+
+    <div class="sektion">
+      <div class="sektion-titel">Dine præferencer</div>
+      <div class="praef-raekke">
+        <div class="praef-kort" style="background:var(--kaffe)">
+          <div class="praef-emoji">🔥</div>
+          <div class="praef-label">Bedste ristering</div>
+          <div class="praef-vaerdi">${bedsteRister[0]}</div>
+          <div class="praef-score">${gns(bedsteRister[1]).toFixed(1)}/10 gns.</div>
+        </div>
+        <div class="praef-kort" style="background:var(--kaffe-accent)">
+          <div class="praef-emoji">☕</div>
+          <div class="praef-label">Bedste brygmetode</div>
+          <div class="praef-vaerdi">${bedsteBryg[0]}</div>
+          <div class="praef-score">${gns(bedsteBryg[1]).toFixed(1)}/10 gns.</div>
+        </div>
+      </div>
+      <div class="praef-kort praef-fuld" style="background:var(--kaffe-light);display:flex">
+        <div class="praef-emoji">⭐</div>
+        <div>
+          <div class="praef-label">Samlet gennemsnitsscore</div>
+          <div class="praef-vaerdi">${totalGns.toFixed(1)}/10</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sektion">
+      <div class="sektion-titel">Dine bedste kaffer</div>
+      ${topKaffer.map((v,i) => `
+        <div class="top-kaffe-raekke">
+          <div class="top-nr">#${i+1}</div>
+          <div class="top-info">
+            <div class="top-navn">${v.navn}</div>
+            <div class="top-meta">${v.oprindelse||''} · ${v.brygmetode}</div>
+          </div>
+          <div class="top-score" style="background:${scorefarve(v.samletScore)}">
+            <span>${v.samletScore}</span>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  initForm();
+  gengiListe();
+  document.getElementById('side-ny').addEventListener('click', () => {
+    // Re-init form når man skifter til Tilføj-siden uden redigering
+  });
+});
+
+// Genbyg form når man trykker Tilføj i nav
+const origVisside = visSide;
+window.visSide = function(side) {
+  if (side === 'ny' && !redigeringsId) {
+    document.getElementById('gem-knap').textContent = '☕ Gem vurdering';
+    initForm();
+  }
+  origVisside(side);
+};
+</script>
+</body>
+</html>
