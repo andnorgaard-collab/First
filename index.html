@@ -530,23 +530,16 @@ function visApp() {
 }
 
 // ── SETUP ────────────────────────────────────────────────
-async function gemSetup() {
-  const url = document.getElementById('setup-url').value.trim();
+function gemSetup() {
+  const url = document.getElementById('setup-url').value.trim().replace(/\/$/, '');
   const key = document.getElementById('setup-key').value.trim();
   const fejlEl = document.getElementById('setup-fejl');
   fejlEl.style.display = 'none';
   if (!url || !key) { fejlEl.textContent = 'Udfyld begge felter.'; fejlEl.style.display = 'block'; return; }
-  try {
-    initSupabase(url, key);
-    const { error } = await supabase.from('profiles').select('id').limit(1);
-    if (error && error.code !== 'PGRST116') throw error;
-    gemConfig(url, key);
-    document.getElementById('setup-skærm').classList.remove('vis');
-    document.getElementById('auth-skærm').classList.add('vis');
-  } catch (e) {
-    fejlEl.textContent = 'Kunne ikke forbinde. Tjek URL og nøgle.';
-    fejlEl.style.display = 'block';
-  }
+  gemConfig(url, key);
+  initSupabase(url, key);
+  document.getElementById('setup-skærm').classList.remove('vis');
+  document.getElementById('auth-skærm').classList.add('vis');
 }
 
 // ── AUTH ─────────────────────────────────────────────────
