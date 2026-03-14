@@ -265,6 +265,54 @@
       .stats-grid .sektion { margin: 16px 0 0; }
       .auth-boks { padding: 36px 32px; }
     }
+
+    /* ── HOVER (desktop) ── */
+    @media (hover: hover) {
+      .kaffe-kort:hover { background: #F5F5F5; }
+      .primær-knap:hover, .gem-knap:hover { background: #222; }
+      .annuller-knap:hover { background: #F0F0F0; }
+      .valg-knap:hover:not(.aktiv) { background: #EBEBEB; border-color: #CCC; }
+      .skala-knap:hover:not(.aktiv), .score-knap:hover:not(.aktiv) { background: #E0E0E0; color: #555; border-color: #BBB; }
+      .auth-knap:hover:not(:disabled) { opacity: .85; }
+      .bruger-knap:hover { border-color: #555; }
+      .sort-knap:hover:not(.aktiv) { background: #EBEBEB; }
+      .slet-knap:hover { opacity: .7; }
+    }
+
+    /* ── SØGNING & SORTERING ── */
+    .liste-toolbar { padding: 12px 16px 0; }
+    .søg-input {
+      width: 100%; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 13px; font-size: 15px; color: #000; background: var(--kort);
+      font-family: inherit; margin-bottom: 8px;
+    }
+    .søg-input:focus { outline: none; border-color: #000; }
+    .sort-raekke { display: flex; gap: 6px; flex-wrap: wrap; }
+    .sort-knap {
+      border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px;
+      background: var(--baggrund); font-size: 12px; font-weight: 600;
+      color: var(--tekst-2); cursor: pointer; font-family: inherit; transition: all .12s;
+    }
+    .sort-knap.aktiv { background: #000; border-color: #000; color: white; }
+
+    /* ── SMAGSBAR LABELS ── */
+    .smags-bar-labels { display: flex; gap: 2px; margin-top: 2px; margin-bottom: 8px; }
+    .smags-bar-label { flex: 1; font-size: 7px; font-weight: 600; color: var(--tekst-3); text-align: center; text-transform: uppercase; letter-spacing: .3px; }
+
+    /* ── ANNULLER ── */
+    .annuller-knap {
+      background: none; color: var(--tekst-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 15px; font-size: 15px; font-weight: 500;
+      width: 100%; cursor: pointer; font-family: inherit; margin-bottom: 8px;
+      touch-action: manipulation; -webkit-appearance: none;
+    }
+
+    /* ── GLEMT PASSWORD ── */
+    .glemt-knap {
+      background: none; border: none; color: rgba(255,255,255,.35);
+      font-size: 13px; cursor: pointer; font-family: inherit;
+      text-decoration: underline; touch-action: manipulation;
+    }
   </style>
 </head>
 <body>
@@ -291,7 +339,7 @@
       </form>
       <div class="auth-fejl" id="login-fejl"></div>
       <div style="text-align:center;margin-top:14px">
-        <button onclick="glemt()" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:13px;cursor:pointer;font-family:inherit;text-decoration:underline">Glemt password?</button>
+        <button onclick="glemt()" class="glemt-knap">Glemt password?</button>
       </div>
     </div>
 
@@ -333,6 +381,14 @@
         <div class="oversigt-deler"></div>
         <div><div class="oversigt-tal" id="bedste-score">–</div><div class="oversigt-label">Bedste</div></div>
       </div>
+      <div class="liste-toolbar" id="liste-toolbar" style="display:none">
+        <input class="søg-input" type="text" id="søg-input" placeholder="Søg efter kaffe..." oninput="søgOgGengi()" />
+        <div class="sort-raekke">
+          <button class="sort-knap aktiv" id="sort-nyeste" onclick="sætSortering('nyeste')">Nyeste</button>
+          <button class="sort-knap" id="sort-score" onclick="sætSortering('score')">Bedste score</button>
+          <button class="sort-knap" id="sort-navn" onclick="sætSortering('navn')">Navn A-Z</button>
+        </div>
+      </div>
       <div id="kaffe-liste-container"></div>
     </div>
 
@@ -364,6 +420,7 @@
           <div class="sektion-titel">Noter</div>
           <textarea id="f-noter" placeholder="Dine personlige noter..."></textarea>
         </div>
+        <button class="annuller-knap" id="annuller-knap" onclick="annullerForm()">Annuller</button>
         <button class="gem-knap" id="gem-knap" onclick="gemVurdering()">Gem vurdering</button>
       </div>
     </div>
@@ -411,6 +468,10 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 let sb = null;
 let aktivBruger = null;
 let brugernavn = '';
+let _cacheData = null;
+let _cacheTid = 0;
+let søgeord = '';
+let aktivSortering = 'nyeste';
 
 // ── OPSTART ──────────────────────────────────────────────
 async function start() {
@@ -436,6 +497,7 @@ async function start() {
       } else if (event === 'SIGNED_OUT') {
         aktivBruger = null;
         brugernavn = '';
+        _cacheData = null;
         document.getElementById('app').style.display = 'none';
         document.getElementById('auth-skærm').classList.add('vis');
       }
@@ -532,7 +594,7 @@ async function glemt() {
   const fejlEl = document.getElementById('login-fejl');
   if (!email) { fejlEl.style.color = '#FF6B6B'; fejlEl.textContent = 'Skriv din email øverst og prøv igen.'; return; }
   const { error } = await sb.auth.resetPasswordForEmail(email, {
-    redirectTo: 'https://andnorgaard-collab.github.io/First/'
+    redirectTo: window.location.href.split('?')[0].split('#')[0]
   });
   fejlEl.style.color = error ? '#FF6B6B' : '#6BFF8E';
   fejlEl.textContent = error ? 'Kunne ikke sende email.' : 'Reset-link sendt til ' + email;
@@ -552,16 +614,22 @@ function lukkBrugerMenu() {
 }
 
 // ── DATA (Supabase) ──────────────────────────────────────
-async function hentAlleVurderinger() {
+async function hentAlleVurderinger(forcefresh = false) {
   if (!aktivBruger) return [];
+  const nu = Date.now();
+  if (!forcefresh && _cacheData !== null && nu - _cacheTid < 30000) return _cacheData;
   const { data, error } = await sb
     .from('coffee_ratings')
     .select('*')
     .eq('user_id', aktivBruger.id)
     .order('dato', { ascending: false });
   if (error) throw new Error(error.message);
-  return data ?? [];
+  _cacheData = data ?? [];
+  _cacheTid = nu;
+  return _cacheData;
 }
+
+function ugyldiggørCache() { _cacheData = null; }
 
 async function gemVurderingDB(v) {
   const row = {
@@ -647,7 +715,11 @@ async function gengiListe() {
   document.getElementById('gns-score').textContent = data.length ? gns(data.map(v=>v.samlet_score)).toFixed(1) : '–';
   document.getElementById('bedste-score').textContent = data.length ? Math.max(...data.map(v=>v.samlet_score)) : '–';
 
+  const toolbar = document.getElementById('liste-toolbar');
+  toolbar.style.display = data.length ? '' : 'none';
+
   if (!data.length) {
+    søgeord = '';
     container.innerHTML = `<div class="tom">
       <div class="tom-emoji">☕</div>
       <div class="tom-titel">Ingen kaffer endnu</div>
@@ -657,8 +729,26 @@ async function gengiListe() {
     return;
   }
 
-  container.innerHTML = '<div class="kaffe-liste">' + data.map(v => `
-    <div class="kaffe-kort" onclick="visDetalje('${v.id}')">
+  // Sync sort buttons
+  ['nyeste','score','navn'].forEach(k => {
+    const btn = document.getElementById('sort-'+k);
+    if (btn) btn.classList.toggle('aktiv', k === aktivSortering);
+  });
+
+  // Apply search + sort
+  let vis = søgeord
+    ? data.filter(v => v.navn.toLowerCase().includes(søgeord) || (v.oprindelse||'').toLowerCase().includes(søgeord))
+    : [...data];
+  if (aktivSortering === 'score') vis.sort((a,b) => b.samlet_score - a.samlet_score);
+  else if (aktivSortering === 'navn') vis.sort((a,b) => a.navn.localeCompare(b.navn, 'da'));
+
+  if (!vis.length) {
+    container.innerHTML = `<div class="tom"><div class="tom-tekst" style="margin-bottom:0">Ingen kaffe matcher søgningen.</div></div>`;
+    return;
+  }
+
+  container.innerHTML = '<div class="kaffe-liste">' + vis.map(v => `
+    <div class="kaffe-kort" data-id="${v.id}" onclick="visDetalje('${v.id}')">
       <div class="kort-top">
         <div style="flex:1;min-width:0">
           <div class="kort-navn">${v.navn}</div>
@@ -678,11 +768,24 @@ async function gengiListe() {
             <div class="smags-bar-fill" style="height:${v.smag[f.key]*10}%;background:#000"></div>
           </div>`).join('')}
       </div>
+      <div class="smags-bar-labels">
+        ${SMAG_FELTER.map(f => `<div class="smags-bar-label">${f.label.substring(0,3)}</div>`).join('')}
+      </div>
       <div class="kort-bund">
         <span class="dato">${datoTekst(v.dato)}</span>
-        <button class="slet-knap" onclick="event.stopPropagation();sletVurdering('${v.id}','${v.navn.replace(/'/g,"\\'")}')">Slet</button>
+        <button class="slet-knap" data-slet-id="${v.id}" onclick="sletVurdering(event,'${v.id}')">Slet</button>
       </div>
     </div>`).join('') + '</div>';
+}
+
+function søgOgGengi() {
+  søgeord = document.getElementById('søg-input').value.toLowerCase().trim();
+  gengiListe();
+}
+
+function sætSortering(s) {
+  aktivSortering = s;
+  gengiListe();
 }
 
 // ── DETALJE MODAL ────────────────────────────────────────
@@ -720,8 +823,24 @@ function lukModal(e) {
 }
 
 // ── SLET ─────────────────────────────────────────────────
-async function sletVurdering(id, navn) {
-  if (!confirm(`Slet "${navn}"?`)) return;
+const _pendingSletter = new Set();
+async function sletVurdering(evt, id) {
+  evt.stopPropagation();
+  const btn = evt.currentTarget;
+  if (!_pendingSletter.has(id)) {
+    _pendingSletter.add(id);
+    btn.textContent = 'Er du sikker?';
+    btn.style.color = '#000';
+    setTimeout(() => {
+      if (_pendingSletter.has(id)) {
+        _pendingSletter.delete(id);
+        if (btn.isConnected) { btn.textContent = 'Slet'; btn.style.color = ''; }
+      }
+    }, 3000);
+    return;
+  }
+  _pendingSletter.delete(id);
+  ugyldiggørCache();
   await sletVurderingDB(id);
   gengiListe();
 }
@@ -820,6 +939,7 @@ async function gemVurdering() {
       dato: new Date().toISOString(),
     };
     await gemVurderingDB(vurdering);
+    ugyldiggørCache();
   } catch (e) {
     knap.disabled = false;
     knap.textContent = 'Gem vurdering';
@@ -846,15 +966,33 @@ async function redigerVurdering(id) {
   smagsVaerdier = { ...v.smag };
   samletScore = v.samlet_score;
   visSide('ny');
+  initForm(); // Rebuild form UI with the loaded values
   document.getElementById('f-navn').value = v.navn;
-  document.getElementById('f-oprindelse').value = v.oprindelse;
-  document.getElementById('f-noter').value = v.noter;
+  document.getElementById('f-oprindelse').value = v.oprindelse || '';
+  document.getElementById('f-noter').value = v.noter || '';
   document.getElementById('gem-knap').textContent = 'Opdater vurdering';
+  document.getElementById('annuller-knap').textContent = 'Annuller redigering';
+}
+
+function annullerForm() {
+  redigeringsId = null;
+  smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
+  samletScore = 7; valgRister = 'Medium'; valgBryg = 'Filterkaffe';
+  ['f-navn','f-oprindelse','f-noter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  visSide('liste');
 }
 
 // ── STATISTIK ────────────────────────────────────────────
 async function gengiStats() {
-  const data = await hentAlleVurderinger();
+  document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Din smagsprofil</div>`;
+  document.getElementById('stats-indhold').innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:#000;border-color:#DDD;width:28px;height:28px"></div></div>';
+  let data;
+  try {
+    data = await hentAlleVurderinger();
+  } catch(e) {
+    document.getElementById('stats-indhold').innerHTML = `<div class="tom"><div class="tom-tekst">${e.message}</div></div>`;
+    return;
+  }
   if (!data.length) {
     document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Din smagsprofil</div><div class="stats-under">Ingen data endnu</div>`;
     document.getElementById('stats-indhold').innerHTML = '';
@@ -934,6 +1072,7 @@ const origVisSide = visSide;
 window.visSide = function(side) {
   if (side === 'ny' && !redigeringsId) {
     document.getElementById('gem-knap').textContent = 'Gem vurdering';
+    document.getElementById('annuller-knap').textContent = 'Annuller';
     initForm();
   }
   origVisSide(side);
