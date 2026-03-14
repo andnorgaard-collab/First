@@ -554,12 +554,13 @@ function lukkBrugerMenu() {
 // ── DATA (Supabase) ──────────────────────────────────────
 async function hentAlleVurderinger() {
   if (!aktivBruger) return [];
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from('coffee_ratings')
     .select('*')
     .eq('user_id', aktivBruger.id)
     .order('dato', { ascending: false });
-  return error ? [] : (data ?? []);
+  if (error) throw new Error(error.message);
+  return data ?? [];
 }
 
 async function gemVurderingDB(v) {
@@ -635,7 +636,13 @@ function visSide(side) {
 async function gengiListe() {
   const container = document.getElementById('kaffe-liste-container');
   container.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:#000;border-color:#DDD;width:28px;height:28px"></div></div>';
-  const data = await hentAlleVurderinger();
+  let data;
+  try {
+    data = await hentAlleVurderinger();
+  } catch (e) {
+    container.innerHTML = `<div class="tom"><div class="tom-titel" style="font-size:16px">Fejl</div><div class="tom-tekst">${e.message}</div></div>`;
+    return;
+  }
   document.getElementById('antal-kaffer').textContent = data.length;
   document.getElementById('gns-score').textContent = data.length ? gns(data.map(v=>v.samlet_score)).toFixed(1) : '–';
   document.getElementById('bedste-score').textContent = data.length ? Math.max(...data.map(v=>v.samlet_score)) : '–';
