@@ -11,32 +11,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --sort:         #000000;
-      --sort-blødt:   #111111;
-      --mørkgrå:      #333333;
-      --grå:          #666666;
-      --lysgrå:       #999999;
-      --border:       #E5E5E5;
-      --baggrund:     #F9F9F9;
-      --kort:         #FFFFFF;
-      --tekst:        #111111;
-      --tekst-2:      #555555;
-      --tekst-3:      #999999;
-      --groen:        #1A1A1A;
-      --roed:         #CC0000;
-      /* Alias for compat */
-      --kaffe:        #000000;
-      --kaffe-light:  #333333;
-      --kaffe-accent: #000000;
-      --kaffe-lys:    #F0F0F0;
+      --sort: #000;
+      --mørkgrå: #333;
+      --grå: #666;
+      --lysgrå: #999;
+      --border: #E5E5E5;
+      --baggrund: #F9F9F9;
+      --kort: #FFF;
+      --tekst: #111;
+      --tekst-2: #555;
+      --tekst-3: #999;
+      --roed: #CC0000;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--baggrund);
@@ -46,107 +38,130 @@
       min-height: 100dvh;
     }
 
-    .serif { font-family: 'Playfair Display', Georgia, serif; }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 900px;
-      background: var(--kort);
-      border-top: 1px solid var(--border);
-      display: flex;
-      padding-bottom: var(--safe-bottom);
-      z-index: 100;
-    }
-    nav button {
-      flex: 1;
-      background: none;
-      border: none;
-      padding: 10px 4px 8px;
-      cursor: pointer;
-      display: flex;
+    /* ── OPSÆTNINGS-SKÆRM ── */
+    #setup-skærm {
+      display: none;
+      min-height: 100dvh;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
-      font-size: 10px;
-      color: var(--tekst-3);
-      font-family: 'Inter', sans-serif;
-      font-weight: 500;
-      letter-spacing: .5px;
-      text-transform: uppercase;
-      transition: color .15s;
+      justify-content: center;
+      padding: 32px 24px;
+      background: #000;
+      color: white;
     }
-    nav button .ikon { font-size: 18px; }
-    nav button.aktiv { color: var(--sort); font-weight: 700; }
+    #setup-skærm.vis { display: flex; }
+    .setup-logo { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; margin-bottom: 8px; }
+    .setup-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 40px; }
+    .setup-boks { background: #111; border: 1px solid #333; border-radius: 14px; padding: 24px; width: 100%; max-width: 440px; }
+    .setup-titel { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .setup-tekst { font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.7; margin-bottom: 20px; }
+    .setup-trin { display: flex; gap: 10px; margin-bottom: 12px; }
+    .setup-nr { width: 24px; height: 24px; border-radius: 12px; background: #333; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .setup-trin-tekst { font-size: 13px; color: rgba(255,255,255,.7); line-height: 1.6; }
+    .setup-trin-tekst a { color: white; }
+    .setup-input { width: 100%; background: #1A1A1A; border: 1px solid #333; border-radius: 8px; padding: 12px 14px; font-size: 14px; color: white; font-family: inherit; margin-bottom: 10px; }
+    .setup-input:focus { outline: none; border-color: #666; }
+    .setup-knap { width: 100%; background: white; color: black; border: none; border-radius: 8px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 6px; }
+    .setup-fejl { font-size: 12px; color: #FF6B6B; margin-top: 8px; display: none; }
+
+    /* ── AUTH-SKÆRM ── */
+    #auth-skærm {
+      display: none;
+      min-height: 100dvh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--safe-top) + 32px) 24px calc(var(--safe-bottom) + 32px);
+      background: #000;
+    }
+    #auth-skærm.vis { display: flex; }
+    .auth-logo { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: white; margin-bottom: 6px; text-align: center; }
+    .auth-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 48px; text-align: center; }
+    .auth-boks { background: #111; border: 1px solid #222; border-radius: 16px; padding: 28px 24px; width: 100%; max-width: 420px; }
+    .auth-faner { display: flex; border-bottom: 1px solid #222; margin-bottom: 24px; }
+    .auth-fane {
+      flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 600;
+      color: rgba(255,255,255,.35); cursor: pointer; border-bottom: 2px solid transparent;
+      transition: all .15s; margin-bottom: -1px;
+    }
+    .auth-fane.aktiv { color: white; border-bottom-color: white; }
+    .auth-felt-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 6px; margin-top: 16px; }
+    .auth-felt-label:first-of-type { margin-top: 0; }
+    .auth-input {
+      width: 100%; background: #1A1A1A; border: 1px solid #2A2A2A; border-radius: 8px;
+      padding: 13px 14px; font-size: 15px; color: white; font-family: inherit;
+    }
+    .auth-input:focus { outline: none; border-color: #555; }
+    .auth-knap {
+      width: 100%; background: white; color: black; border: none; border-radius: 8px;
+      padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit;
+      margin-top: 24px; transition: opacity .15s;
+    }
+    .auth-knap:disabled { opacity: .5; }
+    .auth-fejl { font-size: 13px; color: #FF6B6B; margin-top: 12px; text-align: center; min-height: 18px; }
+    .auth-info { font-size: 13px; color: rgba(255,255,255,.4); margin-top: 12px; text-align: center; }
 
     /* ── HEADER ── */
     header {
       background: #000;
       color: white;
-      padding: calc(var(--safe-top) + 16px) 20px 16px;
+      padding: calc(var(--safe-top) + 14px) 16px 14px;
       position: sticky;
       top: 0;
       z-index: 50;
       display: flex;
-      align-items: baseline;
-      gap: 10px;
-      border-bottom: 1px solid #222;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1A1A1A;
     }
-    header .logo {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -.3px;
-      color: #fff;
+    .header-venstre { display: flex; align-items: baseline; gap: 10px; }
+    header .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #fff; }
+    header .logo-sub { font-size: 10px; font-weight: 500; color: rgba(255,255,255,.3); letter-spacing: 1.8px; text-transform: uppercase; }
+    .bruger-knap {
+      display: flex; align-items: center; gap: 8px;
+      background: #1A1A1A; border: 1px solid #2A2A2A; border-radius: 8px;
+      padding: 7px 12px; cursor: pointer;
     }
-    header .logo-sup {
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      color: rgba(255,255,255,.35);
-      letter-spacing: 2px;
-      text-transform: uppercase;
+    .bruger-avatar { width: 24px; height: 24px; border-radius: 12px; background: #333; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; }
+    .bruger-navn { font-size: 13px; font-weight: 600; color: white; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 900px; background: var(--kort);
+      border-top: 1px solid var(--border); display: flex;
+      padding-bottom: var(--safe-bottom); z-index: 100;
     }
+    nav button {
+      flex: 1; background: none; border: none; padding: 10px 4px 8px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      font-size: 10px; color: var(--tekst-3); font-family: 'Inter', sans-serif;
+      font-weight: 600; letter-spacing: .6px; text-transform: uppercase; transition: color .15s;
+    }
+    nav button .ikon { font-size: 18px; }
+    nav button.aktiv { color: #000; }
 
     /* ── MAIN ── */
-    main {
-      padding: 0 0 calc(70px + var(--safe-bottom)) 0;
-      min-height: 100dvh;
-    }
-
-    /* ── SIDER ── */
+    main { padding: 0 0 calc(65px + var(--safe-bottom)) 0; min-height: 100dvh; }
     .side { display: none; }
     .side.aktiv { display: block; }
 
-    /* ── OVERSIGT BANNER ── */
-    .oversigt {
-      background: #000;
-      display: flex;
-      justify-content: space-around;
-      padding: 16px 24px 20px;
-    }
-    .oversigt-tal { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: #fff; }
+    /* ── OVERSIGT ── */
+    .oversigt { background: #000; display: flex; justify-content: space-around; padding: 14px 24px 18px; }
+    .oversigt-tal { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: #fff; }
     .oversigt-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,.35); margin-top: 4px; }
     .oversigt-deler { width: 1px; background: rgba(255,255,255,.1); }
 
-    /* ── KORT ── */
+    /* ── KAFFE KORT ── */
     .kaffe-liste { padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 10px; }
     .kaffe-kort {
-      background: var(--kort);
-      border-radius: 12px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      transition: background .1s;
+      background: var(--kort); border-radius: 12px; padding: 16px;
+      border: 1px solid var(--border); cursor: pointer; transition: background .1s;
     }
     .kaffe-kort:active { background: #F5F5F5; }
     .kort-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
     .kort-navn { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 2px; color: #000; }
-    .kort-meta { font-size: 12px; color: var(--tekst-2); margin-bottom: 6px; font-weight: 400; }
+    .kort-meta { font-size: 12px; color: var(--tekst-2); margin-bottom: 6px; }
     .kort-tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .rister-tag { border-radius: 4px; padding: 2px 7px; font-size: 9px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; border: 1px solid; }
     .vurderet-af { font-size: 11px; color: var(--tekst-3); }
@@ -155,41 +170,30 @@
     .score-badge .score-tekst { color: rgba(255,255,255,.7); font-size: 9px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; display: block; margin-top: 2px; }
     .smags-bar { display: flex; gap: 2px; margin-bottom: 10px; }
     .smags-bar-col { flex: 1; height: 24px; border-radius: 3px; position: relative; background: #F0F0F0; overflow: hidden; }
-    .smags-bar-fill { position: absolute; bottom: 0; left: 0; right: 0; border-radius: 3px; transition: height .3s; }
+    .smags-bar-fill { position: absolute; bottom: 0; left: 0; right: 0; border-radius: 3px; }
     .kort-bund { display: flex; justify-content: space-between; align-items: center; }
     .dato { font-size: 11px; color: var(--tekst-3); }
     .slet-knap { font-size: 12px; color: var(--roed); font-weight: 600; background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 0; }
 
-    /* ── TOM TILSTAND ── */
-    .tom {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 60vh; padding: 40px; text-align: center;
-    }
+    /* ── TOM ── */
+    .tom { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; padding: 40px; text-align: center; }
     .tom-emoji { font-size: 64px; margin-bottom: 20px; filter: grayscale(1); }
-    .tom-titel { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 12px; color: #000; }
+    .tom-titel { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 12px; }
     .tom-tekst { font-size: 15px; color: var(--tekst-2); line-height: 1.7; margin-bottom: 32px; max-width: 280px; }
-    .primær-knap {
-      background: #000; color: white; border: none; border-radius: 8px;
-      padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
-      letter-spacing: .3px;
-    }
+    .primær-knap { background: #000; color: white; border: none; border-radius: 8px; padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
 
     /* ── FORM ── */
     .form-container { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-    .sektion {
-      background: var(--kort); border-radius: 12px; padding: 18px;
-      border: 1px solid var(--border);
-    }
+    .sektion { background: var(--kort); border-radius: 12px; padding: 18px; border: 1px solid var(--border); }
     .sektion-titel { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #000; margin-bottom: 2px; }
-    .sektion-under { font-size: 12px; color: var(--tekst-3); margin-bottom: 14px; font-weight: 400; }
+    .sektion-under { font-size: 12px; color: var(--tekst-3); margin-bottom: 14px; }
     .felt-label { font-size: 10px; font-weight: 700; margin-bottom: 6px; margin-top: 14px; color: var(--tekst-3); letter-spacing: 1px; text-transform: uppercase; }
     .felt-label:first-of-type { margin-top: 0; }
-    input[type=text], textarea, select {
+    input[type=text], input[type=email], input[type=password], textarea {
       width: 100%; border: 1px solid var(--border); border-radius: 8px;
-      padding: 11px 13px; font-size: 15px; color: #000; background: var(--baggrund);
-      font-family: inherit; appearance: none;
+      padding: 11px 13px; font-size: 15px; color: #000; background: var(--baggrund); font-family: inherit;
     }
-    input[type=text]:focus, textarea:focus { outline: none; border-color: #000; }
+    input:focus, textarea:focus { outline: none; border-color: #000; }
     textarea { height: 90px; resize: none; }
     .valg-raekke { display: flex; flex-wrap: wrap; gap: 7px; }
     .valg-knap {
@@ -216,30 +220,18 @@
     .skala-etiketter { display: flex; justify-content: space-between; margin-top: 3px; }
     .skala-etiketter span { font-size: 10px; color: var(--tekst-3); }
 
-    /* ── SAMLET SCORE ── */
+    /* ── SCORE ── */
     .score-knapper { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
-    .score-knap {
-      width: 46px; height: 46px; border-radius: 8px; border: 1px solid var(--border);
-      background: #F5F5F5; font-size: 16px; font-weight: 700; color: #999;
-      cursor: pointer; font-family: inherit; transition: all .12s;
-    }
+    .score-knap { width: 46px; height: 46px; border-radius: 8px; border: 1px solid var(--border); background: #F5F5F5; font-size: 16px; font-weight: 700; color: #999; cursor: pointer; font-family: inherit; transition: all .12s; }
     .score-knap.aktiv { background: #000; border-color: #000; color: white; }
     .samlet-badge-container { display: flex; justify-content: center; margin-bottom: 4px; }
-
-    /* ── GEM KNAP ── */
-    .gem-knap {
-      background: #000; color: white; border: none; border-radius: 10px;
-      padding: 17px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer;
-      font-family: inherit; margin-bottom: 8px; letter-spacing: .3px;
-    }
+    .gem-knap { background: #000; color: white; border: none; border-radius: 10px; padding: 17px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; font-family: inherit; margin-bottom: 8px; }
 
     /* ── STATISTIK ── */
-    .stats-header {
-      background: #000; padding: 20px; color: white;
-    }
+    .stats-header { background: #000; padding: 20px; color: white; }
     .stats-titel { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
     .stats-under { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 12px; }
-    .profil-boks { background: rgba(255,255,255,.08); border-radius: 10px; padding: 12px; border: 1px solid rgba(255,255,255,.1); }
+    .profil-boks { background: rgba(255,255,255,.07); border-radius: 10px; padding: 12px; border: 1px solid rgba(255,255,255,.1); }
     .profil-tekst { font-size: 14px; color: rgba(255,255,255,.8); line-height: 1.7; }
     .praef-raekke { display: flex; gap: 10px; margin-bottom: 10px; }
     .praef-kort { flex: 1; border-radius: 10px; padding: 14px; text-align: center; }
@@ -250,131 +242,204 @@
     .praef-fuld { flex-direction: row !important; align-items: center; gap: 12px; text-align: left !important; }
     .bar-container { margin-bottom: 12px; }
     .bar-label-raekke { display: flex; justify-content: space-between; margin-bottom: 4px; }
-    .bar-label { font-size: 13px; font-weight: 600; color: #000; }
-    .bar-vaerdi { font-size: 13px; font-weight: 700; color: #000; }
+    .bar-label { font-size: 13px; font-weight: 600; }
+    .bar-vaerdi { font-size: 13px; font-weight: 700; }
     .bar-spor { height: 8px; background: #F0F0F0; border-radius: 4px; overflow: hidden; }
-    .bar-fyld { height: 100%; border-radius: 4px; transition: width .5s ease; background: #000; }
-    .top-kaffe-raekke {
-      display: flex; align-items: center; padding: 11px 0;
-      border-bottom: 1px solid var(--border);
-    }
+    .bar-fyld { height: 100%; border-radius: 4px; background: #000; transition: width .5s ease; }
+    .top-kaffe-raekke { display: flex; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); }
     .top-nr { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #000; width: 36px; }
     .top-info { flex: 1; margin-right: 12px; min-width: 0; }
-    .top-navn { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #000; }
+    .top-navn { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .top-meta { font-size: 11px; color: var(--tekst-3); }
     .top-score { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .top-score span { color: white; font-weight: 700; font-size: 15px; }
 
     /* ── MODAL ── */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.5);
-      display: none; align-items: flex-end; justify-content: center; z-index: 200;
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: flex-end; justify-content: center; z-index: 200; }
     .modal-overlay.aaben { display: flex; }
-    .modal {
-      background: var(--kort); border-radius: 24px 24px 0 0; padding: 24px;
-      padding-bottom: calc(24px + var(--safe-bottom)); width: 100%; max-width: 900px;
-      max-height: 90dvh; overflow-y: auto;
-    }
-    .modal-titel { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 4px; color: #000; }
+    .modal { background: var(--kort); border-radius: 20px 20px 0 0; padding: 24px; padding-bottom: calc(24px + var(--safe-bottom)); width: 100%; max-width: 900px; max-height: 90dvh; overflow-y: auto; }
+    .modal-titel { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
     .modal-meta { font-size: 13px; color: var(--tekst-3); margin-bottom: 20px; }
-    .modal-luk { float: right; background: #F0F0F0; border: none; border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: #333; }
+    .modal-luk { float: right; background: #F0F0F0; border: none; border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
 
-    /* ── GRID TIL IPAD ── */
+    /* ── BRUGER MENU ── */
+    .bruger-menu-overlay { position: fixed; inset: 0; z-index: 150; display: none; }
+    .bruger-menu-overlay.aaben { display: block; }
+    .bruger-menu {
+      position: fixed; top: calc(var(--safe-top) + 60px); right: 16px;
+      background: #111; border: 1px solid #2A2A2A; border-radius: 12px;
+      padding: 8px; min-width: 180px; z-index: 160;
+      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+    }
+    .bruger-menu-info { padding: 10px 12px 12px; border-bottom: 1px solid #222; margin-bottom: 6px; }
+    .bruger-menu-brugernavn { font-size: 15px; font-weight: 700; color: white; }
+    .bruger-menu-email { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 2px; }
+    .menu-knap { width: 100%; background: none; border: none; text-align: left; padding: 10px 12px; font-size: 14px; font-weight: 500; color: white; font-family: inherit; cursor: pointer; border-radius: 8px; }
+    .menu-knap:hover { background: #1A1A1A; }
+    .menu-knap.fare { color: #FF6B6B; }
+
+    /* ── INDLÆSNING ── */
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.2); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── GRID PÅ IPAD ── */
     @media (min-width: 600px) {
       .kaffe-liste { display: grid; grid-template-columns: 1fr 1fr; }
       .form-container { max-width: 640px; margin: 0 auto; }
       .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; padding: 0 16px; }
       .stats-grid .sektion { margin: 16px 0 0; }
+      .auth-boks { padding: 36px 32px; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <span class="logo" id="header-logo">GrindrBros</span>
-  <span class="logo-sup" id="header-sub">Smagsregistrering</span>
-</header>
-
-<main>
-  <!-- MINE KAFFER -->
-  <div class="side aktiv" id="side-liste">
-    <div class="oversigt">
-      <div>
-        <div class="oversigt-tal" id="antal-kaffer">0</div>
-        <div class="oversigt-label">Kaffer smagt</div>
-      </div>
-      <div class="oversigt-deler"></div>
-      <div>
-        <div class="oversigt-tal" id="gns-score">–</div>
-        <div class="oversigt-label">Gns. score</div>
-      </div>
-      <div class="oversigt-deler"></div>
-      <div>
-        <div class="oversigt-tal" id="bedste-score">–</div>
-        <div class="oversigt-label">Bedste score</div>
-      </div>
+<!-- OPSÆTNING (vises kun hvis ingen Supabase-nøgler) -->
+<div id="setup-skærm">
+  <div class="setup-logo">GrindrBros</div>
+  <div class="setup-sub">Første gang</div>
+  <div class="setup-boks">
+    <div class="setup-titel">Forbind til Supabase</div>
+    <div class="setup-tekst">For at gemme brugere og data skal du oprette et gratis Supabase-projekt.</div>
+    <div class="setup-trin">
+      <div class="setup-nr">1</div>
+      <div class="setup-trin-tekst">Gå til <a href="https://supabase.com" target="_blank"><strong>supabase.com</strong></a> og opret en gratis konto og et nyt projekt.</div>
     </div>
-    <div id="kaffe-liste-container"></div>
+    <div class="setup-trin">
+      <div class="setup-nr">2</div>
+      <div class="setup-trin-tekst">Gå til <strong>Project Settings → API</strong> og kopiér <strong>Project URL</strong> og <strong>anon public</strong> nøglen.</div>
+    </div>
+    <div class="setup-trin">
+      <div class="setup-nr">3</div>
+      <div class="setup-trin-tekst">Gå til <strong>SQL Editor</strong> og kør SQL'en fra <strong>README.md</strong> i dette repository for at oprette tabellerne.</div>
+    </div>
+    <input class="setup-input" id="setup-url" placeholder="Project URL (https://xxx.supabase.co)" />
+    <input class="setup-input" id="setup-key" placeholder="anon public key" />
+    <button class="setup-knap" onclick="gemSetup()">Gem og fortsæt</button>
+    <div class="setup-fejl" id="setup-fejl"></div>
   </div>
+</div>
 
-  <!-- TILFØJ / REDIGER -->
-  <div class="side" id="side-ny">
-    <div class="form-container">
-      <div class="sektion">
-        <div class="sektion-titel">Kaffe-information</div>
-        <div class="felt-label">Kaffens navn *</div>
-        <input type="text" id="f-navn" placeholder="f.eks. Ethiopia Yirgacheffe" />
-        <div class="felt-label">Oprindelse / Producent</div>
-        <input type="text" id="f-oprindelse" placeholder="f.eks. Etiopien, La Cabra" />
-        <div class="felt-label">Risteringsgrad</div>
-        <div class="valg-raekke" id="rister-valg"></div>
-        <div class="felt-label">Brygmetode</div>
-        <div class="valg-raekke" id="bryg-valg"></div>
-        <div class="felt-label">Vurderet af</div>
-        <input type="text" id="f-navn-person" placeholder="Dit navn" />
-      </div>
+<!-- AUTH-SKÆRM -->
+<div id="auth-skærm">
+  <div class="auth-logo">GrindrBros</div>
+  <div class="auth-sub">Kaffe · Smag · Fællesskab</div>
+  <div class="auth-boks">
+    <div class="auth-faner">
+      <div class="auth-fane aktiv" id="fane-login" onclick="skiftFane('login')">Log ind</div>
+      <div class="auth-fane" id="fane-opret" onclick="skiftFane('opret')">Opret konto</div>
+    </div>
 
-      <div class="sektion">
-        <div class="sektion-titel">Smagsvurdering</div>
-        <div class="sektion-under">Skala 1 (svag) → 10 (intens)</div>
-        <div id="smags-slidere"></div>
-      </div>
+    <!-- LOGIN -->
+    <div id="login-form">
+      <div class="auth-felt-label">Email</div>
+      <input class="auth-input" type="email" id="login-email" placeholder="din@email.dk" autocomplete="email" />
+      <div class="auth-felt-label">Password</div>
+      <input class="auth-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+      <button class="auth-knap" id="login-knap" onclick="logInd()">Log ind</button>
+      <div class="auth-fejl" id="login-fejl"></div>
+    </div>
 
-      <div class="sektion">
-        <div class="sektion-titel">Samlet vurdering</div>
-        <div class="sektion-under">Hvor godt kan du lide denne kaffe?</div>
-        <div class="samlet-badge-container"><div id="samlet-badge"></div></div>
-        <div class="score-knapper" id="score-knapper"></div>
-      </div>
-
-      <div class="sektion">
-        <div class="sektion-titel">Noter</div>
-        <textarea id="f-noter" placeholder="Dine personlige noter om denne kaffe..."></textarea>
-      </div>
-
-      <button class="gem-knap" id="gem-knap" onclick="gemVurdering()">☕ Gem vurdering</button>
+    <!-- OPRET KONTO -->
+    <div id="opret-form" style="display:none">
+      <div class="auth-felt-label">Brugernavn</div>
+      <input class="auth-input" type="text" id="opret-brugernavn" placeholder="CoffeeBro42" autocomplete="username" />
+      <div class="auth-felt-label">Email</div>
+      <input class="auth-input" type="email" id="opret-email" placeholder="din@email.dk" autocomplete="email" />
+      <div class="auth-felt-label">Password</div>
+      <input class="auth-input" type="password" id="opret-password" placeholder="Mindst 6 tegn" autocomplete="new-password" />
+      <button class="auth-knap" id="opret-knap" onclick="opretKonto()">Opret konto</button>
+      <div class="auth-fejl" id="opret-fejl"></div>
     </div>
   </div>
+</div>
 
-  <!-- STATISTIK -->
-  <div class="side" id="side-stats">
-    <div class="stats-header" id="stats-header"></div>
-    <div class="stats-grid" id="stats-indhold"></div>
+<!-- HOVED-APP -->
+<div id="app" style="display:none">
+  <header>
+    <div class="header-venstre">
+      <span class="logo" id="header-logo">GrindrBros</span>
+      <span class="logo-sub" id="header-sub">Smagsregistrering</span>
+    </div>
+    <div class="bruger-knap" onclick="toggleBrugerMenu()">
+      <div class="bruger-avatar" id="avatar-bogstav">?</div>
+      <span class="bruger-navn" id="header-brugernavn">…</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="side aktiv" id="side-liste">
+      <div class="oversigt">
+        <div><div class="oversigt-tal" id="antal-kaffer">0</div><div class="oversigt-label">Kaffer smagt</div></div>
+        <div class="oversigt-deler"></div>
+        <div><div class="oversigt-tal" id="gns-score">–</div><div class="oversigt-label">Gns. score</div></div>
+        <div class="oversigt-deler"></div>
+        <div><div class="oversigt-tal" id="bedste-score">–</div><div class="oversigt-label">Bedste</div></div>
+      </div>
+      <div id="kaffe-liste-container"></div>
+    </div>
+
+    <div class="side" id="side-ny">
+      <div class="form-container">
+        <div class="sektion">
+          <div class="sektion-titel">Kaffe-information</div>
+          <div class="felt-label">Kaffens navn *</div>
+          <input type="text" id="f-navn" placeholder="f.eks. Ethiopia Yirgacheffe" />
+          <div class="felt-label">Oprindelse / Producent</div>
+          <input type="text" id="f-oprindelse" placeholder="f.eks. Etiopien, La Cabra" />
+          <div class="felt-label">Risteringsgrad</div>
+          <div class="valg-raekke" id="rister-valg"></div>
+          <div class="felt-label">Brygmetode</div>
+          <div class="valg-raekke" id="bryg-valg"></div>
+        </div>
+        <div class="sektion">
+          <div class="sektion-titel">Smagsvurdering</div>
+          <div class="sektion-under">Skala 1 (svag) → 10 (intens)</div>
+          <div id="smags-slidere"></div>
+        </div>
+        <div class="sektion">
+          <div class="sektion-titel">Samlet vurdering</div>
+          <div class="sektion-under">Hvor godt kan du lide denne kaffe?</div>
+          <div class="samlet-badge-container"><div id="samlet-badge"></div></div>
+          <div class="score-knapper" id="score-knapper"></div>
+        </div>
+        <div class="sektion">
+          <div class="sektion-titel">Noter</div>
+          <textarea id="f-noter" placeholder="Dine personlige noter..."></textarea>
+        </div>
+        <button class="gem-knap" id="gem-knap" onclick="gemVurdering()">Gem vurdering</button>
+      </div>
+    </div>
+
+    <div class="side" id="side-stats">
+      <div class="stats-header" id="stats-header"></div>
+      <div class="stats-grid" id="stats-indhold"></div>
+    </div>
+  </main>
+
+  <nav>
+    <button class="aktiv" id="nav-liste" onclick="visSide('liste')">
+      <span class="ikon">☕</span>Kaffer
+    </button>
+    <button id="nav-ny" onclick="visSide('ny')">
+      <span class="ikon">＋</span>Tilføj
+    </button>
+    <button id="nav-stats" onclick="visSide('stats')">
+      <span class="ikon">◎</span>Profil
+    </button>
+  </nav>
+</div>
+
+<!-- BRUGER-MENU -->
+<div class="bruger-menu-overlay" id="bruger-menu-overlay" onclick="lukkBrugerMenu()">
+  <div class="bruger-menu" onclick="event.stopPropagation()">
+    <div class="bruger-menu-info">
+      <div class="bruger-menu-brugernavn" id="menu-brugernavn">–</div>
+      <div class="bruger-menu-email" id="menu-email">–</div>
+    </div>
+    <button class="menu-knap fare" onclick="logUd()">Log ud</button>
   </div>
-</main>
-
-<nav>
-  <button class="aktiv" id="nav-liste" onclick="visSide('liste')">
-    <span class="ikon">☕</span>Mine kaffer
-  </button>
-  <button id="nav-ny" onclick="visSide('ny')">
-    <span class="ikon">➕</span>Tilføj
-  </button>
-  <button id="nav-stats" onclick="visSide('stats')">
-    <span class="ikon">📊</span>Smagsprofil
-  </button>
-</nav>
+</div>
 
 <!-- DETALJE MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="lukModal(event)">
@@ -382,37 +447,215 @@
 </div>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────
-const STORAGE_KEY = 'kaffeklub_v1';
+// ── KONFIGURATION ────────────────────────────────────────
+const CONFIG_KEY = 'grindrbros_config';
 
+function hentConfig() {
+  try { return JSON.parse(localStorage.getItem(CONFIG_KEY) || 'null'); }
+  catch { return null; }
+}
+function gemConfig(url, key) {
+  localStorage.setItem(CONFIG_KEY, JSON.stringify({ url, key }));
+}
+
+// ── SUPABASE ─────────────────────────────────────────────
+let supabase = null;
+let aktivBruger = null;
+let brugernavn = '';
+
+function initSupabase(url, key) {
+  supabase = window.supabase.createClient(url, key);
+}
+
+// ── OPSTART ──────────────────────────────────────────────
+async function start() {
+  const config = hentConfig();
+  if (!config?.url || !config?.key) {
+    document.getElementById('setup-skærm').classList.add('vis');
+    return;
+  }
+  initSupabase(config.url, config.key);
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
+    await indlaesBruger(session.user);
+    visApp();
+  } else {
+    document.getElementById('auth-skærm').classList.add('vis');
+  }
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session?.user) {
+      await indlaesBruger(session.user);
+      visApp();
+    } else if (event === 'SIGNED_OUT') {
+      aktivBruger = null;
+      brugernavn = '';
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('auth-skærm').classList.add('vis');
+    }
+  });
+}
+
+async function indlaesBruger(user) {
+  aktivBruger = user;
+  const { data } = await supabase.from('profiles').select('username').eq('id', user.id).single();
+  brugernavn = data?.username ?? user.email.split('@')[0];
+  opdaterBrugerUI();
+}
+
+function opdaterBrugerUI() {
+  document.getElementById('header-brugernavn').textContent = brugernavn;
+  document.getElementById('avatar-bogstav').textContent = brugernavn[0].toUpperCase();
+  document.getElementById('menu-brugernavn').textContent = brugernavn;
+  document.getElementById('menu-email').textContent = aktivBruger?.email ?? '';
+}
+
+function visApp() {
+  document.getElementById('auth-skærm').classList.remove('vis');
+  document.getElementById('setup-skærm').classList.remove('vis');
+  document.getElementById('app').style.display = 'block';
+  initForm();
+  gengiListe();
+}
+
+// ── SETUP ────────────────────────────────────────────────
+async function gemSetup() {
+  const url = document.getElementById('setup-url').value.trim();
+  const key = document.getElementById('setup-key').value.trim();
+  const fejlEl = document.getElementById('setup-fejl');
+  fejlEl.style.display = 'none';
+  if (!url || !key) { fejlEl.textContent = 'Udfyld begge felter.'; fejlEl.style.display = 'block'; return; }
+  try {
+    initSupabase(url, key);
+    const { error } = await supabase.from('profiles').select('id').limit(1);
+    if (error && error.code !== 'PGRST116') throw error;
+    gemConfig(url, key);
+    document.getElementById('setup-skærm').classList.remove('vis');
+    document.getElementById('auth-skærm').classList.add('vis');
+  } catch (e) {
+    fejlEl.textContent = 'Kunne ikke forbinde. Tjek URL og nøgle.';
+    fejlEl.style.display = 'block';
+  }
+}
+
+// ── AUTH ─────────────────────────────────────────────────
+function skiftFane(fane) {
+  document.getElementById('fane-login').classList.toggle('aktiv', fane === 'login');
+  document.getElementById('fane-opret').classList.toggle('aktiv', fane === 'opret');
+  document.getElementById('login-form').style.display = fane === 'login' ? 'block' : 'none';
+  document.getElementById('opret-form').style.display = fane === 'opret' ? 'block' : 'none';
+  document.getElementById('login-fejl').textContent = '';
+  document.getElementById('opret-fejl').textContent = '';
+}
+
+async function logInd() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const fejlEl = document.getElementById('login-fejl');
+  const knap = document.getElementById('login-knap');
+  fejlEl.textContent = '';
+  if (!email || !password) { fejlEl.textContent = 'Udfyld email og password.'; return; }
+  knap.disabled = true;
+  knap.innerHTML = '<span class="spinner"></span>';
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  knap.disabled = false;
+  knap.textContent = 'Log ind';
+  if (error) fejlEl.textContent = 'Forkert email eller password.';
+}
+
+async function opretKonto() {
+  const bNavn = document.getElementById('opret-brugernavn').value.trim();
+  const email = document.getElementById('opret-email').value.trim();
+  const password = document.getElementById('opret-password').value;
+  const fejlEl = document.getElementById('opret-fejl');
+  const knap = document.getElementById('opret-knap');
+  fejlEl.textContent = '';
+  if (!bNavn) { fejlEl.textContent = 'Vælg et brugernavn.'; return; }
+  if (bNavn.length < 3) { fejlEl.textContent = 'Brugernavnet skal være mindst 3 tegn.'; return; }
+  if (!email) { fejlEl.textContent = 'Angiv en email.'; return; }
+  if (password.length < 6) { fejlEl.textContent = 'Password skal være mindst 6 tegn.'; return; }
+
+  // Tjek om brugernavn er taget
+  const { data: eksisterende } = await supabase.from('profiles').select('username').eq('username', bNavn).single();
+  if (eksisterende) { fejlEl.textContent = 'Brugernavnet er allerede taget.'; return; }
+
+  knap.disabled = true;
+  knap.innerHTML = '<span class="spinner"></span>';
+
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if (error) {
+    knap.disabled = false;
+    knap.textContent = 'Opret konto';
+    fejlEl.textContent = error.message === 'User already registered' ? 'Email er allerede registreret.' : 'Noget gik galt. Prøv igen.';
+    return;
+  }
+
+  // Gem profil
+  if (data.user) {
+    await supabase.from('profiles').insert({ id: data.user.id, username: bNavn });
+  }
+  knap.disabled = false;
+  knap.textContent = 'Opret konto';
+}
+
+async function logUd() {
+  lukkBrugerMenu();
+  await supabase.auth.signOut();
+}
+
+// ── BRUGER MENU ──────────────────────────────────────────
+function toggleBrugerMenu() {
+  document.getElementById('bruger-menu-overlay').classList.toggle('aaben');
+}
+function lukkBrugerMenu() {
+  document.getElementById('bruger-menu-overlay').classList.remove('aaben');
+}
+
+// ── DATA (Supabase) ──────────────────────────────────────
+async function hentAlleVurderinger() {
+  if (!aktivBruger) return [];
+  const { data, error } = await supabase
+    .from('coffee_ratings')
+    .select('*')
+    .eq('user_id', aktivBruger.id)
+    .order('dato', { ascending: false });
+  return error ? [] : (data ?? []);
+}
+
+async function gemVurderingDB(v) {
+  const row = {
+    id: v.id,
+    user_id: aktivBruger.id,
+    navn: v.navn,
+    oprindelse: v.oprindelse,
+    risteringsgrad: v.risteringsgrad,
+    brygmetode: v.brygmetode,
+    vurderede_af: brugernavn,
+    smag: v.smag,
+    samlet_score: v.samletScore,
+    noter: v.noter,
+    dato: v.dato,
+  };
+  await supabase.from('coffee_ratings').upsert(row);
+}
+
+async function sletVurderingDB(id) {
+  await supabase.from('coffee_ratings').delete().eq('id', id).eq('user_id', aktivBruger.id);
+}
+
+// ── HJÆLPERE ─────────────────────────────────────────────
 const RISTERINGSGRADER = ['Lys','Medium','Mørk','Espresso'];
 const RISTER_FARVER = { Lys:'#CCC', Medium:'#888', Mørk:'#444', Espresso:'#111' };
 const RISTER_TEKST  = { Lys:'#444', Medium:'#FFF', Mørk:'#FFF', Espresso:'#FFF' };
 const BRYGMETODER = ['Filterkaffe','Espresso','Moka Pot','French Press','Pour Over','AeroPress','Cold Brew','Kapselmaskine'];
-
 const SMAG_FELTER = [
-  { key:'syre',      label:'Syre',      beskr:'Frisk og levende syre',       farve:'#111' },
-  { key:'bitterhed', label:'Bitterhed', beskr:'Behagelig bitterhed',         farve:'#222' },
-  { key:'soedme',    label:'Sødme',     beskr:'Naturlig sødme',              farve:'#333' },
-  { key:'fylde',     label:'Fylde',     beskr:'Kaffens krop og tykkelse',    farve:'#444' },
-  { key:'aroma',     label:'Aroma',     beskr:'Duft og aroma',               farve:'#555' },
-  { key:'eftersmag', label:'Eftersmag', beskr:'Lang og god eftersmag',       farve:'#666' },
+  { key:'syre',      label:'Syre',      beskr:'Frisk og levende syre' },
+  { key:'bitterhed', label:'Bitterhed', beskr:'Behagelig bitterhed' },
+  { key:'soedme',    label:'Sødme',     beskr:'Naturlig sødme' },
+  { key:'fylde',     label:'Fylde',     beskr:'Kaffens krop og tykkelse' },
+  { key:'aroma',     label:'Aroma',     beskr:'Duft og aroma' },
+  { key:'eftersmag', label:'Eftersmag', beskr:'Lang og god eftersmag' },
 ];
 
-function hentData() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-  catch { return []; }
-}
-function gemData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-
-// ── FORM STATE ──────────────────────────────────────────
-let redigeringsId = null;
-let valgRister = 'Medium';
-let valgBryg = 'Filterkaffe';
-let smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-let samletScore = 7;
-
-// ── HJÆLPERE ─────────────────────────────────────────────
 function scorefarve(s) {
   if (s >= 8) return '#000';
   if (s >= 6) return '#333';
@@ -447,13 +690,14 @@ function visSide(side) {
 }
 
 // ── LISTE ────────────────────────────────────────────────
-function gengiListe() {
-  const data = hentData();
-  document.getElementById('antal-kaffer').textContent = data.length;
-  document.getElementById('gns-score').textContent = data.length ? gns(data.map(v=>v.samletScore)).toFixed(1) : '–';
-  document.getElementById('bedste-score').textContent = data.length ? Math.max(...data.map(v=>v.samletScore)) : '–';
-
+async function gengiListe() {
   const container = document.getElementById('kaffe-liste-container');
+  container.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:#000;border-color:#DDD;width:28px;height:28px"></div></div>';
+  const data = await hentAlleVurderinger();
+  document.getElementById('antal-kaffer').textContent = data.length;
+  document.getElementById('gns-score').textContent = data.length ? gns(data.map(v=>v.samlet_score)).toFixed(1) : '–';
+  document.getElementById('bedste-score').textContent = data.length ? Math.max(...data.map(v=>v.samlet_score)) : '–';
+
   if (!data.length) {
     container.innerHTML = `<div class="tom">
       <div class="tom-emoji">☕</div>
@@ -472,40 +716,39 @@ function gengiListe() {
           <div class="kort-meta">${v.oprindelse || 'Ukendt oprindelse'} · ${v.brygmetode}</div>
           <div class="kort-tags">
             <span class="rister-tag" style="background:${RISTER_FARVER[v.risteringsgrad]};color:${RISTER_TEKST[v.risteringsgrad]};border-color:${RISTER_FARVER[v.risteringsgrad]}">${v.risteringsgrad}</span>
-            ${v.vurderedeAf ? `<span class="vurderet-af">af ${v.vurderedeAf}</span>` : ''}
           </div>
         </div>
-        <div class="score-badge" style="background:${scorefarve(v.samletScore)}">
-          <span class="score-num">${v.samletScore}</span>
-          <span class="score-tekst">${scoretekst(v.samletScore)}</span>
+        <div class="score-badge" style="background:${scorefarve(v.samlet_score)}">
+          <span class="score-num">${v.samlet_score}</span>
+          <span class="score-tekst">${scoretekst(v.samlet_score)}</span>
         </div>
       </div>
       <div class="smags-bar">
         ${SMAG_FELTER.map(f => `
           <div class="smags-bar-col" title="${f.label}: ${v.smag[f.key]}/10">
-            <div class="smags-bar-fill" style="height:${v.smag[f.key]*10}%;background:${f.farve}"></div>
+            <div class="smags-bar-fill" style="height:${v.smag[f.key]*10}%;background:#000"></div>
           </div>`).join('')}
       </div>
       <div class="kort-bund">
         <span class="dato">${datoTekst(v.dato)}</span>
         <button class="slet-knap" onclick="event.stopPropagation();sletVurdering('${v.id}','${v.navn.replace(/'/g,"\\'")}')">Slet</button>
       </div>
-    </div>
-  `).join('') + '</div>';
+    </div>`).join('') + '</div>';
 }
 
 // ── DETALJE MODAL ────────────────────────────────────────
-function visDetalje(id) {
-  const v = hentData().find(x => x.id === id);
+async function visDetalje(id) {
+  const data = await hentAlleVurderinger();
+  const v = data.find(x => x.id === id);
   if (!v) return;
   document.getElementById('modal-indhold').innerHTML = `
     <button class="modal-luk" onclick="lukModal()">Luk</button>
     <div class="modal-titel">${v.navn}</div>
-    <div class="modal-meta">${v.oprindelse || ''} · ${v.risteringsgrad} · ${v.brygmetode}${v.vurderedeAf ? ' · af '+v.vurderedeAf : ''}</div>
+    <div class="modal-meta">${v.oprindelse || ''} · ${v.risteringsgrad} · ${v.brygmetode}</div>
     <div style="display:flex;justify-content:center;margin-bottom:20px">
-      <div class="score-badge" style="background:${scorefarve(v.samletScore)};padding:12px 24px">
-        <span class="score-num" style="font-size:28px">${v.samletScore}/10</span>
-        <span class="score-tekst">${scoretekst(v.samletScore)}</span>
+      <div class="score-badge" style="background:${scorefarve(v.samlet_score)};padding:12px 24px">
+        <span class="score-num" style="font-size:28px">${v.samlet_score}/10</span>
+        <span class="score-tekst">${scoretekst(v.samlet_score)}</span>
       </div>
     </div>
     ${SMAG_FELTER.map(f => `
@@ -516,11 +759,10 @@ function visDetalje(id) {
         </div>
         <div class="bar-spor"><div class="bar-fyld" style="width:${v.smag[f.key]*10}%"></div></div>
       </div>`).join('')}
-    ${v.noter ? `<div style="margin-top:16px;padding:12px;background:var(--baggrund);border-radius:10px;font-size:14px;color:var(--tekst-2);line-height:1.6">${v.noter}</div>` : ''}
-    <div style="display:flex;gap:10px;margin-top:20px">
-      <button class="gem-knap" style="flex:1" onclick="redigerVurdering('${id}')">Rediger</button>
-    </div>
-  `;
+    ${v.noter ? `<div style="margin-top:16px;padding:12px;background:var(--baggrund);border-radius:8px;font-size:14px;color:var(--tekst-2);line-height:1.6">${v.noter}</div>` : ''}
+    <div style="margin-top:20px">
+      <button class="gem-knap" onclick="redigerVurdering('${id}')">Rediger</button>
+    </div>`;
   document.getElementById('modal-overlay').classList.add('aaben');
 }
 function lukModal(e) {
@@ -529,58 +771,46 @@ function lukModal(e) {
 }
 
 // ── SLET ─────────────────────────────────────────────────
-function sletVurdering(id, navn) {
+async function sletVurdering(id, navn) {
   if (!confirm(`Slet "${navn}"?`)) return;
-  const data = hentData().filter(v => v.id !== id);
-  gemData(data);
+  await sletVurderingDB(id);
   gengiListe();
 }
 
-// ── FORM SETUP ───────────────────────────────────────────
+// ── FORM ─────────────────────────────────────────────────
+let redigeringsId = null;
+let valgRister = 'Medium';
+let valgBryg = 'Filterkaffe';
+let smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
+let samletScore = 7;
+
 function initForm() {
-  // Risteringsgrad
   document.getElementById('rister-valg').innerHTML = RISTERINGSGRADER.map(r => `
-    <button class="valg-knap${r===valgRister?' aktiv':''}"
-      style="${r===valgRister?'background:#000;border-color:#000;color:white':''}"
-      onclick="vaelgRister('${r}')">${r}</button>`).join('');
-
-  // Brygmetode
+    <button class="valg-knap${r===valgRister?' aktiv':''}" onclick="vaelgRister('${r}')">${r}</button>`).join('');
   document.getElementById('bryg-valg').innerHTML = BRYGMETODER.map(b => `
-    <button class="valg-knap${b===valgBryg?' aktiv':''}"
-      style="${b===valgBryg?'background:var(--kaffe-accent);border-color:var(--kaffe-accent)':''}"
-      onclick="vaelgBryg('${b}')">${b}</button>`).join('');
-
-  // Smags-slidere
+    <button class="valg-knap${b===valgBryg?' aktiv':''}" onclick="vaelgBryg('${b}')">${b}</button>`).join('');
   document.getElementById('smags-slidere').innerHTML = SMAG_FELTER.map(f => `
     <div class="smags-slider" id="slider-${f.key}">
       <div class="slider-header">
         <span class="slider-label">${f.label}</span>
-        <div class="slider-badge" id="badge-${f.key}">
-          <span>${smagsVaerdier[f.key]}</span>
-        </div>
+        <div class="slider-badge" id="badge-${f.key}"><span>${smagsVaerdier[f.key]}</span></div>
       </div>
       <div class="slider-beskr">${f.beskr}</div>
       <div class="skala">
         ${[1,2,3,4,5,6,7,8,9,10].map(n => `
-          <button class="skala-knap${n<=smagsVaerdier[f.key]?' aktiv':''}"
-            style="${n<=smagsVaerdier[f.key]?'background:'+f.farve+';border-color:'+f.farve+';color:white':''}"
-            onclick="saetSmag('${f.key}',${n})">${n}</button>`).join('')}
+          <button class="skala-knap${n<=smagsVaerdier[f.key]?' aktiv':''}" onclick="saetSmag('${f.key}',${n})">${n}</button>`).join('')}
       </div>
       <div class="skala-etiketter"><span>Svag</span><span>Intens</span></div>
     </div>`).join('');
-
-  // Score knapper
   document.getElementById('score-knapper').innerHTML = [1,2,3,4,5,6,7,8,9,10].map(n => `
     <button class="score-knap${n===samletScore?' aktiv':''}" onclick="saetScore(${n})">${n}</button>`).join('');
-
   opdaterSamletBadge();
 }
 
 function vaelgRister(r) {
   valgRister = r;
-  document.querySelectorAll('#rister-valg .valg-knap').forEach((btn, i) => {
-    const grad = RISTERINGSGRADER[i];
-    const er = grad===r;
+  document.querySelectorAll('#rister-valg .valg-knap').forEach(btn => {
+    const er = btn.textContent === r;
     btn.classList.toggle('aktiv', er);
     btn.style.background = er ? '#000' : '';
     btn.style.borderColor = er ? '#000' : '';
@@ -592,28 +822,25 @@ function vaelgBryg(b) {
   document.querySelectorAll('#bryg-valg .valg-knap').forEach(btn => {
     const er = btn.textContent === b;
     btn.classList.toggle('aktiv', er);
-    btn.style.background = er ? 'var(--kaffe-accent)' : '';
-    btn.style.borderColor = er ? 'var(--kaffe-accent)' : '';
+    btn.style.background = er ? '#000' : '';
+    btn.style.borderColor = er ? '#000' : '';
     btn.style.color = er ? 'white' : '';
   });
 }
 function saetSmag(key, val) {
   smagsVaerdier[key] = val;
-  const felt = SMAG_FELTER.find(f => f.key === key);
   document.querySelector(`#badge-${key} span`).textContent = val;
   document.querySelectorAll(`#slider-${key} .skala-knap`).forEach((btn, i) => {
-    const n = i+1;
-    btn.classList.toggle('aktiv', n<=val);
-    btn.style.background = n<=val ? felt.farve : '';
-    btn.style.borderColor = n<=val ? felt.farve : '';
-    btn.style.color = n<=val ? 'white' : '';
+    const aktiv = i+1 <= val;
+    btn.classList.toggle('aktiv', aktiv);
+    btn.style.background = aktiv ? '#000' : '';
+    btn.style.borderColor = aktiv ? '#000' : '';
+    btn.style.color = aktiv ? 'white' : '';
   });
 }
 function saetScore(n) {
   samletScore = n;
-  document.querySelectorAll('.score-knap').forEach((btn, i) => {
-    btn.classList.toggle('aktiv', i+1===n);
-  });
+  document.querySelectorAll('.score-knap').forEach((btn, i) => btn.classList.toggle('aktiv', i+1===n));
   opdaterSamletBadge();
 }
 function opdaterSamletBadge() {
@@ -625,71 +852,60 @@ function opdaterSamletBadge() {
 }
 
 // ── GEM ──────────────────────────────────────────────────
-function gemVurdering() {
+async function gemVurdering() {
   const navn = document.getElementById('f-navn').value.trim();
   if (!navn) { alert('Angiv kaffens navn.'); return; }
-
+  const knap = document.getElementById('gem-knap');
+  knap.disabled = true;
+  knap.innerHTML = '<span class="spinner"></span>';
   const vurdering = {
     id: redigeringsId ?? Date.now().toString(),
     navn,
     oprindelse: document.getElementById('f-oprindelse').value.trim(),
     risteringsgrad: valgRister,
     brygmetode: valgBryg,
-    vurderedeAf: document.getElementById('f-navn-person').value.trim(),
     smag: { ...smagsVaerdier },
     samletScore,
     noter: document.getElementById('f-noter').value.trim(),
     dato: new Date().toISOString(),
   };
-
-  const data = hentData();
-  const idx = data.findIndex(v => v.id === vurdering.id);
-  if (idx >= 0) data[idx] = vurdering; else data.unshift(vurdering);
-  gemData(data);
-
-  // Nulstil
+  await gemVurderingDB(vurdering);
   redigeringsId = null;
   smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = 7;
-  valgRister = 'Medium';
-  valgBryg = 'Filterkaffe';
-  document.getElementById('f-navn').value = '';
-  document.getElementById('f-oprindelse').value = '';
-  document.getElementById('f-navn-person').value = '';
-  document.getElementById('f-noter').value = '';
-
+  samletScore = 7; valgRister = 'Medium'; valgBryg = 'Filterkaffe';
+  ['f-navn','f-oprindelse','f-noter'].forEach(id => document.getElementById(id).value = '');
+  knap.disabled = false;
+  knap.textContent = 'Gem vurdering';
   visSide('liste');
 }
 
-function redigerVurdering(id) {
+async function redigerVurdering(id) {
   lukModal();
-  const v = hentData().find(x => x.id === id);
+  const data = await hentAlleVurderinger();
+  const v = data.find(x => x.id === id);
   if (!v) return;
   redigeringsId = id;
   valgRister = v.risteringsgrad;
   valgBryg = v.brygmetode;
   smagsVaerdier = { ...v.smag };
-  samletScore = v.samletScore;
+  samletScore = v.samlet_score;
   visSide('ny');
   document.getElementById('f-navn').value = v.navn;
   document.getElementById('f-oprindelse').value = v.oprindelse;
-  document.getElementById('f-navn-person').value = v.vurderedeAf;
   document.getElementById('f-noter').value = v.noter;
-  document.getElementById('gem-knap').textContent = '💾 Opdater vurdering';
+  document.getElementById('gem-knap').textContent = 'Opdater vurdering';
 }
 
 // ── STATISTIK ────────────────────────────────────────────
-function gengiStats() {
-  const data = hentData();
+async function gengiStats() {
+  const data = await hentAlleVurderinger();
   if (!data.length) {
-    document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Min smagsprofil</div><div class="stats-under">Ingen data endnu — tilføj kaffer for at se din profil.</div>`;
+    document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Din smagsprofil</div><div class="stats-under">Ingen data endnu</div>`;
     document.getElementById('stats-indhold').innerHTML = '';
     return;
   }
-
   const smagsGns = {};
   SMAG_FELTER.forEach(f => { smagsGns[f.key] = gns(data.map(v => v.smag[f.key])); });
-
   const sorteret = [...SMAG_FELTER].sort((a,b) => smagsGns[b.key] - smagsGns[a.key]);
   const top = sorteret[0], anden = sorteret[1];
 
@@ -701,38 +917,25 @@ function gengiStats() {
       og <strong>${anden.label.toLowerCase()} (${smagsGns[anden.key].toFixed(1)}/10)</strong> som fremtrædende egenskaber.
     </div></div>`;
 
-  // Rister-præferencer
-  const risterMap = {};
+  const risterMap = {}, brygMap = {};
   data.forEach(v => {
-    if (!risterMap[v.risteringsgrad]) risterMap[v.risteringsgrad] = [];
-    risterMap[v.risteringsgrad].push(v.samletScore);
+    (risterMap[v.risteringsgrad] ??= []).push(v.samlet_score);
+    (brygMap[v.brygmetode] ??= []).push(v.samlet_score);
   });
   const bedsteRister = Object.entries(risterMap).sort(([,a],[,b]) => gns(b)-gns(a))[0];
-
-  // Bryg-præferencer
-  const brygMap = {};
-  data.forEach(v => {
-    if (!brygMap[v.brygmetode]) brygMap[v.brygmetode] = [];
-    brygMap[v.brygmetode].push(v.samletScore);
-  });
-  const bedsteBryg = Object.entries(brygMap).sort(([,a],[,b]) => gns(b)-gns(a))[0];
-
-  const topKaffer = [...data].sort((a,b) => b.samletScore - a.samletScore).slice(0,5);
-  const totalGns = gns(data.map(v=>v.samletScore));
+  const bedsteBryg   = Object.entries(brygMap).sort(([,a],[,b]) => gns(b)-gns(a))[0];
+  const topKaffer = [...data].sort((a,b) => b.samlet_score - a.samlet_score).slice(0,5);
+  const totalGns = gns(data.map(v=>v.samlet_score));
 
   document.getElementById('stats-indhold').innerHTML = `
     <div class="sektion">
       <div class="sektion-titel">Gennemsnitlig smagsprofil</div>
       ${SMAG_FELTER.map(f => `
         <div class="bar-container">
-          <div class="bar-label-raekke">
-            <span class="bar-label">${f.label}</span>
-            <span class="bar-vaerdi">${smagsGns[f.key].toFixed(1)}</span>
-          </div>
+          <div class="bar-label-raekke"><span class="bar-label">${f.label}</span><span class="bar-vaerdi">${smagsGns[f.key].toFixed(1)}</span></div>
           <div class="bar-spor"><div class="bar-fyld" style="width:${smagsGns[f.key]*10}%"></div></div>
         </div>`).join('')}
     </div>
-
     <div class="sektion">
       <div class="sektion-titel">Dine præferencer</div>
       <div class="praef-raekke">
@@ -751,13 +954,9 @@ function gengiStats() {
       </div>
       <div class="praef-kort praef-fuld" style="background:#555;display:flex">
         <div class="praef-emoji">⭐</div>
-        <div>
-          <div class="praef-label">Samlet gennemsnitsscore</div>
-          <div class="praef-vaerdi">${totalGns.toFixed(1)}/10</div>
-        </div>
+        <div><div class="praef-label">Samlet gennemsnitsscore</div><div class="praef-vaerdi">${totalGns.toFixed(1)}/10</div></div>
       </div>
     </div>
-
     <div class="sektion">
       <div class="sektion-titel">Dine bedste kaffer</div>
       ${topKaffer.map((v,i) => `
@@ -767,31 +966,24 @@ function gengiStats() {
             <div class="top-navn">${v.navn}</div>
             <div class="top-meta">${v.oprindelse||''} · ${v.brygmetode}</div>
           </div>
-          <div class="top-score" style="background:${scorefarve(v.samletScore)}">
-            <span>${v.samletScore}</span>
+          <div class="top-score" style="background:${scorefarve(v.samlet_score)}">
+            <span>${v.samlet_score}</span>
           </div>
         </div>`).join('')}
     </div>`;
 }
 
 // ── INIT ──────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  initForm();
-  gengiListe();
-  document.getElementById('side-ny').addEventListener('click', () => {
-    // Re-init form når man skifter til Tilføj-siden uden redigering
-  });
-});
-
-// Genbyg form når man trykker Tilføj i nav
-const origVisside = visSide;
+const origVisSide = visSide;
 window.visSide = function(side) {
   if (side === 'ny' && !redigeringsId) {
-    document.getElementById('gem-knap').textContent = '☕ Gem vurdering';
+    document.getElementById('gem-knap').textContent = 'Gem vurdering';
     initForm();
   }
-  origVisside(side);
+  origVisSide(side);
 };
+
+document.addEventListener('DOMContentLoaded', start);
 </script>
 </body>
 </html>
