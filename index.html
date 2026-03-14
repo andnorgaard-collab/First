@@ -290,6 +290,9 @@
         <button class="auth-knap" id="login-knap" type="submit">Log ind</button>
       </form>
       <div class="auth-fejl" id="login-fejl"></div>
+      <div style="text-align:center;margin-top:14px">
+        <button onclick="glemt()" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:13px;cursor:pointer;font-family:inherit;text-decoration:underline">Glemt password?</button>
+      </div>
     </div>
 
     <!-- OPRET KONTO -->
@@ -523,6 +526,17 @@ async function opretKonto() {
   }
   knap.disabled = false;
   knap.textContent = 'Opret konto';
+}
+
+async function glemt() {
+  const email = document.getElementById('login-email').value.trim();
+  const fejlEl = document.getElementById('login-fejl');
+  if (!email) { fejlEl.style.color = '#FF6B6B'; fejlEl.textContent = 'Skriv din email øverst og prøv igen.'; return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://andnorgaard-collab.github.io/First/'
+  });
+  fejlEl.style.color = error ? '#FF6B6B' : '#6BFF8E';
+  fejlEl.textContent = error ? 'Kunne ikke sende email.' : 'Reset-link sendt til ' + email;
 }
 
 async function logUd() {
