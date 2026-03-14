@@ -576,7 +576,8 @@ async function gemVurderingDB(v) {
     noter: v.noter,
     dato: v.dato,
   };
-  await sb.from('coffee_ratings').upsert(row);
+  const { error } = await sb.from('coffee_ratings').upsert(row);
+  if (error) throw new Error('Gem fejlede: ' + error.message);
 }
 
 async function sletVurderingDB(id) {
@@ -799,18 +800,25 @@ async function gemVurdering() {
   const knap = document.getElementById('gem-knap');
   knap.disabled = true;
   knap.innerHTML = '<span class="spinner"></span>';
-  const vurdering = {
-    id: redigeringsId ?? Date.now().toString(),
-    navn,
-    oprindelse: document.getElementById('f-oprindelse').value.trim(),
-    risteringsgrad: valgRister,
-    brygmetode: valgBryg,
-    smag: { ...smagsVaerdier },
-    samletScore,
-    noter: document.getElementById('f-noter').value.trim(),
-    dato: new Date().toISOString(),
-  };
-  await gemVurderingDB(vurdering);
+  try {
+    const vurdering = {
+      id: redigeringsId ?? Date.now().toString(),
+      navn,
+      oprindelse: document.getElementById('f-oprindelse').value.trim(),
+      risteringsgrad: valgRister,
+      brygmetode: valgBryg,
+      smag: { ...smagsVaerdier },
+      samletScore,
+      noter: document.getElementById('f-noter').value.trim(),
+      dato: new Date().toISOString(),
+    };
+    await gemVurderingDB(vurdering);
+  } catch (e) {
+    knap.disabled = false;
+    knap.textContent = 'Gem vurdering';
+    alert('Kunne ikke gemme: ' + e.message);
+    return;
+  }
   redigeringsId = null;
   smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
   samletScore = 7; valgRister = 'Medium'; valgBryg = 'Filterkaffe';
