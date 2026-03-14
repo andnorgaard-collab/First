@@ -61,7 +61,7 @@
     .setup-trin-tekst a { color: white; }
     .setup-input { width: 100%; background: #1A1A1A; border: 1px solid #333; border-radius: 8px; padding: 12px 14px; font-size: 14px; color: white; font-family: inherit; margin-bottom: 10px; }
     .setup-input:focus { outline: none; border-color: #666; }
-    .setup-knap { width: 100%; background: white; color: black; border: none; border-radius: 8px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 6px; }
+    .setup-knap { width: 100%; background: white; color: black; border: none; border-radius: 8px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 6px; touch-action: manipulation; -webkit-appearance: none; }
     .setup-fejl { font-size: 12px; color: #FF6B6B; margin-top: 8px; display: none; }
 
     /* ── AUTH-SKÆRM ── */
@@ -95,7 +95,7 @@
     .auth-knap {
       width: 100%; background: white; color: black; border: none; border-radius: 8px;
       padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit;
-      margin-top: 24px; transition: opacity .15s;
+      margin-top: 24px; transition: opacity .15s; touch-action: manipulation; -webkit-appearance: none;
     }
     .auth-knap:disabled { opacity: .5; }
     .auth-fejl { font-size: 13px; color: #FF6B6B; margin-top: 12px; text-align: center; min-height: 18px; }
@@ -313,9 +313,11 @@
       <div class="setup-nr">3</div>
       <div class="setup-trin-tekst">Gå til <strong>SQL Editor</strong> og kør SQL'en fra <strong>README.md</strong> i dette repository for at oprette tabellerne.</div>
     </div>
-    <input class="setup-input" id="setup-url" placeholder="Project URL (https://xxx.supabase.co)" />
-    <input class="setup-input" id="setup-key" placeholder="anon public key" />
-    <button class="setup-knap" onclick="gemSetup()">Gem og fortsæt</button>
+    <form onsubmit="event.preventDefault(); gemSetup()" style="display:contents">
+      <input class="setup-input" id="setup-url" type="url" placeholder="Project URL (https://xxx.supabase.co)" autocomplete="off" />
+      <input class="setup-input" id="setup-key" type="text" placeholder="anon public key" autocomplete="off" />
+      <button class="setup-knap" type="submit">Gem og fortsæt →</button>
+    </form>
     <div class="setup-fejl" id="setup-fejl"></div>
   </div>
 </div>
@@ -332,23 +334,27 @@
 
     <!-- LOGIN -->
     <div id="login-form">
-      <div class="auth-felt-label">Email</div>
-      <input class="auth-input" type="email" id="login-email" placeholder="din@email.dk" autocomplete="email" />
-      <div class="auth-felt-label">Password</div>
-      <input class="auth-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
-      <button class="auth-knap" id="login-knap" onclick="logInd()">Log ind</button>
+      <form onsubmit="event.preventDefault(); logInd()">
+        <div class="auth-felt-label">Email</div>
+        <input class="auth-input" type="email" id="login-email" placeholder="din@email.dk" autocomplete="email" />
+        <div class="auth-felt-label">Password</div>
+        <input class="auth-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+        <button class="auth-knap" id="login-knap" type="submit">Log ind</button>
+      </form>
       <div class="auth-fejl" id="login-fejl"></div>
     </div>
 
     <!-- OPRET KONTO -->
     <div id="opret-form" style="display:none">
-      <div class="auth-felt-label">Brugernavn</div>
-      <input class="auth-input" type="text" id="opret-brugernavn" placeholder="CoffeeBro42" autocomplete="username" />
-      <div class="auth-felt-label">Email</div>
-      <input class="auth-input" type="email" id="opret-email" placeholder="din@email.dk" autocomplete="email" />
-      <div class="auth-felt-label">Password</div>
-      <input class="auth-input" type="password" id="opret-password" placeholder="Mindst 6 tegn" autocomplete="new-password" />
-      <button class="auth-knap" id="opret-knap" onclick="opretKonto()">Opret konto</button>
+      <form onsubmit="event.preventDefault(); opretKonto()">
+        <div class="auth-felt-label">Brugernavn</div>
+        <input class="auth-input" type="text" id="opret-brugernavn" placeholder="CoffeeBro42" autocomplete="username" />
+        <div class="auth-felt-label">Email</div>
+        <input class="auth-input" type="email" id="opret-email" placeholder="din@email.dk" autocomplete="email" />
+        <div class="auth-felt-label">Password</div>
+        <input class="auth-input" type="password" id="opret-password" placeholder="Mindst 6 tegn" autocomplete="new-password" />
+        <button class="auth-knap" id="opret-knap" type="submit">Opret konto</button>
+      </form>
       <div class="auth-fejl" id="opret-fejl"></div>
     </div>
   </div>
