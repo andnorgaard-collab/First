@@ -270,8 +270,8 @@
 <body>
 
 
-<!-- AUTH-SKÆRM -->
-<div id="auth-skærm">
+<!-- AUTH-SKÆRM (synlig som standard) -->
+<div id="auth-skærm" class="vis">
   <div class="auth-logo">GrindrBros</div>
   <div class="auth-sub">Kaffe · Smag · Fællesskab</div>
   <div class="auth-boks">
@@ -405,36 +405,46 @@
 const SUPABASE_URL = 'https://ctnszohyjljhorwgrabl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0bnN6b2h5amxqaG9yd2dyYWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTk3MzEsImV4cCI6MjA4OTA3NTczMX0.kG9E_fWc_zF59o8kmfGoZ8hhaSJO0NwbKsb9Yy1Sb24';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let sb = null;
 let aktivBruger = null;
 let brugernavn = '';
 
 // ── OPSTART ──────────────────────────────────────────────
 async function start() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session?.user) {
-    await indlaesBruger(session.user);
-    visApp();
-  } else {
-    document.getElementById('auth-skærm').classList.add('vis');
+  try {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  } catch (e) {
+    document.getElementById('login-fejl').textContent = 'Kunne ikke starte: ' + e.message;
+    return;
   }
 
-  supabase.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session?.user) {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
       await indlaesBruger(session.user);
       visApp();
-    } else if (event === 'SIGNED_OUT') {
-      aktivBruger = null;
-      brugernavn = '';
-      document.getElementById('app').style.display = 'none';
-      document.getElementById('auth-skærm').classList.add('vis');
     }
-  });
+    // Hvis ingen session: auth-skærm er allerede synlig
+
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        await indlaesBruger(session.user);
+        visApp();
+      } else if (event === 'SIGNED_OUT') {
+        aktivBruger = null;
+        brugernavn = '';
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('auth-skærm').classList.add('vis');
+      }
+    });
+  } catch (e) {
+    document.getElementById('login-fejl').textContent = 'Fejl: ' + e.message;
+  }
 }
 
 async function indlaesBruger(user) {
   aktivBruger = user;
-  const { data } = await supabase.from('profiles').select('username').eq('id', user.id).single();
+  const { data } = await sb.from('profiles').select('username').eq('id', user.id).single();
   brugernavn = data?.username ?? user.email.split('@')[0];
   opdaterBrugerUI();
 }
@@ -474,7 +484,7 @@ async function logInd() {
   if (!email || !password) { fejlEl.textContent = 'Udfyld email og password.'; return; }
   knap.disabled = true;
   knap.innerHTML = '<span class="spinner"></span>';
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await sb.auth.signInWithPassword({ email, password });
   knap.disabled = false;
   knap.textContent = 'Log ind';
   if (error) fejlEl.textContent = 'Forkert email eller password.';
@@ -493,13 +503,13 @@ async function opretKonto() {
   if (password.length < 6) { fejlEl.textContent = 'Password skal være mindst 6 tegn.'; return; }
 
   // Tjek om brugernavn er taget
-  const { data: eksisterende } = await supabase.from('profiles').select('username').eq('username', bNavn).single();
+  const { data: eksisterende } = await sb.from('profiles').select('username').eq('username', bNavn).single();
   if (eksisterende) { fejlEl.textContent = 'Brugernavnet er allerede taget.'; return; }
 
   knap.disabled = true;
   knap.innerHTML = '<span class="spinner"></span>';
 
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await sb.auth.signUp({ email, password });
   if (error) {
     knap.disabled = false;
     knap.textContent = 'Opret konto';
@@ -509,7 +519,7 @@ async function opretKonto() {
 
   // Gem profil
   if (data.user) {
-    await supabase.from('profiles').insert({ id: data.user.id, username: bNavn });
+    await sb.from('profiles').insert({ id: data.user.id, username: bNavn });
   }
   knap.disabled = false;
   knap.textContent = 'Opret konto';
@@ -517,7 +527,7 @@ async function opretKonto() {
 
 async function logUd() {
   lukkBrugerMenu();
-  await supabase.auth.signOut();
+  await sb.auth.signOut();
 }
 
 // ── BRUGER MENU ──────────────────────────────────────────
@@ -553,11 +563,11 @@ async function gemVurderingDB(v) {
     noter: v.noter,
     dato: v.dato,
   };
-  await supabase.from('coffee_ratings').upsert(row);
+  await sb.from('coffee_ratings').upsert(row);
 }
 
 async function sletVurderingDB(id) {
-  await supabase.from('coffee_ratings').delete().eq('id', id).eq('user_id', aktivBruger.id);
+  await sb.from('coffee_ratings').delete().eq('id', id).eq('user_id', aktivBruger.id);
 }
 
 // ── HJÆLPERE ─────────────────────────────────────────────
