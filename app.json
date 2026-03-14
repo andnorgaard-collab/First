@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Kaffeklub",
+    "slug": "kaffeklub",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#3D1F00"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "dk.kaffeklub.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#3D1F00"
+      },
+      "package": "dk.kaffeklub.app"
+    },
+    "scheme": "kaffeklub",
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}
