@@ -294,8 +294,8 @@
 </head>
 <body>
 
-<!-- OPSÆTNING (vises kun hvis ingen Supabase-nøgler) -->
-<div id="setup-skærm">
+<!-- OPSÆTNING (vises som standard indtil JS skjuler den) -->
+<div id="setup-skærm" class="vis">
   <div class="setup-logo">GrindrBros</div>
   <div class="setup-sub">Første gang</div>
   <div class="setup-boks">
@@ -469,30 +469,42 @@ function initSupabase(url, key) {
 
 // ── OPSTART ──────────────────────────────────────────────
 async function start() {
-  const config = hentConfig();
-  if (!config?.url || !config?.key) {
-    document.getElementById('setup-skærm').classList.add('vis');
-    return;
-  }
-  initSupabase(config.url, config.key);
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session?.user) {
-    await indlaesBruger(session.user);
-    visApp();
-  } else {
-    document.getElementById('auth-skærm').classList.add('vis');
-  }
-  supabase.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session?.user) {
+  try {
+    const config = hentConfig();
+    if (!config?.url || !config?.key) {
+      // Setup-skærm er allerede synlig som standard
+      return;
+    }
+    // Skjul setup, initialiser Supabase
+    document.getElementById('setup-skærm').classList.remove('vis');
+    initSupabase(config.url, config.key);
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
       await indlaesBruger(session.user);
       visApp();
-    } else if (event === 'SIGNED_OUT') {
-      aktivBruger = null;
-      brugernavn = '';
-      document.getElementById('app').style.display = 'none';
+    } else {
       document.getElementById('auth-skærm').classList.add('vis');
     }
-  });
+
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        await indlaesBruger(session.user);
+        visApp();
+      } else if (event === 'SIGNED_OUT') {
+        aktivBruger = null;
+        brugernavn = '';
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('auth-skærm').classList.add('vis');
+      }
+    });
+  } catch (e) {
+    // Vis fejl direkte i setup-skærm
+    const fejl = document.getElementById('setup-fejl');
+    fejl.textContent = 'Fejl: ' + e.message;
+    fejl.style.display = 'block';
+    document.getElementById('setup-skærm').classList.add('vis');
+  }
 }
 
 async function indlaesBruger(user) {
