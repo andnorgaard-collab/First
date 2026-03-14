@@ -5,27 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Kaffeklub" />
-  <meta name="theme-color" content="#2A1200" />
-  <title>Kaffeklub</title>
+  <meta name="apple-mobile-web-app-title" content="GrindrBros" />
+  <meta name="theme-color" content="#000000" />
+  <title>GrindrBros</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --kaffe:        #2A1200;
-      --kaffe-light:  #5C2E0E;
-      --kaffe-accent: #B8722A;
-      --kaffe-lys:    #F0DFC8;
-      --baggrund:     #F7F2EC;
-      --baggrund-2:   #EFE6D9;
-      --kort:         #FDFAF6;
-      --tekst:        #1C0C00;
-      --tekst-2:      #7A5C44;
-      --tekst-3:      #A68B70;
-      --border:       #DDD0BC;
-      --groen:        #5A8A4A;
-      --roed:         #C0392B;
+      --sort:         #000000;
+      --sort-blødt:   #111111;
+      --mørkgrå:      #333333;
+      --grå:          #666666;
+      --lysgrå:       #999999;
+      --border:       #E5E5E5;
+      --baggrund:     #F9F9F9;
+      --kort:         #FFFFFF;
+      --tekst:        #111111;
+      --tekst-2:      #555555;
+      --tekst-3:      #999999;
+      --groen:        #1A1A1A;
+      --roed:         #CC0000;
+      /* Alias for compat */
+      --kaffe:        #000000;
+      --kaffe-light:  #333333;
+      --kaffe-accent: #000000;
+      --kaffe-lys:    #F0F0F0;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -71,37 +76,39 @@
       color: var(--tekst-3);
       font-family: 'Inter', sans-serif;
       font-weight: 500;
-      letter-spacing: .3px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
       transition: color .15s;
     }
-    nav button .ikon { font-size: 20px; }
-    nav button.aktiv { color: var(--kaffe-accent); font-weight: 700; }
+    nav button .ikon { font-size: 18px; }
+    nav button.aktiv { color: var(--sort); font-weight: 700; }
 
     /* ── HEADER ── */
     header {
-      background: var(--kaffe);
+      background: #000;
       color: white;
-      padding: calc(var(--safe-top) + 14px) 20px 14px;
+      padding: calc(var(--safe-top) + 16px) 20px 16px;
       position: sticky;
       top: 0;
       z-index: 50;
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      gap: 10px;
+      border-bottom: 1px solid #222;
     }
     header .logo {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
-      letter-spacing: .5px;
+      letter-spacing: -.3px;
       color: #fff;
     }
     header .logo-sup {
       font-family: 'Inter', sans-serif;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
-      color: rgba(255,255,255,.5);
-      letter-spacing: 1.5px;
+      color: rgba(255,255,255,.35);
+      letter-spacing: 2px;
       text-transform: uppercase;
     }
 
@@ -117,147 +124,146 @@
 
     /* ── OVERSIGT BANNER ── */
     .oversigt {
-      background: var(--kaffe);
+      background: #000;
       display: flex;
       justify-content: space-around;
-      padding: 14px 24px 18px;
+      padding: 16px 24px 20px;
     }
-    .oversigt-tal { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--kaffe-accent); }
-    .oversigt-label { font-size: 10px; font-weight: 500; letter-spacing: .8px; text-transform: uppercase; color: rgba(255,255,255,.5); margin-top: 3px; }
-    .oversigt-deler { width: 1px; background: rgba(255,255,255,.2); }
+    .oversigt-tal { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: #fff; }
+    .oversigt-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,.35); margin-top: 4px; }
+    .oversigt-deler { width: 1px; background: rgba(255,255,255,.1); }
 
     /* ── KORT ── */
-    .kaffe-liste { padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 12px; }
+    .kaffe-liste { padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 10px; }
     .kaffe-kort {
       background: var(--kort);
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 16px;
       border: 1px solid var(--border);
-      box-shadow: 0 2px 10px rgba(42,18,0,.06);
       cursor: pointer;
-      transition: transform .1s, box-shadow .1s;
+      transition: background .1s;
     }
-    .kaffe-kort:active { transform: scale(.99); box-shadow: 0 1px 4px rgba(42,18,0,.04); }
+    .kaffe-kort:active { background: #F5F5F5; }
     .kort-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
-    .kort-navn { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; margin-bottom: 2px; letter-spacing: .2px; }
-    .kort-meta { font-size: 12px; color: var(--tekst-2); margin-bottom: 6px; font-weight: 500; letter-spacing: .2px; }
-    .kort-tags { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .rister-tag { border-radius: 6px; padding: 2px 8px; font-size: 10px; font-weight: 600; color: white; letter-spacing: .5px; text-transform: uppercase; }
-    .vurderet-af { font-size: 11px; color: var(--tekst-3); font-style: italic; }
-    .score-badge { border-radius: 14px; padding: 8px 14px; text-align: center; flex-shrink: 0; }
-    .score-badge .score-num { color: white; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; display: block; }
-    .score-badge .score-tekst { color: rgba(255,255,255,.85); font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
-    .smags-bar { display: flex; gap: 3px; margin-bottom: 10px; }
-    .smags-bar-col { flex: 1; height: 28px; border-radius: 4px; position: relative; background: var(--kaffe-lys); overflow: hidden; }
-    .smags-bar-fill { position: absolute; bottom: 0; left: 0; right: 0; border-radius: 4px; transition: height .3s; }
+    .kort-navn { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 2px; color: #000; }
+    .kort-meta { font-size: 12px; color: var(--tekst-2); margin-bottom: 6px; font-weight: 400; }
+    .kort-tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .rister-tag { border-radius: 4px; padding: 2px 7px; font-size: 9px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; border: 1px solid; }
+    .vurderet-af { font-size: 11px; color: var(--tekst-3); }
+    .score-badge { border-radius: 10px; padding: 8px 12px; text-align: center; flex-shrink: 0; min-width: 60px; }
+    .score-badge .score-num { color: white; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; display: block; line-height: 1; }
+    .score-badge .score-tekst { color: rgba(255,255,255,.7); font-size: 9px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; display: block; margin-top: 2px; }
+    .smags-bar { display: flex; gap: 2px; margin-bottom: 10px; }
+    .smags-bar-col { flex: 1; height: 24px; border-radius: 3px; position: relative; background: #F0F0F0; overflow: hidden; }
+    .smags-bar-fill { position: absolute; bottom: 0; left: 0; right: 0; border-radius: 3px; transition: height .3s; }
     .kort-bund { display: flex; justify-content: space-between; align-items: center; }
-    .dato { font-size: 12px; color: var(--tekst-2); }
-    .slet-knap { font-size: 13px; color: var(--roed); font-weight: 600; background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 0; }
+    .dato { font-size: 11px; color: var(--tekst-3); }
+    .slet-knap { font-size: 12px; color: var(--roed); font-weight: 600; background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 0; }
 
     /* ── TOM TILSTAND ── */
     .tom {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       min-height: 60vh; padding: 40px; text-align: center;
     }
-    .tom-emoji { font-size: 72px; margin-bottom: 16px; }
-    .tom-titel { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 12px; }
-    .tom-tekst { font-size: 16px; color: var(--tekst-2); line-height: 1.6; margin-bottom: 32px; }
+    .tom-emoji { font-size: 64px; margin-bottom: 20px; filter: grayscale(1); }
+    .tom-titel { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 12px; color: #000; }
+    .tom-tekst { font-size: 15px; color: var(--tekst-2); line-height: 1.7; margin-bottom: 32px; max-width: 280px; }
     .primær-knap {
-      background: var(--kaffe-accent); color: white; border: none; border-radius: 12px;
-      padding: 14px 24px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit;
+      background: #000; color: white; border: none; border-radius: 8px;
+      padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
+      letter-spacing: .3px;
     }
 
     /* ── FORM ── */
-    .form-container { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+    .form-container { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
     .sektion {
-      background: var(--kort); border-radius: 16px; padding: 18px;
+      background: var(--kort); border-radius: 12px; padding: 18px;
       border: 1px solid var(--border);
-      box-shadow: 0 1px 6px rgba(42,18,0,.04);
     }
-    .sektion-titel { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--kaffe); margin-bottom: 3px; letter-spacing: .2px; }
-    .sektion-under { font-size: 12px; color: var(--tekst-3); margin-bottom: 16px; font-weight: 500; letter-spacing: .3px; }
-    .felt-label { font-size: 13px; font-weight: 600; margin-bottom: 6px; margin-top: 12px; color: var(--tekst-2); letter-spacing: .3px; text-transform: uppercase; font-size: 11px; }
+    .sektion-titel { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #000; margin-bottom: 2px; }
+    .sektion-under { font-size: 12px; color: var(--tekst-3); margin-bottom: 14px; font-weight: 400; }
+    .felt-label { font-size: 10px; font-weight: 700; margin-bottom: 6px; margin-top: 14px; color: var(--tekst-3); letter-spacing: 1px; text-transform: uppercase; }
     .felt-label:first-of-type { margin-top: 0; }
     input[type=text], textarea, select {
-      width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
-      padding: 12px 14px; font-size: 15px; color: var(--tekst); background: var(--baggrund);
+      width: 100%; border: 1px solid var(--border); border-radius: 8px;
+      padding: 11px 13px; font-size: 15px; color: #000; background: var(--baggrund);
       font-family: inherit; appearance: none;
     }
-    input[type=text]:focus, textarea:focus { outline: none; border-color: var(--kaffe-accent); }
+    input[type=text]:focus, textarea:focus { outline: none; border-color: #000; }
     textarea { height: 90px; resize: none; }
-    .valg-raekke { display: flex; flex-wrap: wrap; gap: 8px; }
+    .valg-raekke { display: flex; flex-wrap: wrap; gap: 7px; }
     .valg-knap {
-      border: 1.5px solid var(--border); border-radius: 20px; padding: 7px 14px;
-      background: var(--baggrund); font-size: 13px; font-weight: 600; color: var(--tekst-2);
-      cursor: pointer; font-family: inherit; transition: all .15s;
+      border: 1px solid var(--border); border-radius: 6px; padding: 7px 13px;
+      background: var(--baggrund); font-size: 13px; font-weight: 500; color: var(--tekst-2);
+      cursor: pointer; font-family: inherit; transition: all .12s;
     }
-    .valg-knap.aktiv { color: white; }
+    .valg-knap.aktiv { background: #000; border-color: #000; color: white; }
 
     /* ── SMAGS SLIDER ── */
-    .smags-slider { background: var(--baggrund); border-radius: 12px; padding: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
-    .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
-    .slider-label { font-size: 15px; font-weight: 700; }
-    .slider-badge { width: 30px; height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center; }
-    .slider-badge span { color: white; font-weight: 800; font-size: 13px; }
-    .slider-beskr { font-size: 12px; color: var(--tekst-2); margin-bottom: 8px; }
+    .smags-slider { background: var(--baggrund); border-radius: 10px; padding: 12px; border: 1px solid var(--border); margin-bottom: 8px; }
+    .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+    .slider-label { font-size: 14px; font-weight: 600; color: #000; }
+    .slider-badge { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #000; }
+    .slider-badge span { color: white; font-weight: 700; font-size: 12px; }
+    .slider-beskr { font-size: 11px; color: var(--tekst-3); margin-bottom: 8px; }
     .skala { display: flex; gap: 3px; }
     .skala-knap {
-      flex: 1; height: 34px; border-radius: 6px; border: 1px solid var(--border);
-      background: var(--kaffe-lys); cursor: pointer; font-size: 10px; font-weight: 600;
-      color: var(--tekst-2); font-family: inherit; transition: all .1s;
+      flex: 1; height: 32px; border-radius: 4px; border: 1px solid #E8E8E8;
+      background: #F5F5F5; cursor: pointer; font-size: 10px; font-weight: 600;
+      color: #AAA; font-family: inherit; transition: all .1s;
     }
-    .skala-knap.aktiv { color: white; }
+    .skala-knap.aktiv { background: #000; border-color: #000; color: white; }
     .skala-etiketter { display: flex; justify-content: space-between; margin-top: 3px; }
-    .skala-etiketter span { font-size: 10px; color: var(--tekst-2); }
+    .skala-etiketter span { font-size: 10px; color: var(--tekst-3); }
 
     /* ── SAMLET SCORE ── */
     .score-knapper { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
     .score-knap {
-      width: 48px; height: 48px; border-radius: 24px; border: 2px solid var(--border);
-      background: var(--kaffe-lys); font-size: 16px; font-weight: 700; color: var(--tekst-2);
-      cursor: pointer; font-family: inherit; transition: all .15s;
+      width: 46px; height: 46px; border-radius: 8px; border: 1px solid var(--border);
+      background: #F5F5F5; font-size: 16px; font-weight: 700; color: #999;
+      cursor: pointer; font-family: inherit; transition: all .12s;
     }
-    .score-knap.aktiv { background: var(--kaffe-accent); border-color: var(--kaffe-accent); color: white; }
+    .score-knap.aktiv { background: #000; border-color: #000; color: white; }
     .samlet-badge-container { display: flex; justify-content: center; margin-bottom: 4px; }
 
     /* ── GEM KNAP ── */
     .gem-knap {
-      background: var(--kaffe); color: white; border: none; border-radius: 16px;
-      padding: 18px; font-size: 18px; font-weight: 700; width: 100%; cursor: pointer;
-      font-family: inherit; margin-bottom: 8px;
+      background: #000; color: white; border: none; border-radius: 10px;
+      padding: 17px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer;
+      font-family: inherit; margin-bottom: 8px; letter-spacing: .3px;
     }
 
     /* ── STATISTIK ── */
     .stats-header {
-      background: var(--kaffe); padding: 20px; color: white;
+      background: #000; padding: 20px; color: white;
     }
-    .stats-titel { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; letter-spacing: .3px; }
-    .stats-under { font-size: 11px; font-weight: 500; letter-spacing: .8px; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 12px; }
-    .profil-boks { background: rgba(255,255,255,.1); border-radius: 12px; padding: 12px; }
-    .profil-tekst { font-size: 14px; color: rgba(255,255,255,.9); line-height: 1.6; }
-    .praef-raekke { display: flex; gap: 12px; margin-bottom: 12px; }
-    .praef-kort { flex: 1; border-radius: 12px; padding: 14px; text-align: center; }
-    .praef-emoji { font-size: 24px; margin-bottom: 6px; }
-    .praef-label { font-size: 11px; color: rgba(255,255,255,.8); margin-bottom: 4px; }
-    .praef-vaerdi { font-size: 16px; font-weight: 800; color: white; }
-    .praef-score { font-size: 11px; color: rgba(255,255,255,.7); margin-top: 2px; }
+    .stats-titel { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .stats-under { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 12px; }
+    .profil-boks { background: rgba(255,255,255,.08); border-radius: 10px; padding: 12px; border: 1px solid rgba(255,255,255,.1); }
+    .profil-tekst { font-size: 14px; color: rgba(255,255,255,.8); line-height: 1.7; }
+    .praef-raekke { display: flex; gap: 10px; margin-bottom: 10px; }
+    .praef-kort { flex: 1; border-radius: 10px; padding: 14px; text-align: center; }
+    .praef-emoji { font-size: 20px; margin-bottom: 6px; filter: grayscale(1); }
+    .praef-label { font-size: 10px; color: rgba(255,255,255,.6); margin-bottom: 4px; letter-spacing: .5px; text-transform: uppercase; }
+    .praef-vaerdi { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: white; }
+    .praef-score { font-size: 10px; color: rgba(255,255,255,.5); margin-top: 2px; }
     .praef-fuld { flex-direction: row !important; align-items: center; gap: 12px; text-align: left !important; }
     .bar-container { margin-bottom: 12px; }
     .bar-label-raekke { display: flex; justify-content: space-between; margin-bottom: 4px; }
-    .bar-label { font-size: 14px; font-weight: 600; }
-    .bar-vaerdi { font-size: 14px; font-weight: 700; }
-    .bar-spor { height: 12px; background: var(--kaffe-lys); border-radius: 6px; overflow: hidden; }
-    .bar-fyld { height: 100%; border-radius: 6px; transition: width .5s ease; }
+    .bar-label { font-size: 13px; font-weight: 600; color: #000; }
+    .bar-vaerdi { font-size: 13px; font-weight: 700; color: #000; }
+    .bar-spor { height: 8px; background: #F0F0F0; border-radius: 4px; overflow: hidden; }
+    .bar-fyld { height: 100%; border-radius: 4px; transition: width .5s ease; background: #000; }
     .top-kaffe-raekke {
-      display: flex; align-items: center; padding: 10px 0;
+      display: flex; align-items: center; padding: 11px 0;
       border-bottom: 1px solid var(--border);
     }
-    .top-nr { font-size: 16px; font-weight: 800; color: var(--kaffe-accent); width: 36px; }
+    .top-nr { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #000; width: 36px; }
     .top-info { flex: 1; margin-right: 12px; min-width: 0; }
-    .top-navn { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .top-meta { font-size: 12px; color: var(--tekst-2); }
-    .top-score { width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .top-score span { color: white; font-weight: 800; font-size: 16px; }
+    .top-navn { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #000; }
+    .top-meta { font-size: 11px; color: var(--tekst-3); }
+    .top-score { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .top-score span { color: white; font-weight: 700; font-size: 15px; }
 
     /* ── MODAL ── */
     .modal-overlay {
@@ -270,9 +276,9 @@
       padding-bottom: calc(24px + var(--safe-bottom)); width: 100%; max-width: 900px;
       max-height: 90dvh; overflow-y: auto;
     }
-    .modal-titel { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
-    .modal-meta { font-size: 14px; color: var(--tekst-2); margin-bottom: 20px; }
-    .modal-luk { float: right; background: var(--kaffe-lys); border: none; border-radius: 20px; padding: 6px 14px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .modal-titel { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 4px; color: #000; }
+    .modal-meta { font-size: 13px; color: var(--tekst-3); margin-bottom: 20px; }
+    .modal-luk { float: right; background: #F0F0F0; border: none; border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: #333; }
 
     /* ── GRID TIL IPAD ── */
     @media (min-width: 600px) {
@@ -286,7 +292,7 @@
 <body>
 
 <header>
-  <span class="logo" id="header-logo">Kaffeklub</span>
+  <span class="logo" id="header-logo">GrindrBros</span>
   <span class="logo-sup" id="header-sub">Smagsregistrering</span>
 </header>
 
@@ -380,16 +386,17 @@
 const STORAGE_KEY = 'kaffeklub_v1';
 
 const RISTERINGSGRADER = ['Lys','Medium','Mørk','Espresso'];
-const RISTER_FARVER = { Lys:'#F5C842', Medium:'#C87941', Mørk:'#6B3A1F', Espresso:'#3D1F00' };
+const RISTER_FARVER = { Lys:'#CCC', Medium:'#888', Mørk:'#444', Espresso:'#111' };
+const RISTER_TEKST  = { Lys:'#444', Medium:'#FFF', Mørk:'#FFF', Espresso:'#FFF' };
 const BRYGMETODER = ['Filterkaffe','Espresso','Moka Pot','French Press','Pour Over','AeroPress','Cold Brew','Kapselmaskine'];
 
 const SMAG_FELTER = [
-  { key:'syre',      label:'Syre',      beskr:'Frisk og levende syre',       farve:'#E8A838' },
-  { key:'bitterhed', label:'Bitterhed', beskr:'Behagelig bitterhed',         farve:'#7B4F2E' },
-  { key:'soedme',    label:'Sødme',     beskr:'Naturlig sødme',              farve:'#D4894A' },
-  { key:'fylde',     label:'Fylde',     beskr:'Kaffens krop og tykkelse',    farve:'#8B6355' },
-  { key:'aroma',     label:'Aroma',     beskr:'Duft og aroma',               farve:'#A67C52' },
-  { key:'eftersmag', label:'Eftersmag', beskr:'Lang og god eftersmag',       farve:'#5C3D2E' },
+  { key:'syre',      label:'Syre',      beskr:'Frisk og levende syre',       farve:'#111' },
+  { key:'bitterhed', label:'Bitterhed', beskr:'Behagelig bitterhed',         farve:'#222' },
+  { key:'soedme',    label:'Sødme',     beskr:'Naturlig sødme',              farve:'#333' },
+  { key:'fylde',     label:'Fylde',     beskr:'Kaffens krop og tykkelse',    farve:'#444' },
+  { key:'aroma',     label:'Aroma',     beskr:'Duft og aroma',               farve:'#555' },
+  { key:'eftersmag', label:'Eftersmag', beskr:'Lang og god eftersmag',       farve:'#666' },
 ];
 
 function hentData() {
@@ -407,10 +414,10 @@ let samletScore = 7;
 
 // ── HJÆLPERE ─────────────────────────────────────────────
 function scorefarve(s) {
-  if (s >= 8) return '#4CAF50';
-  if (s >= 6) return '#C87941';
-  if (s >= 4) return '#E8A838';
-  return '#E53935';
+  if (s >= 8) return '#000';
+  if (s >= 6) return '#333';
+  if (s >= 4) return '#666';
+  return '#999';
 }
 function scoretekst(s) {
   if (s >= 9) return 'Fremragende';
@@ -430,7 +437,7 @@ function visSide(side) {
     document.getElementById('side-'+s).classList.toggle('aktiv', s===side);
     document.getElementById('nav-'+s).classList.toggle('aktiv', s===side);
   });
-  const logoer = { liste:'Kaffeklub', ny: redigeringsId ? 'Rediger' : 'Tilføj kaffe', stats:'Smagsprofil' };
+  const logoer = { liste:'GrindrBros', ny: redigeringsId ? 'Rediger' : 'GrindrBros', stats:'GrindrBros' };
   const subber = { liste:'Smagsregistrering', ny: redigeringsId ? 'Opdater vurdering' : 'Ny vurdering', stats:'Din kaffeprofil' };
   document.getElementById('header-logo').textContent = logoer[side];
   document.getElementById('header-sub').textContent = subber[side];
@@ -464,7 +471,7 @@ function gengiListe() {
           <div class="kort-navn">${v.navn}</div>
           <div class="kort-meta">${v.oprindelse || 'Ukendt oprindelse'} · ${v.brygmetode}</div>
           <div class="kort-tags">
-            <span class="rister-tag" style="background:${RISTER_FARVER[v.risteringsgrad]}">${v.risteringsgrad}</span>
+            <span class="rister-tag" style="background:${RISTER_FARVER[v.risteringsgrad]};color:${RISTER_TEKST[v.risteringsgrad]};border-color:${RISTER_FARVER[v.risteringsgrad]}">${v.risteringsgrad}</span>
             ${v.vurderedeAf ? `<span class="vurderet-af">af ${v.vurderedeAf}</span>` : ''}
           </div>
         </div>
@@ -505,13 +512,13 @@ function visDetalje(id) {
       <div class="bar-container">
         <div class="bar-label-raekke">
           <span class="bar-label">${f.label}</span>
-          <span class="bar-vaerdi" style="color:${f.farve}">${v.smag[f.key]}/10</span>
+          <span class="bar-vaerdi">${v.smag[f.key]}/10</span>
         </div>
-        <div class="bar-spor"><div class="bar-fyld" style="width:${v.smag[f.key]*10}%;background:${f.farve}"></div></div>
+        <div class="bar-spor"><div class="bar-fyld" style="width:${v.smag[f.key]*10}%"></div></div>
       </div>`).join('')}
     ${v.noter ? `<div style="margin-top:16px;padding:12px;background:var(--baggrund);border-radius:10px;font-size:14px;color:var(--tekst-2);line-height:1.6">${v.noter}</div>` : ''}
     <div style="display:flex;gap:10px;margin-top:20px">
-      <button class="gem-knap" style="background:var(--kaffe-accent);flex:1" onclick="redigerVurdering('${id}')">Rediger</button>
+      <button class="gem-knap" style="flex:1" onclick="redigerVurdering('${id}')">Rediger</button>
     </div>
   `;
   document.getElementById('modal-overlay').classList.add('aaben');
@@ -534,7 +541,7 @@ function initForm() {
   // Risteringsgrad
   document.getElementById('rister-valg').innerHTML = RISTERINGSGRADER.map(r => `
     <button class="valg-knap${r===valgRister?' aktiv':''}"
-      style="${r===valgRister?'background:'+RISTER_FARVER[r]+';border-color:'+RISTER_FARVER[r]:''}"
+      style="${r===valgRister?'background:#000;border-color:#000;color:white':''}"
       onclick="vaelgRister('${r}')">${r}</button>`).join('');
 
   // Brygmetode
@@ -548,7 +555,7 @@ function initForm() {
     <div class="smags-slider" id="slider-${f.key}">
       <div class="slider-header">
         <span class="slider-label">${f.label}</span>
-        <div class="slider-badge" style="background:${f.farve}" id="badge-${f.key}">
+        <div class="slider-badge" id="badge-${f.key}">
           <span>${smagsVaerdier[f.key]}</span>
         </div>
       </div>
@@ -573,9 +580,11 @@ function vaelgRister(r) {
   valgRister = r;
   document.querySelectorAll('#rister-valg .valg-knap').forEach((btn, i) => {
     const grad = RISTERINGSGRADER[i];
-    btn.classList.toggle('aktiv', grad===r);
-    btn.style.background = grad===r ? RISTER_FARVER[grad] : '';
-    btn.style.borderColor = grad===r ? RISTER_FARVER[grad] : '';
+    const er = grad===r;
+    btn.classList.toggle('aktiv', er);
+    btn.style.background = er ? '#000' : '';
+    btn.style.borderColor = er ? '#000' : '';
+    btn.style.color = er ? 'white' : '';
   });
 }
 function vaelgBryg(b) {
@@ -688,8 +697,8 @@ function gengiStats() {
     <div class="stats-titel">Din smagsprofil</div>
     <div class="stats-under">Baseret på ${data.length} vurdering${data.length!==1?'er':''}</div>
     <div class="profil-boks"><div class="profil-tekst">
-      Du foretrækker kaffe med <strong style="color:${top.farve}">${top.label.toLowerCase()} (${smagsGns[top.key].toFixed(1)}/10)</strong>
-      og <strong style="color:${anden.farve}">${anden.label.toLowerCase()} (${smagsGns[anden.key].toFixed(1)}/10)</strong> som fremtrædende egenskaber.
+      Du foretrækker kaffe med <strong>${top.label.toLowerCase()} (${smagsGns[top.key].toFixed(1)}/10)</strong>
+      og <strong>${anden.label.toLowerCase()} (${smagsGns[anden.key].toFixed(1)}/10)</strong> som fremtrædende egenskaber.
     </div></div>`;
 
   // Rister-præferencer
@@ -718,29 +727,29 @@ function gengiStats() {
         <div class="bar-container">
           <div class="bar-label-raekke">
             <span class="bar-label">${f.label}</span>
-            <span class="bar-vaerdi" style="color:${f.farve}">${smagsGns[f.key].toFixed(1)}</span>
+            <span class="bar-vaerdi">${smagsGns[f.key].toFixed(1)}</span>
           </div>
-          <div class="bar-spor"><div class="bar-fyld" style="width:${smagsGns[f.key]*10}%;background:${f.farve}"></div></div>
+          <div class="bar-spor"><div class="bar-fyld" style="width:${smagsGns[f.key]*10}%"></div></div>
         </div>`).join('')}
     </div>
 
     <div class="sektion">
       <div class="sektion-titel">Dine præferencer</div>
       <div class="praef-raekke">
-        <div class="praef-kort" style="background:var(--kaffe)">
+        <div class="praef-kort" style="background:#111">
           <div class="praef-emoji">🔥</div>
           <div class="praef-label">Bedste ristering</div>
           <div class="praef-vaerdi">${bedsteRister[0]}</div>
           <div class="praef-score">${gns(bedsteRister[1]).toFixed(1)}/10 gns.</div>
         </div>
-        <div class="praef-kort" style="background:var(--kaffe-accent)">
+        <div class="praef-kort" style="background:#333">
           <div class="praef-emoji">☕</div>
           <div class="praef-label">Bedste brygmetode</div>
           <div class="praef-vaerdi">${bedsteBryg[0]}</div>
           <div class="praef-score">${gns(bedsteBryg[1]).toFixed(1)}/10 gns.</div>
         </div>
       </div>
-      <div class="praef-kort praef-fuld" style="background:var(--kaffe-light);display:flex">
+      <div class="praef-kort praef-fuld" style="background:#555;display:flex">
         <div class="praef-emoji">⭐</div>
         <div>
           <div class="praef-label">Samlet gennemsnitsscore</div>
