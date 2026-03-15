@@ -331,6 +331,40 @@
     .highscore-score-lbl { font-size: 9px; letter-spacing: .4px; opacity: .65; margin-top: 2px; }
     .highscore-din { background: rgba(139,96,53,.12); color: var(--accent); border-radius: 6px; padding: 3px 7px; font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
 
+    /* ── HOME ── */
+    .home-welcome { background: var(--sort); padding: 20px 20px 18px; }
+    .home-greeting { font-size: 11px; font-weight: 600; letter-spacing: 1.8px; text-transform: uppercase; color: rgba(245,241,235,.45); margin-bottom: 3px; }
+    .home-navn { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: #F5F1EB; line-height: 1.15; }
+    .home-tagline { font-size: 13px; color: rgba(245,241,235,.55); margin-top: 5px; }
+    .home-section { padding: 0 16px; }
+    .home-section-titel { font-size: 11px; font-weight: 700; color: var(--tekst-3); text-transform: uppercase; letter-spacing: .8px; padding: 18px 0 10px; }
+    .trending-kort { background: var(--kort); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 0; }
+    .trending-kaffe { display: flex; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--border); gap: 10px; }
+    .trending-kaffe:last-child { border-bottom: none; }
+    .trending-nr { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 800; width: 28px; flex-shrink: 0; text-align: center; color: var(--border); }
+    .trending-nr-1 { color: #C9A227; }
+    .trending-nr-2 { color: #8D8D8D; }
+    .trending-nr-3 { color: #A0694E; }
+    .trending-info { flex: 1; min-width: 0; }
+    .trending-navn { font-size: 14px; font-weight: 700; color: var(--sort); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .trending-meta { font-size: 11px; color: var(--tekst-3); margin-top: 2px; }
+    .trending-antal { font-size: 10px; color: var(--tekst-3); margin-top: 1px; }
+    .trending-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .trending-score { background: var(--sort); color: white; border-radius: 8px; padding: 5px 9px; text-align: center; }
+    .trending-score-tal { font-size: 15px; font-weight: 800; line-height: 1; }
+    .trending-score-lbl { font-size: 8px; letter-spacing: .5px; opacity: .6; margin-top: 1px; }
+    .trending-din { background: rgba(139,96,53,.12); color: var(--accent); border-radius: 6px; padding: 3px 7px; font-size: 10px; font-weight: 700; white-space: nowrap; }
+    .home-smag-raekke { display: flex; gap: 10px; }
+    .home-smag-kort { flex: 1; background: var(--kort); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; }
+    .home-smag-emoji { font-size: 20px; margin-bottom: 6px; }
+    .home-smag-label { font-size: 10px; font-weight: 600; color: var(--tekst-3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+    .home-smag-val { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--sort); }
+    .home-smag-score { font-size: 10px; color: var(--tekst-3); margin-top: 2px; }
+    .home-deler { height: 1px; background: var(--border); margin: 20px 0 0; }
+    .home-coffees-header { padding: 14px 16px 0; display: flex; align-items: center; justify-content: space-between; }
+    .home-coffees-titel { font-size: 11px; font-weight: 700; color: var(--tekst-3); text-transform: uppercase; letter-spacing: .8px; }
+    .trending-tom { padding: 20px; text-align: center; color: var(--tekst-3); font-size: 13px; }
+
     /* ── MODAL ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(28,24,20,.7); display: none; align-items: flex-end; justify-content: center; z-index: 200; }
     .modal-overlay.aaben { display: flex; }
@@ -444,7 +478,7 @@
 <!-- MAIN APP -->
 <div id="app" style="display:none">
   <header>
-    <div>
+    <div onclick="visSide('liste')" style="cursor:pointer">
       <div class="logo">CoffeeBuddies</div>
       <div class="logo-tagline">The grind is real</div>
     </div>
@@ -476,14 +510,43 @@
     </div>
   </div>
   <main>
-    <!-- COFFEES LIST -->
+    <!-- COFFEES LIST / HOME -->
     <div class="side aktiv" id="side-liste">
+
+      <!-- Welcome banner -->
+      <div class="home-welcome" id="home-welcome">
+        <div class="home-greeting">Welcome back</div>
+        <div class="home-navn" id="home-navn">–</div>
+        <div class="home-tagline" id="home-tagline">Loading your stats…</div>
+      </div>
+
+      <!-- Quick stats bar -->
       <div class="oversigt">
-        <div><div class="oversigt-tal" id="antal-kaffer">0</div><div class="oversigt-label">Coffees Tasted</div></div>
+        <div><div class="oversigt-tal" id="antal-kaffer">–</div><div class="oversigt-label">Coffees Tasted</div></div>
         <div class="oversigt-deler"></div>
         <div><div class="oversigt-tal" id="gns-score">–</div><div class="oversigt-label">Avg. Score</div></div>
         <div class="oversigt-deler"></div>
         <div><div class="oversigt-tal" id="bedste-score">–</div><div class="oversigt-label">Best</div></div>
+      </div>
+
+      <!-- Trending this month -->
+      <div class="home-section">
+        <div class="home-section-titel">🔥 Trending This Month</div>
+        <div class="trending-kort" id="home-trending-indhold">
+          <div class="trending-tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:22px;height:22px;margin:0 auto"></div></div>
+        </div>
+      </div>
+
+      <!-- Taste snapshot (hidden until data loaded) -->
+      <div class="home-section" id="home-smag-sektion" style="display:none">
+        <div class="home-section-titel">Your Taste Snapshot</div>
+        <div class="home-smag-raekke" id="home-smag-indhold"></div>
+      </div>
+
+      <!-- Your coffees divider + search/sort -->
+      <div class="home-deler"></div>
+      <div class="home-coffees-header">
+        <div class="home-coffees-titel">Your Coffees</div>
       </div>
       <div class="liste-toolbar" id="liste-toolbar" style="display:none">
         <input class="søg-input" type="text" id="søg-input" placeholder="Search coffees..." oninput="søgOgGengi()" />
@@ -958,20 +1021,104 @@ function visSide(side) {
   window.scrollTo(0,0);
 }
 
-// ── COFFEE LIST ───────────────────────────────────────────
-async function gengiListe() {
-  const container = document.getElementById('kaffe-liste-container');
-  container.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
-  let data;
-  try {
-    data = await hentAlleVurderinger();
-  } catch (e) {
-    container.innerHTML = `<div class="tom"><div class="tom-titel" style="font-size:16px">Error</div><div class="tom-tekst">${e.message}</div></div>`;
+// ── HOME HELPERS ─────────────────────────────────────────
+function renderWelcome() {
+  document.getElementById('home-navn').textContent = brugernavn || '–';
+}
+
+async function hentTrendingMaaned() {
+  const { data, error } = await sb.rpc('top_kaffe_maaned', { limit_n: 5 });
+  return error ? [] : (data || []);
+}
+
+function renderTrending(data) {
+  const el = document.getElementById('home-trending-indhold');
+  if (!data.length) {
+    el.innerHTML = '<div class="trending-tom">No coffees rated this month yet — be the first!</div>';
     return;
   }
+  el.innerHTML = data.map((r, i) => {
+    const meta = [r.oprindelse, r.risteringsgrad].filter(Boolean).join(' · ');
+    const antalTekst = r.antal === 1 ? '1 rating' : `${r.antal} ratings`;
+    const dinBadge = r.din_score != null ? `<div class="trending-din">You: ${r.din_score}</div>` : '';
+    const nrKlasse = i === 0 ? 'trending-nr trending-nr-1' : i === 1 ? 'trending-nr trending-nr-2' : i === 2 ? 'trending-nr trending-nr-3' : 'trending-nr';
+    return `<div class="trending-kaffe">
+      <div class="${nrKlasse}">#${i+1}</div>
+      <div class="trending-info">
+        <div class="trending-navn">${r.navn}</div>
+        ${meta ? `<div class="trending-meta">${meta}</div>` : ''}
+        <div class="trending-antal">${antalTekst}</div>
+      </div>
+      <div class="trending-right">
+        <div class="trending-score">
+          <div class="trending-score-tal">${r.avg_score}</div>
+          <div class="trending-score-lbl">AVG</div>
+        </div>
+        ${dinBadge}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderSmagSnapshot(vurderinger) {
+  if (vurderinger.length < 2) return;
+  const risterMap = {}, brygMap = {};
+  vurderinger.forEach(v => {
+    (risterMap[v.risteringsgrad] ??= []).push(v.samlet_score);
+    (brygMap[v.brygmetode] ??= []).push(v.samlet_score);
+  });
+  const bedsteRister = Object.entries(risterMap).sort(([,a],[,b]) => gns(b)-gns(a))[0];
+  const bedsteBryg   = Object.entries(brygMap).sort(([,a],[,b]) => gns(b)-gns(a))[0];
+  document.getElementById('home-smag-indhold').innerHTML = `
+    <div class="home-smag-kort">
+      <div class="home-smag-emoji">🔥</div>
+      <div class="home-smag-label">Best Roast</div>
+      <div class="home-smag-val">${bedsteRister[0]}</div>
+      <div class="home-smag-score">${gns(bedsteRister[1]).toFixed(1)}/10 avg.</div>
+    </div>
+    <div class="home-smag-kort">
+      <div class="home-smag-emoji">☕</div>
+      <div class="home-smag-label">Best Brew</div>
+      <div class="home-smag-val">${bedsteBryg[0]}</div>
+      <div class="home-smag-score">${gns(bedsteBryg[1]).toFixed(1)}/10 avg.</div>
+    </div>`;
+  document.getElementById('home-smag-sektion').style.display = '';
+}
+
+// ── COFFEE LIST ───────────────────────────────────────────
+async function gengiListe() {
+  renderWelcome();
+  const container = document.getElementById('kaffe-liste-container');
+  container.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
+
+  // Load user coffees and trending in parallel
+  const [dataResult, trendingData] = await Promise.all([
+    hentAlleVurderinger().then(d => ({ ok: true, data: d })).catch(e => ({ ok: false, error: e })),
+    hentTrendingMaaned()
+  ]);
+
+  renderTrending(trendingData);
+
+  if (!dataResult.ok) {
+    container.innerHTML = `<div class="tom"><div class="tom-titel" style="font-size:16px">Error</div><div class="tom-tekst">${dataResult.error.message}</div></div>`;
+    return;
+  }
+  const data = dataResult.data;
+
   document.getElementById('antal-kaffer').textContent = data.length;
   document.getElementById('gns-score').textContent = data.length ? gns(data.map(v=>v.samlet_score)).toFixed(1) : '–';
   document.getElementById('bedste-score').textContent = data.length ? Math.max(...data.map(v=>v.samlet_score)) : '–';
+
+  // Update welcome tagline
+  const taglineEl = document.getElementById('home-tagline');
+  if (data.length === 0) {
+    taglineEl.textContent = 'Start adding coffees to build your taste profile.';
+  } else {
+    const totalGns = gns(data.map(v=>v.samlet_score));
+    taglineEl.textContent = `${data.length} coffee${data.length !== 1 ? 's' : ''} rated · avg. ${totalGns.toFixed(1)}/10`;
+  }
+
+  renderSmagSnapshot(data);
 
   const toolbar = document.getElementById('liste-toolbar');
   toolbar.style.display = data.length ? '' : 'none';
