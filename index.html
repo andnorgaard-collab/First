@@ -594,6 +594,7 @@
           <textarea id="f-noter" placeholder="Your personal tasting notes on flavour, aroma, finish..."></textarea>
         </div>
         <button class="annuller-knap" id="annuller-knap" onclick="annullerForm()">Cancel</button>
+        <div id="form-fejl" style="display:none;color:var(--roed);font-size:13px;padding:8px 0 4px;text-align:center"></div>
         <button class="gem-knap" id="gem-knap" onclick="gemVurdering()">Save Rating</button>
       </div>
     </div>
@@ -867,6 +868,13 @@ async function hentAlleVurderinger(forcefresh = false) {
 
 function ugyldiggørCache() { _cacheData = null; }
 
+function medTimeout(promise, ms = 12000) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('No response from server — check your connection and try again.')), ms))
+  ]);
+}
+
 async function gemVurderingDB(v) {
   const row = {
     id: v.id, user_id: aktivBruger.id, navn: v.navn, oprindelse: v.oprindelse,
@@ -875,8 +883,8 @@ async function gemVurderingDB(v) {
     vurderede_af: brugernavn, smag: v.smag, samlet_score: v.samletScore,
     noter: v.noter, dato: v.dato,
   };
-  const { error } = await sb.from('coffee_ratings').upsert(row);
-  if (error) throw new Error('Save failed: ' + error.message);
+  const { error } = await medTimeout(sb.from('coffee_ratings').upsert(row, { onConflict: 'id' }));
+  if (error) throw new Error(error.message);
 }
 
 async function sletVurderingDB(id) {
@@ -1332,9 +1340,16 @@ function opdaterSamletBadge() {
 }
 
 // ── SAVE ─────────────────────────────────────────────────
+function visFormFejl(besked) {
+  const el = document.getElementById('form-fejl');
+  el.textContent = besked;
+  el.style.display = besked ? '' : 'none';
+}
+
 async function gemVurdering() {
   const navn = document.getElementById('f-navn').value.trim();
-  if (!navn) { alert('Please enter the coffee name.'); return; }
+  if (!navn) { visFormFejl('Please enter the coffee name.'); return; }
+  visFormFejl('');
   const knap = document.getElementById('gem-knap');
   knap.disabled = true;
   knap.innerHTML = '<span class="spinner"></span>';
@@ -1357,9 +1372,10 @@ async function gemVurdering() {
   } catch (e) {
     knap.disabled = false;
     knap.textContent = redigeringsId ? 'Update Rating' : 'Save Rating';
-    alert('Could not save: ' + e.message);
+    visFormFejl('Could not save: ' + e.message);
     return;
   }
+  visFormFejl('');
   redigeringsId = null;
   smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
   samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
