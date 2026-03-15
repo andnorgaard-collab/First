@@ -257,6 +257,17 @@
     .top-score { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .top-score span { color: white; font-weight: 700; font-size: 15px; }
 
+    /* ── RECOMMENDATIONS ── */
+    .anbefalet-kort { background: var(--kort); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .anbefalet-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+    .anbefalet-navn { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--sort); flex: 1; }
+    .anbefalet-match { font-size: 11px; font-weight: 700; color: var(--accent); background: rgba(139,96,53,.1); padding: 3px 7px; border-radius: 20px; white-space: nowrap; margin-left: 8px; flex-shrink: 0; }
+    .anbefalet-risteri { font-size: 11px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--tekst-3); margin-bottom: 6px; }
+    .anbefalet-meta { font-size: 12px; color: var(--tekst-3); margin-bottom: 8px; }
+    .anbefalet-begrundelse { font-size: 13px; color: var(--tekst-2); line-height: 1.6; margin-bottom: 12px; }
+    .anbefalet-koeb { display: inline-block; background: var(--sort); color: #F5F1EB; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; text-decoration: none; font-family: inherit; }
+    .anbefalet-koeb:hover { opacity: .85; }
+
     /* ── MODAL ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(28,24,20,.7); display: none; align-items: flex-end; justify-content: center; z-index: 200; }
     .modal-overlay.aaben { display: flex; }
@@ -705,6 +716,94 @@ const BRYGMETODER = ['Filter','Espresso','Moka Pot','French Press','Pour Over','
 
 const BOENNESORTER = ['Gesha','Bourbon','Typica','Caturra','Catuai','SL28','SL34','Heirloom','Pacamara','Mundo Novo','Yellow Bourbon','Castillo'];
 
+// ── COFFEE RECOMMENDATIONS CATALOG ───────────────────────
+const ANBEFALET_KATALOG = [
+  { navn:'Ethiopia Haro Wachu', risteri:'La Cabra', oprindelse:'Ethiopia', boennesort:'Heirloom', forarbejdning:'Natural',
+    smag:{syre:6,bitterhed:2,soedme:9,fylde:5,aroma:9,eftersmag:8},
+    tekst:'Strawberry, blueberry and dark chocolate. Juicy and sweet with a silky body.',
+    url:'https://lacabra.dk/collections/coffee' },
+  { navn:'Kenya Kamwangi AA', risteri:'The Coffee Collective', oprindelse:'Kenya', boennesort:'SL28, SL34', forarbejdning:'Washed',
+    smag:{syre:9,bitterhed:3,soedme:6,fylde:6,aroma:8,eftersmag:9},
+    tekst:'Intense blackcurrant, tomato and citrus. Bright and complex with a very long finish.',
+    url:'https://coffeecollective.dk/collections/coffee' },
+  { navn:'Ethiopia Koke', risteri:'Tim Wendelboe', oprindelse:'Ethiopia', boennesort:'Heirloom', forarbejdning:'Washed',
+    smag:{syre:8,bitterhed:2,soedme:7,fylde:4,aroma:9,eftersmag:7},
+    tekst:'Jasmine, bergamot and lemon. Light, tea-like and extraordinarily aromatic.',
+    url:'https://timwendelboe.no/collections/coffee' },
+  { navn:'Colombia El Paraíso Gesha', risteri:'April Coffee', oprindelse:'Colombia', boennesort:'Gesha', forarbejdning:'Washed',
+    smag:{syre:8,bitterhed:2,soedme:8,fylde:5,aroma:10,eftersmag:9},
+    tekst:'Exceptional floral complexity — jasmine, tropical fruit and honey in every cup.',
+    url:'https://aprilcoffeeroasters.com/collections/coffee' },
+  { navn:'Burundi Heza', risteri:'Drop Coffee', oprindelse:'Burundi', boennesort:'Bourbon', forarbejdning:'Washed',
+    smag:{syre:7,bitterhed:3,soedme:8,fylde:6,aroma:7,eftersmag:7},
+    tekst:'Peach, apricot and caramel. Sweet and winey with a smooth, balanced finish.',
+    url:'https://dropcoffee.se/collections/coffee' },
+  { navn:'Panama Gesha Natural', risteri:'Koppi', oprindelse:'Panama', boennesort:'Gesha', forarbejdning:'Natural',
+    smag:{syre:7,bitterhed:1,soedme:9,fylde:5,aroma:10,eftersmag:9},
+    tekst:'The legendary Gesha variety. Bergamot, peach and mango with an intoxicating aroma.',
+    url:'https://koppi.se/collections/coffee' },
+  { navn:'Ethiopia Guji Natural', risteri:'Gardelli Specialty Coffees', oprindelse:'Ethiopia', boennesort:'Heirloom', forarbejdning:'Natural',
+    smag:{syre:5,bitterhed:2,soedme:9,fylde:7,aroma:9,eftersmag:8},
+    tekst:'Wild blueberry, dark cherry and milk chocolate. Thick, sweet and intensely aromatic.',
+    url:'https://gardellispecialtycoffees.com/collections/coffee' },
+  { navn:'Rwanda Huye Mountain', risteri:'Nomad Coffee', oprindelse:'Rwanda', boennesort:'Bourbon', forarbejdning:'Washed',
+    smag:{syre:8,bitterhed:3,soedme:7,fylde:5,aroma:8,eftersmag:8},
+    tekst:'Red plum, citrus blossom and brown sugar. Clean, bright and elegantly structured.',
+    url:'https://nomadcoffee.es/collections/all-coffees' },
+  { navn:'Brazil Yellow Bourbon Natural', risteri:'La Cabra', oprindelse:'Brazil', boennesort:'Yellow Bourbon', forarbejdning:'Natural',
+    smag:{syre:3,bitterhed:5,soedme:8,fylde:9,aroma:6,eftersmag:7},
+    tekst:'Peanut brittle, milk chocolate and dried fruit. Full-bodied and sweet with very low acidity.',
+    url:'https://lacabra.dk/collections/coffee' },
+  { navn:'Colombia Los Naranjos', risteri:'Tim Wendelboe', oprindelse:'Colombia', boennesort:'Caturra', forarbejdning:'Washed',
+    smag:{syre:7,bitterhed:3,soedme:7,fylde:6,aroma:7,eftersmag:7},
+    tekst:'Caramel, red apple and light florals. A classic, balanced and approachable Colombian.',
+    url:'https://timwendelboe.no/collections/coffee' },
+  { navn:'Honduras Santa Barbara Honey', risteri:'Gardelli Specialty Coffees', oprindelse:'Honduras', boennesort:'Pacas', forarbejdning:'Honey',
+    smag:{syre:5,bitterhed:4,soedme:8,fylde:7,aroma:7,eftersmag:7},
+    tekst:'Honey, toffee and nectarine. Sweet and smooth with a rounded, medium body.',
+    url:'https://gardellispecialtycoffees.com/collections/coffee' },
+  { navn:'Guatemala Huehuetenango', risteri:'The Coffee Collective', oprindelse:'Guatemala', boennesort:'Bourbon, Caturra', forarbejdning:'Washed',
+    smag:{syre:6,bitterhed:4,soedme:7,fylde:7,aroma:7,eftersmag:7},
+    tekst:'Brown sugar, red apple and milk chocolate. Balanced with a rich, creamy body.',
+    url:'https://coffeecollective.dk/collections/coffee' },
+  { navn:'Yemen Haraazi', risteri:'April Coffee', oprindelse:'Yemen', boennesort:'Heirloom', forarbejdning:'Natural',
+    smag:{syre:5,bitterhed:5,soedme:7,fylde:8,aroma:9,eftersmag:8},
+    tekst:'Dried fruit, dark spice, wine and chocolate. Wild and complex — a truly unique cup.',
+    url:'https://aprilcoffeeroasters.com/collections/coffee' },
+  { navn:'Ethiopia Nensebo Washed', risteri:'Drop Coffee', oprindelse:'Ethiopia', boennesort:'Heirloom', forarbejdning:'Washed',
+    smag:{syre:9,bitterhed:2,soedme:7,fylde:4,aroma:9,eftersmag:8},
+    tekst:'Peach, bergamot and lemon curd. Light and tea-like with wonderful floral aromas.',
+    url:'https://dropcoffee.se/collections/coffee' },
+  { navn:'Sumatra Mandheling', risteri:'The Coffee Collective', oprindelse:'Indonesia', boennesort:'Typica', forarbejdning:'Wet-hulled',
+    smag:{syre:3,bitterhed:7,soedme:4,fylde:9,aroma:6,eftersmag:6},
+    tekst:'Dark chocolate, cedar and earth. Full-bodied and intense with very low acidity.',
+    url:'https://coffeecollective.dk/collections/coffee' },
+];
+
+function genererAnbefalinger(smagsGns) {
+  // Score each catalog coffee by proximity to user's taste profile
+  const scored = ANBEFALET_KATALOG.map(k => {
+    const dist = SMAG_FELTER.reduce((sum, f) => sum + Math.abs(smagsGns[f.key] - k.smag[f.key]), 0);
+    const matchPct = Math.round(100 - (dist / (SMAG_FELTER.length * 9)) * 100);
+    return { ...k, matchPct };
+  }).sort((a,b) => b.matchPct - a.matchPct).slice(0,5);
+
+  // Build personalized reason for each
+  const topDims = [...SMAG_FELTER].sort((a,b) => smagsGns[b.key] - smagsGns[a.key]).slice(0,3);
+  return scored.map(k => {
+    const matchedDims = topDims.filter(f => k.smag[f.key] >= 7).map(f => f.label.toLowerCase());
+    let begrundelse;
+    if (matchedDims.length >= 2) {
+      begrundelse = `Matches your preference for <strong>${matchedDims[0]}</strong> and <strong>${matchedDims[1]}</strong>. ${k.tekst}`;
+    } else if (matchedDims.length === 1) {
+      begrundelse = `Strong on <strong>${matchedDims[0]}</strong>, which you rate highly. ${k.tekst}`;
+    } else {
+      begrundelse = `A close overall match to your taste profile. ${k.tekst}`;
+    }
+    return { ...k, begrundelse };
+  });
+}
+
 const SMAG_FELTER = [
   { key:'syre',      label:'Acidity',    beskr:'Fresh and vibrant acidity' },
   { key:'bitterhed', label:'Bitterness', beskr:'Pleasant bitterness' },
@@ -1138,6 +1237,20 @@ async function gengiStats() {
           <div class="top-score" style="background:${scorefarve(v.samlet_score)}">
             <span>${v.samlet_score}</span>
           </div>
+        </div>`).join('')}
+    </div>
+    <div class="sektion">
+      <div class="sektion-titel">Recommended for You</div>
+      ${genererAnbefalinger(smagsGns).map(k => `
+        <div class="anbefalet-kort">
+          <div class="anbefalet-top">
+            <div class="anbefalet-navn">${k.navn}</div>
+            <div class="anbefalet-match">${k.matchPct}% match</div>
+          </div>
+          <div class="anbefalet-risteri">${k.risteri}</div>
+          <div class="anbefalet-meta">${[k.oprindelse, k.boennesort, k.forarbejdning].filter(Boolean).join(' · ')}</div>
+          <div class="anbefalet-begrundelse">${k.begrundelse}</div>
+          <a class="anbefalet-koeb" href="${k.url}" target="_blank" rel="noopener">Buy online</a>
         </div>`).join('')}
     </div>`;
 }
