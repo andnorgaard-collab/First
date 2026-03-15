@@ -593,7 +593,8 @@ async function opretKonto() {
 
   knap.disabled = true;
   knap.innerHTML = '<span class="spinner"></span>';
-  const { data, error } = await sb.auth.signUp({ email, password });
+  const redirectTo = window.location.href.split('?')[0].split('#')[0];
+  const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: redirectTo } });
   if (error) {
     knap.disabled = false;
     knap.textContent = 'Create account';
