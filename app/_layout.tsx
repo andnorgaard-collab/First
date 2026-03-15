@@ -51,6 +51,16 @@ export default function RootLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="soeg"
+        options={{
+          title: 'Søg brugere',
+          tabBarLabel: 'Søg',
+          tabBarIcon: ({ color, size }) => (
+            <TabIcon emoji="🔍" color={color} size={size} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
