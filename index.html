@@ -268,6 +268,53 @@
     .anbefalet-koeb { display: inline-block; background: var(--sort); color: #F5F1EB; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; text-decoration: none; font-family: inherit; }
     .anbefalet-koeb:hover { opacity: .85; }
 
+    /* ── SOCIAL ── */
+    .social-header { background: var(--kort); border-bottom: 1px solid var(--border); padding: 20px; }
+    .social-søg-raekke { display: flex; gap: 8px; margin-bottom: 0; }
+    .social-søg-input { flex: 1; padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; background: var(--baggrund); font-family: inherit; color: var(--sort); }
+    .social-søg-input:focus { outline: none; border-color: var(--accent); }
+    .social-søg-knap { background: var(--sort); color: #F5F1EB; border: none; border-radius: 10px; padding: 11px 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .social-søg-resultater { margin-top: 12px; }
+    .bruger-raekke { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+    .bruger-mini-avatar { width: 34px; height: 34px; border-radius: 17px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: white; flex-shrink: 0; }
+    .bruger-info { flex: 1; }
+    .bruger-navn-tekst { font-size: 14px; font-weight: 600; color: var(--sort); }
+    .bruger-følger-count { font-size: 11px; color: var(--tekst-3); margin-top: 1px; }
+    .følg-knap { background: var(--sort); color: white; border: none; border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; }
+    .følg-knap.følger { background: none; border: 1px solid var(--border); color: var(--tekst-2); }
+    .feed-post { background: var(--kort); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .feed-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .feed-avatar { width: 32px; height: 32px; border-radius: 16px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; flex-shrink: 0; }
+    .feed-meta { flex: 1; }
+    .feed-navn { font-size: 13px; font-weight: 700; color: var(--sort); }
+    .feed-tid { font-size: 11px; color: var(--tekst-3); }
+    .feed-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+    .feed-badge.anbefal { background: rgba(92,175,90,.15); color: #3e8c3c; }
+    .feed-badge.advarsel { background: rgba(224,112,112,.15); color: var(--roed); }
+    .feed-kaffe-kort { background: var(--baggrund); border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .feed-kaffe-info { flex: 1; min-width: 0; }
+    .feed-kaffe-navn { font-size: 14px; font-weight: 600; color: var(--sort); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .feed-kaffe-meta { font-size: 11px; color: var(--tekst-3); margin-top: 2px; }
+    .feed-kaffe-score { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .feed-kaffe-score span { color: white; font-weight: 700; font-size: 14px; }
+    .feed-besked { font-size: 13px; color: var(--tekst-2); line-height: 1.6; border-left: 3px solid var(--border); padding-left: 10px; }
+    .del-knap { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--tekst-2); transition: all .15s; }
+    .del-knap:hover { border-color: var(--accent); color: var(--accent); }
+    .del-modal-overlay { position: fixed; inset: 0; background: rgba(28,24,20,.5); display: none; align-items: flex-end; justify-content: center; z-index: 200; padding: 24px; }
+    .del-modal-overlay.aaben { display: flex; }
+    .del-modal-boks { background: var(--kort); border-radius: 20px; padding: 24px; width: 100%; max-width: 500px; }
+    .del-modal-titel { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; color: var(--sort); }
+    .del-modal-sub { font-size: 13px; color: var(--tekst-3); margin-bottom: 20px; }
+    .del-type-raekke { display: flex; gap: 10px; margin-bottom: 16px; }
+    .del-type-knap { flex: 1; border: 2px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; background: var(--baggrund); transition: all .15s; user-select: none; }
+    .del-type-knap.aktiv-anbefal { border-color: #3e8c3c; background: rgba(92,175,90,.1); }
+    .del-type-knap.aktiv-advarsel { border-color: var(--roed); background: rgba(224,112,112,.1); }
+    .del-type-emoji { font-size: 24px; margin-bottom: 6px; }
+    .del-type-label { font-size: 13px; font-weight: 700; color: var(--sort); }
+    .del-besked-felt { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--baggrund); color: var(--sort); resize: none; height: 80px; margin-bottom: 16px; }
+    .del-besked-felt:focus { outline: none; border-color: var(--accent); }
+    .del-annuller { background: none; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-size: 15px; font-weight: 600; width: 100%; cursor: pointer; font-family: inherit; color: var(--tekst-2); margin-bottom: 8px; }
+
     /* ── MODAL ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(28,24,20,.7); display: none; align-items: flex-end; justify-content: center; z-index: 200; }
     .modal-overlay.aaben { display: flex; }
@@ -477,6 +524,20 @@
       <div class="stats-header" id="stats-header"></div>
       <div class="stats-grid" id="stats-indhold"></div>
     </div>
+
+    <!-- SOCIAL FEED -->
+    <div class="side" id="side-social">
+      <div class="social-header">
+        <div class="stats-titel">Social Feed</div>
+        <div class="stats-under" id="social-undertitel">Find friends and see their ratings</div>
+        <div class="social-søg-raekke">
+          <input class="social-søg-input" id="social-søg-input" type="text" placeholder="Search by username..." onkeydown="if(event.key==='Enter')søgBrugere()" />
+          <button class="social-søg-knap" onclick="søgBrugere()">Search</button>
+        </div>
+        <div class="social-søg-resultater" id="social-søg-resultater"></div>
+      </div>
+      <div class="stats-grid" id="social-feed-indhold"></div>
+    </div>
   </main>
 
   <nav>
@@ -485,6 +546,9 @@
     </button>
     <button id="nav-ny" onclick="visSide('ny')">
       <span class="ikon">＋</span>Add
+    </button>
+    <button id="nav-social" onclick="visSide('social')">
+      <span class="ikon">◈</span>Social
     </button>
     <button id="nav-stats" onclick="visSide('stats')">
       <span class="ikon">◎</span>Profile
@@ -495,6 +559,27 @@
 <!-- DETAIL MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="lukModal(event)">
   <div class="modal" id="modal-indhold"></div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="del-modal-overlay" id="del-modal-overlay" onclick="lukkDelModal(event)">
+  <div class="del-modal-boks" onclick="event.stopPropagation()">
+    <div class="del-modal-titel" id="del-modal-titel">Share Rating</div>
+    <div class="del-modal-sub" id="del-modal-sub"></div>
+    <div class="del-type-raekke">
+      <div class="del-type-knap aktiv-anbefal" id="del-type-anbefal" onclick="vælgDelType('recommend')">
+        <div class="del-type-emoji">👍</div>
+        <div class="del-type-label">Recommend</div>
+      </div>
+      <div class="del-type-knap" id="del-type-advarsel" onclick="vælgDelType('warn')">
+        <div class="del-type-emoji">⚠️</div>
+        <div class="del-type-label">Avoid</div>
+      </div>
+    </div>
+    <textarea class="del-besked-felt" id="del-besked" placeholder="Add a message to your friends (optional)..."></textarea>
+    <button class="gem-knap" id="del-gem-knap" onclick="bekræftDel()">Share with followers</button>
+    <button class="del-annuller" onclick="lukkDelModal()">Cancel</button>
+  </div>
 </div>
 
 <script>
@@ -833,12 +918,13 @@ function gns(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
 
 // ── NAVIGATION ───────────────────────────────────────────
 function visSide(side) {
-  ['liste','ny','stats'].forEach(s => {
+  ['liste','ny','stats','social'].forEach(s => {
     document.getElementById('side-'+s).classList.toggle('aktiv', s===side);
     document.getElementById('nav-'+s).classList.toggle('aktiv', s===side);
   });
   if (side === 'liste') gengiListe();
   if (side === 'stats') gengiStats();
+  if (side === 'social') gengiSocial();
   window.scrollTo(0,0);
 }
 
@@ -914,6 +1000,7 @@ async function gengiListe() {
       </div>
       <div class="kort-bund">
         <span class="dato">${datoTekst(v.dato)}</span>
+        <button class="del-knap" onclick="event.stopPropagation();åbnDelModal('${v.id}')">Share</button>
         <button class="slet-knap" data-slet-id="${v.id}" onclick="sletVurdering(event,'${v.id}')">Delete</button>
       </div>
     </div>`).join('') + '</div>';
@@ -1132,6 +1219,175 @@ function annullerForm() {
   samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
   ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   visSide('liste');
+}
+
+// ── SOCIAL ────────────────────────────────────────────────
+let _følgerIds = null; // cache: set of IDs we follow
+
+async function hentFølgerIds(force = false) {
+  if (!force && _følgerIds !== null) return _følgerIds;
+  const { data } = await sb.from('follows').select('following_id').eq('follower_id', aktivBruger.id);
+  _følgerIds = new Set((data ?? []).map(r => r.following_id));
+  return _følgerIds;
+}
+
+async function følg(uid) {
+  await sb.from('follows').insert({ follower_id: aktivBruger.id, following_id: uid });
+  _følgerIds = null;
+}
+
+async function afFølg(uid) {
+  await sb.from('follows').delete().eq('follower_id', aktivBruger.id).eq('following_id', uid);
+  _følgerIds = null;
+}
+
+async function søgBrugere() {
+  const q = document.getElementById('social-søg-input').value.trim();
+  const container = document.getElementById('social-søg-resultater');
+  if (!q) { container.innerHTML = ''; return; }
+  container.innerHTML = '<div style="font-size:13px;color:var(--tekst-3);padding:8px 0">Searching...</div>';
+  const { data: resultater } = await sb.from('profiles').select('id, username').ilike('username', `%${q}%`).neq('id', aktivBruger.id).limit(8);
+  if (!resultater?.length) { container.innerHTML = '<div style="font-size:13px;color:var(--tekst-3);padding:8px 0">No users found.</div>'; return; }
+  const følgerIds = await hentFølgerIds();
+  container.innerHTML = resultater.map(u => {
+    const følger = følgerIds.has(u.id);
+    return `<div class="bruger-raekke">
+      <div class="bruger-mini-avatar">${u.username[0].toUpperCase()}</div>
+      <div class="bruger-info">
+        <div class="bruger-navn-tekst">${u.username}</div>
+      </div>
+      <button class="følg-knap ${følger ? 'følger' : ''}" onclick="toggleFølg('${u.id}', this, '${u.username}')">${følger ? 'Following' : 'Follow'}</button>
+    </div>`;
+  }).join('');
+}
+
+async function toggleFølg(uid, knap, navn) {
+  const følger = knap.classList.contains('følger');
+  knap.disabled = true;
+  if (følger) {
+    await afFølg(uid);
+    knap.classList.remove('følger');
+    knap.textContent = 'Follow';
+  } else {
+    await følg(uid);
+    knap.classList.add('følger');
+    knap.textContent = 'Following';
+  }
+  knap.disabled = false;
+  gengiSocial(); // refresh feed
+}
+
+async function gengiSocial() {
+  const feedEl = document.getElementById('social-feed-indhold');
+  if (!feedEl) return;
+  feedEl.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
+
+  const følgerIds = await hentFølgerIds();
+  document.getElementById('social-undertitel').textContent = `Following ${følgerIds.size} ${følgerIds.size === 1 ? 'person' : 'people'}`;
+
+  if (følgerIds.size === 0) {
+    feedEl.innerHTML = `<div class="tom">
+      <div class="tom-emoji">◈</div>
+      <div class="tom-titel">No one here yet</div>
+      <div class="tom-tekst">Search for friends by username above and follow them to see their coffee ratings here.</div>
+    </div>`;
+    return;
+  }
+
+  const ids = [...følgerIds];
+  const { data: poster, error } = await sb
+    .from('shared_ratings')
+    .select('id, type, besked, created_at, from_user_id, rating_id, profiles!shared_ratings_from_user_id_fkey(username), coffee_ratings(navn, oprindelse, samlet_score, brygmetode, risteringsgrad, forarbejdning)')
+    .in('from_user_id', ids)
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (error || !poster?.length) {
+    feedEl.innerHTML = `<div class="tom">
+      <div class="tom-emoji">☕</div>
+      <div class="tom-titel">Nothing shared yet</div>
+      <div class="tom-tekst">The people you follow haven't shared any ratings yet. Share one of your own by tapping Share on a coffee.</div>
+    </div>`;
+    return;
+  }
+
+  feedEl.innerHTML = `<div class="sektion">` + poster.map(p => {
+    const u = p.profiles?.username ?? 'Unknown';
+    const k = p.coffee_ratings;
+    if (!k) return '';
+    const meta = [k.oprindelse, k.risteringsgrad, k.brygmetode].filter(Boolean).join(' · ');
+    const tidSiden = relativTid(p.created_at);
+    const anbefal = p.type === 'recommend';
+    return `<div class="feed-post">
+      <div class="feed-top">
+        <div class="feed-avatar">${u[0].toUpperCase()}</div>
+        <div class="feed-meta">
+          <div class="feed-navn">${u}</div>
+          <div class="feed-tid">${tidSiden}</div>
+        </div>
+        <span class="feed-badge ${anbefal ? 'anbefal' : 'advarsel'}">${anbefal ? '👍 Recommends' : '⚠️ Avoid'}</span>
+      </div>
+      <div class="feed-kaffe-kort">
+        <div class="feed-kaffe-info">
+          <div class="feed-kaffe-navn">${k.navn}</div>
+          ${meta ? `<div class="feed-kaffe-meta">${meta}</div>` : ''}
+        </div>
+        <div class="feed-kaffe-score" style="background:${scorefarve(k.samlet_score)}">
+          <span>${k.samlet_score}</span>
+        </div>
+      </div>
+      ${p.besked ? `<div class="feed-besked">${p.besked}</div>` : ''}
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+function relativTid(iso) {
+  const sek = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (sek < 60) return 'Just now';
+  if (sek < 3600) return `${Math.floor(sek/60)}m ago`;
+  if (sek < 86400) return `${Math.floor(sek/3600)}h ago`;
+  return `${Math.floor(sek/86400)}d ago`;
+}
+
+// Share modal
+let _delRatingId = null;
+let _delType = 'recommend';
+
+function åbnDelModal(ratingId) {
+  _delRatingId = ratingId;
+  _delType = 'recommend';
+  document.getElementById('del-type-anbefal').className = 'del-type-knap aktiv-anbefal';
+  document.getElementById('del-type-advarsel').className = 'del-type-knap';
+  document.getElementById('del-besked').value = '';
+  document.getElementById('del-modal-overlay').classList.add('aaben');
+}
+
+function lukkDelModal(e) {
+  if (!e || e.target === document.getElementById('del-modal-overlay'))
+    document.getElementById('del-modal-overlay').classList.remove('aaben');
+}
+
+function vælgDelType(type) {
+  _delType = type;
+  document.getElementById('del-type-anbefal').className = 'del-type-knap' + (type === 'recommend' ? ' aktiv-anbefal' : '');
+  document.getElementById('del-type-advarsel').className = 'del-type-knap' + (type === 'warn' ? ' aktiv-advarsel' : '');
+}
+
+async function bekræftDel() {
+  const knap = document.getElementById('del-gem-knap');
+  const besked = document.getElementById('del-besked').value.trim();
+  knap.disabled = true;
+  knap.innerHTML = '<span class="spinner"></span>';
+  const { error } = await sb.from('shared_ratings').insert({
+    from_user_id: aktivBruger.id,
+    rating_id: _delRatingId,
+    type: _delType,
+    besked: besked || null,
+  });
+  knap.disabled = false;
+  knap.textContent = 'Share with followers';
+  if (error) { alert('Could not share. Please try again.'); return; }
+  document.getElementById('del-modal-overlay').classList.remove('aaben');
 }
 
 // ── PROFILE / STATS ───────────────────────────────────────
