@@ -97,9 +97,47 @@
       border-bottom: 1px solid var(--border);
       padding: calc(var(--safe-top) + 14px) 20px 14px;
       position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
     }
     .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--sort); letter-spacing: -.3px; }
     .logo-tagline { font-size: 9px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--tekst-3); margin-top: 2px; }
+
+    /* ── USER AVATAR / DROPDOWN ── */
+    .header-avatar {
+      width: 34px; height: 34px; border-radius: 17px; background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: white; cursor: pointer;
+      border: none; font-family: inherit; flex-shrink: 0;
+      transition: opacity .15s;
+    }
+    .header-avatar:hover { opacity: .82; }
+    .bruger-dropdown-overlay { position: fixed; inset: 0; z-index: 150; display: none; }
+    .bruger-dropdown-overlay.aaben { display: block; }
+    .bruger-dropdown {
+      position: fixed; top: calc(var(--safe-top) + 62px); right: 16px;
+      background: var(--kort); border: 1px solid var(--border);
+      border-radius: 12px; padding: 6px; min-width: 200px; z-index: 160;
+      box-shadow: 0 8px 24px rgba(28,24,20,.12);
+    }
+    .dd-info { padding: 10px 12px 12px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+    .dd-navn { font-size: 14px; font-weight: 700; color: var(--sort); }
+    .dd-email { font-size: 11px; color: var(--tekst-3); margin-top: 2px; }
+    .dd-knap {
+      width: 100%; background: none; border: none; text-align: left;
+      padding: 10px 12px; font-size: 14px; font-weight: 500; color: var(--tekst);
+      font-family: inherit; cursor: pointer; border-radius: 7px; display: block;
+      transition: background .1s;
+    }
+    .dd-knap:hover { background: var(--baggrund); }
+    .dd-knap.fare { color: var(--roed); }
+
+    /* ── EDIT PROFILE MODAL ── */
+    .rediger-overlay { position: fixed; inset: 0; background: rgba(28,24,20,.5); display: none; align-items: center; justify-content: center; z-index: 200; padding: 24px; }
+    .rediger-overlay.aaben { display: flex; }
+    .rediger-boks { background: var(--kort); border-radius: 16px; padding: 24px; width: 100%; max-width: 380px; }
+    .rediger-titel { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .rediger-under { font-size: 13px; color: var(--tekst-3); margin-bottom: 20px; }
+    .rediger-fejl { font-size: 13px; color: var(--roed); margin-top: 8px; min-height: 18px; }
 
     /* ── NAV ── */
     nav {
@@ -332,9 +370,37 @@
 <!-- MAIN APP -->
 <div id="app" style="display:none">
   <header>
-    <div class="logo">CoffeeBuddies</div>
-    <div class="logo-tagline">The grind is real</div>
+    <div>
+      <div class="logo">CoffeeBuddies</div>
+      <div class="logo-tagline">The grind is real</div>
+    </div>
+    <button class="header-avatar" id="header-avatar" onclick="toggleDropdown()">?</button>
   </header>
+
+  <!-- USER DROPDOWN -->
+  <div class="bruger-dropdown-overlay" id="dropdown-overlay" onclick="lukkDropdown()">
+    <div class="bruger-dropdown" onclick="event.stopPropagation()">
+      <div class="dd-info">
+        <div class="dd-navn" id="dd-navn">–</div>
+        <div class="dd-email" id="dd-email">–</div>
+      </div>
+      <button class="dd-knap" onclick="åbnRedigerProfil()">✏️  Edit profile</button>
+      <button class="dd-knap fare" onclick="logUd()">Sign out</button>
+    </div>
+  </div>
+
+  <!-- EDIT PROFILE MODAL -->
+  <div class="rediger-overlay" id="rediger-overlay" onclick="lukkRedigerProfil(event)">
+    <div class="rediger-boks" onclick="event.stopPropagation()">
+      <div class="rediger-titel">Edit Profile</div>
+      <div class="rediger-under">Change your username</div>
+      <div class="felt-label">Username</div>
+      <input type="text" id="rediger-brugernavn" placeholder="CoffeeBuddy42" autocomplete="username" />
+      <div class="rediger-fejl" id="rediger-fejl"></div>
+      <button class="gem-knap" id="rediger-gem-knap" onclick="gemProfil()" style="margin-top:16px;margin-bottom:0">Save</button>
+      <button class="annuller-knap" onclick="lukkRedigerProfil()" style="margin-top:8px;margin-bottom:0">Cancel</button>
+    </div>
+  </div>
   <main>
     <!-- COFFEES LIST -->
     <div class="side aktiv" id="side-liste">
@@ -472,7 +538,10 @@ async function indlaesBruger(user) {
 }
 
 function opdaterBrugerUI() {
-  // username/avatar rendered inline in gengiStats()
+  const initial = brugernavn[0]?.toUpperCase() ?? '?';
+  document.getElementById('header-avatar').textContent = initial;
+  document.getElementById('dd-navn').textContent = brugernavn;
+  document.getElementById('dd-email').textContent = aktivBruger?.email ?? '';
 }
 
 function visApp() {
@@ -550,7 +619,44 @@ async function glemt() {
 }
 
 async function logUd() {
+  lukkDropdown();
   await sb.auth.signOut();
+}
+
+// ── USER DROPDOWN ─────────────────────────────────────────
+function toggleDropdown() { document.getElementById('dropdown-overlay').classList.toggle('aaben'); }
+function lukkDropdown()   { document.getElementById('dropdown-overlay').classList.remove('aaben'); }
+
+function åbnRedigerProfil() {
+  lukkDropdown();
+  document.getElementById('rediger-brugernavn').value = brugernavn;
+  document.getElementById('rediger-fejl').textContent = '';
+  document.getElementById('rediger-overlay').classList.add('aaben');
+  setTimeout(() => document.getElementById('rediger-brugernavn').focus(), 50);
+}
+function lukkRedigerProfil(e) {
+  if (!e || e.target === document.getElementById('rediger-overlay'))
+    document.getElementById('rediger-overlay').classList.remove('aaben');
+}
+async function gemProfil() {
+  const nytNavn = document.getElementById('rediger-brugernavn').value.trim();
+  const fejlEl  = document.getElementById('rediger-fejl');
+  const knap    = document.getElementById('rediger-gem-knap');
+  fejlEl.textContent = '';
+  if (!nytNavn) { fejlEl.textContent = 'Please enter a username.'; return; }
+  if (nytNavn.length < 3) { fejlEl.textContent = 'Username must be at least 3 characters.'; return; }
+  if (nytNavn === brugernavn) { lukkRedigerProfil(); return; }
+
+  const { data: existing } = await sb.from('profiles').select('username').eq('username', nytNavn).neq('id', aktivBruger.id).single();
+  if (existing) { fejlEl.textContent = 'Username is already taken.'; return; }
+
+  knap.disabled = true; knap.innerHTML = '<span class="spinner"></span>';
+  const { error } = await sb.from('profiles').update({ username: nytNavn }).eq('id', aktivBruger.id);
+  knap.disabled = false; knap.textContent = 'Save';
+  if (error) { fejlEl.textContent = 'Could not save. Please try again.'; return; }
+  brugernavn = nytNavn;
+  opdaterBrugerUI();
+  document.getElementById('rediger-overlay').classList.remove('aaben');
 }
 
 // ── DATA ─────────────────────────────────────────────────
