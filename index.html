@@ -90,25 +90,6 @@
     .auth-knap:disabled { opacity: .45; }
     .auth-fejl { font-size: 13px; color: #E07070; margin-top: 12px; text-align: center; min-height: 18px; }
 
-    /* ── HEADER ── */
-    header {
-      background: var(--sort);
-      color: #F5F1EB;
-      padding: calc(var(--safe-top) + 14px) 16px 14px;
-      position: sticky; top: 0; z-index: 50;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid rgba(245,241,235,.07);
-    }
-    .header-venstre { display: flex; align-items: baseline; gap: 10px; }
-    header .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #F5F1EB; letter-spacing: -.3px; }
-    header .logo-sub { font-size: 9px; font-weight: 600; color: rgba(245,241,235,.28); letter-spacing: 2px; text-transform: uppercase; }
-    .bruger-knap {
-      display: flex; align-items: center; gap: 8px;
-      background: rgba(245,241,235,.07); border: 1px solid rgba(245,241,235,.1);
-      border-radius: 8px; padding: 7px 12px; cursor: pointer; transition: border-color .15s;
-    }
-    .bruger-avatar { width: 24px; height: 24px; border-radius: 12px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; }
-    .bruger-navn { font-size: 13px; font-weight: 600; color: #F5F1EB; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     /* ── NAV ── */
     nav {
@@ -236,16 +217,14 @@
     .modal-meta { font-size: 13px; color: var(--tekst-3); margin-bottom: 20px; }
     .modal-luk { float: right; background: var(--baggrund); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--tekst-2); }
 
-    /* ── USER MENU ── */
-    .bruger-menu-overlay { position: fixed; inset: 0; z-index: 150; display: none; }
-    .bruger-menu-overlay.aaben { display: block; }
-    .bruger-menu { position: fixed; top: calc(var(--safe-top) + 60px); right: 16px; background: #221E19; border: 1px solid rgba(245,241,235,.1); border-radius: 12px; padding: 8px; min-width: 180px; z-index: 160; box-shadow: 0 8px 32px rgba(0,0,0,.5); }
-    .bruger-menu-info { padding: 10px 12px 12px; border-bottom: 1px solid rgba(245,241,235,.08); margin-bottom: 6px; }
-    .bruger-menu-brugernavn { font-size: 15px; font-weight: 700; color: #F5F1EB; }
-    .bruger-menu-email { font-size: 12px; color: rgba(245,241,235,.35); margin-top: 2px; }
-    .menu-knap { width: 100%; background: none; border: none; text-align: left; padding: 10px 12px; font-size: 14px; font-weight: 500; color: #F5F1EB; font-family: inherit; cursor: pointer; border-radius: 8px; }
-    .menu-knap:hover { background: rgba(245,241,235,.07); }
-    .menu-knap.fare { color: #E07070; }
+    /* ── SIGN OUT (profile page) ── */
+    .profil-signout { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .profil-bruger { display: flex; align-items: center; gap: 10px; }
+    .profil-avatar { width: 36px; height: 36px; border-radius: 18px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: white; flex-shrink: 0; }
+    .profil-navn { font-size: 16px; font-weight: 700; color: #F5F1EB; }
+    .profil-email { font-size: 12px; color: rgba(245,241,235,.35); margin-top: 1px; }
+    .signout-knap { background: rgba(245,241,235,.07); border: 1px solid rgba(245,241,235,.12); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: rgba(245,241,235,.6); cursor: pointer; font-family: inherit; transition: all .15s; white-space: nowrap; }
+    .signout-knap:hover { background: rgba(245,241,235,.12); color: #F5F1EB; }
 
     /* ── SPINNER ── */
     .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.2); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; }
@@ -268,7 +247,6 @@
       .valg-knap:hover:not(.aktiv) { background: #EDE5DA; border-color: #C8B8A0; }
       .skala-knap:hover:not(.aktiv), .score-knap:hover:not(.aktiv) { background: #EDE5DA; color: var(--grå); border-color: #C8B8A0; }
       .auth-knap:hover:not(:disabled) { opacity: .85; }
-      .bruger-knap:hover { border-color: rgba(245,241,235,.2); }
       .sort-knap:hover:not(.aktiv) { background: #EDE5DA; border-color: #C8B8A0; }
       .slet-knap:hover { opacity: .65; }
     }
@@ -343,18 +321,7 @@
 
 <!-- MAIN APP -->
 <div id="app" style="display:none">
-  <header>
-    <div class="header-venstre">
-      <span class="logo" id="header-logo">CoffeeBuddies</span>
-      <span class="logo-sub" id="header-sub">Taste Log</span>
-    </div>
-    <div class="bruger-knap" onclick="toggleBrugerMenu()">
-      <div class="bruger-avatar" id="avatar-bogstav">?</div>
-      <span class="bruger-navn" id="header-brugernavn">…</span>
-    </div>
-  </header>
-
-  <main>
+  <main style="padding-top:var(--safe-top)">
     <!-- COFFEES LIST -->
     <div class="side aktiv" id="side-liste">
       <div class="oversigt">
@@ -434,17 +401,6 @@
   </nav>
 </div>
 
-<!-- USER MENU -->
-<div class="bruger-menu-overlay" id="bruger-menu-overlay" onclick="lukkBrugerMenu()">
-  <div class="bruger-menu" onclick="event.stopPropagation()">
-    <div class="bruger-menu-info">
-      <div class="bruger-menu-brugernavn" id="menu-brugernavn">–</div>
-      <div class="bruger-menu-email" id="menu-email">–</div>
-    </div>
-    <button class="menu-knap fare" onclick="logUd()">Sign out</button>
-  </div>
-</div>
-
 <!-- DETAIL MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="lukModal(event)">
   <div class="modal" id="modal-indhold"></div>
@@ -502,10 +458,7 @@ async function indlaesBruger(user) {
 }
 
 function opdaterBrugerUI() {
-  document.getElementById('header-brugernavn').textContent = brugernavn;
-  document.getElementById('avatar-bogstav').textContent = brugernavn[0].toUpperCase();
-  document.getElementById('menu-brugernavn').textContent = brugernavn;
-  document.getElementById('menu-email').textContent = aktivBruger?.email ?? '';
+  // username/avatar rendered inline in gengiStats()
 }
 
 function visApp() {
@@ -583,13 +536,8 @@ async function glemt() {
 }
 
 async function logUd() {
-  lukkBrugerMenu();
   await sb.auth.signOut();
 }
-
-// ── USER MENU ─────────────────────────────────────────────
-function toggleBrugerMenu() { document.getElementById('bruger-menu-overlay').classList.toggle('aaben'); }
-function lukkBrugerMenu()   { document.getElementById('bruger-menu-overlay').classList.remove('aaben'); }
 
 // ── DATA ─────────────────────────────────────────────────
 async function hentAlleVurderinger(forcefresh = false) {
@@ -669,10 +617,6 @@ function visSide(side) {
     document.getElementById('side-'+s).classList.toggle('aktiv', s===side);
     document.getElementById('nav-'+s).classList.toggle('aktiv', s===side);
   });
-  const logoer = { liste:'CoffeeBuddies', ny: redigeringsId ? 'Edit Rating' : 'CoffeeBuddies', stats:'CoffeeBuddies' };
-  const subber = { liste:'Taste Log', ny: redigeringsId ? 'Update Rating' : 'New Rating', stats:'Your Coffee Profile' };
-  document.getElementById('header-logo').textContent = logoer[side];
-  document.getElementById('header-sub').textContent = subber[side];
   if (side === 'liste') gengiListe();
   if (side === 'stats') gengiStats();
   window.scrollTo(0,0);
@@ -985,7 +929,15 @@ function annullerForm() {
 
 // ── PROFILE / STATS ───────────────────────────────────────
 async function gengiStats() {
-  document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Your Taste Profile</div>`;
+  document.getElementById('stats-header').innerHTML = `
+    <div class="profil-signout">
+      <div class="profil-bruger">
+        <div class="profil-avatar">${brugernavn[0]?.toUpperCase() ?? '?'}</div>
+        <div><div class="profil-navn">${brugernavn}</div><div class="profil-email">${aktivBruger?.email ?? ''}</div></div>
+      </div>
+      <button class="signout-knap" onclick="logUd()">Sign out</button>
+    </div>
+    <div class="stats-titel">Your Taste Profile</div>`;
   document.getElementById('stats-indhold').innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
   let data;
   try {
@@ -995,7 +947,15 @@ async function gengiStats() {
     return;
   }
   if (!data.length) {
-    document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Your Taste Profile</div><div class="stats-under">No data yet</div>`;
+    document.getElementById('stats-header').innerHTML = `
+      <div class="profil-signout">
+        <div class="profil-bruger">
+          <div class="profil-avatar">${brugernavn[0]?.toUpperCase() ?? '?'}</div>
+          <div><div class="profil-navn">${brugernavn}</div><div class="profil-email">${aktivBruger?.email ?? ''}</div></div>
+        </div>
+        <button class="signout-knap" onclick="logUd()">Sign out</button>
+      </div>
+      <div class="stats-titel">Your Taste Profile</div><div class="stats-under">No data yet</div>`;
     document.getElementById('stats-indhold').innerHTML = '';
     return;
   }
@@ -1080,15 +1040,18 @@ async function gengiStats() {
 }
 
 // ── BOOT ──────────────────────────────────────────────────
-const origVisSide = visSide;
-window.visSide = function(side) {
-  if (side === 'ny' && !redigeringsId) {
-    document.getElementById('gem-knap').textContent = 'Save Rating';
-    document.getElementById('annuller-knap').textContent = 'Cancel';
-    initForm();
-  }
-  origVisSide(side);
-};
+// patch visSide so navigating to 'ny' resets the form when not editing
+(function() {
+  const orig = visSide;
+  visSide = function(side) {
+    if (side === 'ny' && !redigeringsId) {
+      document.getElementById('gem-knap').textContent = 'Save Rating';
+      document.getElementById('annuller-knap').textContent = 'Cancel';
+      initForm();
+    }
+    orig(side);
+  };
+})();
 
 document.addEventListener('DOMContentLoaded', start);
 </script>
