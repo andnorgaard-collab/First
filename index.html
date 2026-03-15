@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -41,7 +41,7 @@
       min-height: 100dvh;
     }
 
-    /* ── AUTH-SKÆRM ── */
+    /* ── AUTH ── */
     #auth-skærm {
       display: none;
       min-height: 100dvh;
@@ -95,37 +95,20 @@
       background: var(--sort);
       color: #F5F1EB;
       padding: calc(var(--safe-top) + 14px) 16px 14px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
       border-bottom: 1px solid rgba(245,241,235,.07);
     }
     .header-venstre { display: flex; align-items: baseline; gap: 10px; }
-    header .logo {
-      font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700;
-      color: #F5F1EB; letter-spacing: -.3px;
-    }
-    header .logo-sub {
-      font-size: 9px; font-weight: 600; color: rgba(245,241,235,.28);
-      letter-spacing: 2px; text-transform: uppercase;
-    }
+    header .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #F5F1EB; letter-spacing: -.3px; }
+    header .logo-sub { font-size: 9px; font-weight: 600; color: rgba(245,241,235,.28); letter-spacing: 2px; text-transform: uppercase; }
     .bruger-knap {
       display: flex; align-items: center; gap: 8px;
       background: rgba(245,241,235,.07); border: 1px solid rgba(245,241,235,.1);
       border-radius: 8px; padding: 7px 12px; cursor: pointer; transition: border-color .15s;
     }
-    .bruger-avatar {
-      width: 24px; height: 24px; border-radius: 12px; background: var(--accent);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700; color: white;
-    }
-    .bruger-navn {
-      font-size: 13px; font-weight: 600; color: #F5F1EB;
-      max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
+    .bruger-avatar { width: 24px; height: 24px; border-radius: 12px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; }
+    .bruger-navn { font-size: 13px; font-weight: 600; color: #F5F1EB; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     /* ── NAV ── */
     nav {
@@ -148,32 +131,22 @@
     .side { display: none; }
     .side.aktiv { display: block; }
 
-    /* ── OVERSIGT ── */
+    /* ── STATS BAR ── */
     .oversigt { background: var(--sort); display: flex; justify-content: space-around; padding: 18px 24px 22px; }
     .oversigt-tal { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: #F5F1EB; }
     .oversigt-label { font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(245,241,235,.3); margin-top: 5px; }
     .oversigt-deler { width: 1px; background: rgba(245,241,235,.1); }
 
-    /* ── KAFFE KORT ── */
+    /* ── COFFEE CARDS ── */
     .kaffe-liste { padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 10px; }
-    .kaffe-kort {
-      background: var(--kort); border-radius: 12px; padding: 16px;
-      border: 1px solid var(--border); cursor: pointer; transition: all .12s;
-    }
+    .kaffe-kort { background: var(--kort); border-radius: 12px; padding: 16px; border: 1px solid var(--border); cursor: pointer; transition: all .12s; }
     .kaffe-kort:active { background: #F0EAE0; border-color: #D4C8B8; }
     .kort-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
     .kort-navn { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 2px; color: var(--tekst); }
     .kort-meta { font-size: 12px; color: var(--tekst-2); margin-bottom: 6px; }
     .kort-tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .rister-tag {
-      border-radius: 4px; padding: 2px 7px; font-size: 9px; font-weight: 700;
-      letter-spacing: .8px; text-transform: uppercase; border: 1px solid;
-    }
-    .forarbejdning-tag {
-      border-radius: 4px; padding: 2px 7px; font-size: 9px; font-weight: 600;
-      letter-spacing: .5px; border: 1px solid var(--border); color: var(--tekst-2);
-      background: var(--baggrund); text-transform: uppercase;
-    }
+    .rister-tag { border-radius: 4px; padding: 2px 7px; font-size: 9px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; border: 1px solid; }
+    .forarbejdning-tag { border-radius: 4px; padding: 2px 7px; font-size: 9px; font-weight: 600; letter-spacing: .5px; border: 1px solid var(--border); color: var(--tekst-2); background: var(--baggrund); text-transform: uppercase; }
     .score-badge { border-radius: 10px; padding: 8px 12px; text-align: center; flex-shrink: 0; min-width: 60px; }
     .score-badge .score-num { color: white; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; display: block; line-height: 1; }
     .score-badge .score-tekst { color: rgba(255,255,255,.7); font-size: 9px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; display: block; margin-top: 2px; }
@@ -184,15 +157,12 @@
     .dato { font-size: 11px; color: var(--tekst-3); }
     .slet-knap { font-size: 12px; color: var(--roed); font-weight: 600; background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 0; transition: opacity .15s; }
 
-    /* ── TOM ── */
+    /* ── EMPTY STATE ── */
     .tom { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; padding: 40px; text-align: center; }
     .tom-emoji { font-size: 64px; margin-bottom: 20px; }
     .tom-titel { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 12px; }
     .tom-tekst { font-size: 15px; color: var(--tekst-2); line-height: 1.7; margin-bottom: 32px; max-width: 280px; }
-    .primær-knap {
-      background: var(--sort); color: #F5F1EB; border: none; border-radius: 8px;
-      padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
-    }
+    .primær-knap { background: var(--sort); color: #F5F1EB; border: none; border-radius: 8px; padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
 
     /* ── FORM ── */
     .form-container { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
@@ -208,14 +178,10 @@
     input:focus, textarea:focus { outline: none; border-color: var(--accent); }
     textarea { height: 90px; resize: none; }
     .valg-raekke { display: flex; flex-wrap: wrap; gap: 7px; }
-    .valg-knap {
-      border: 1px solid var(--border); border-radius: 6px; padding: 7px 13px;
-      background: var(--baggrund); font-size: 13px; font-weight: 500; color: var(--tekst-2);
-      cursor: pointer; font-family: inherit; transition: all .12s;
-    }
+    .valg-knap { border: 1px solid var(--border); border-radius: 6px; padding: 7px 13px; background: var(--baggrund); font-size: 13px; font-weight: 500; color: var(--tekst-2); cursor: pointer; font-family: inherit; transition: all .12s; }
     .valg-knap.aktiv { background: var(--accent); border-color: var(--accent); color: white; }
 
-    /* ── SMAGS SLIDER ── */
+    /* ── TASTE SLIDERS ── */
     .smags-slider { background: var(--baggrund); border-radius: 10px; padding: 12px; border: 1px solid var(--border); margin-bottom: 8px; }
     .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
     .slider-label { font-size: 14px; font-weight: 600; color: var(--tekst); }
@@ -223,31 +189,19 @@
     .slider-badge span { color: white; font-weight: 700; font-size: 12px; }
     .slider-beskr { font-size: 11px; color: var(--tekst-3); margin-bottom: 8px; }
     .skala { display: flex; gap: 3px; }
-    .skala-knap {
-      flex: 1; height: 32px; border-radius: 4px; border: 1px solid var(--border);
-      background: var(--baggrund); cursor: pointer; font-size: 10px; font-weight: 600;
-      color: var(--lysgrå); font-family: inherit; transition: all .1s;
-    }
+    .skala-knap { flex: 1; height: 32px; border-radius: 4px; border: 1px solid var(--border); background: var(--baggrund); cursor: pointer; font-size: 10px; font-weight: 600; color: var(--lysgrå); font-family: inherit; transition: all .1s; }
     .skala-knap.aktiv { background: var(--accent); border-color: var(--accent); color: white; }
     .skala-etiketter { display: flex; justify-content: space-between; margin-top: 3px; }
     .skala-etiketter span { font-size: 10px; color: var(--tekst-3); }
 
     /* ── SCORE ── */
     .score-knapper { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
-    .score-knap {
-      width: 46px; height: 46px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--baggrund); font-size: 16px; font-weight: 700; color: var(--lysgrå);
-      cursor: pointer; font-family: inherit; transition: all .12s;
-    }
+    .score-knap { width: 46px; height: 46px; border-radius: 8px; border: 1px solid var(--border); background: var(--baggrund); font-size: 16px; font-weight: 700; color: var(--lysgrå); cursor: pointer; font-family: inherit; transition: all .12s; }
     .score-knap.aktiv { background: var(--accent); border-color: var(--accent); color: white; }
     .samlet-badge-container { display: flex; justify-content: center; margin-bottom: 4px; }
-    .gem-knap {
-      background: var(--sort); color: #F5F1EB; border: none; border-radius: 10px;
-      padding: 17px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer;
-      font-family: inherit; margin-bottom: 8px; touch-action: manipulation; letter-spacing: .3px;
-    }
+    .gem-knap { background: var(--sort); color: #F5F1EB; border: none; border-radius: 10px; padding: 17px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; font-family: inherit; margin-bottom: 8px; touch-action: manipulation; letter-spacing: .3px; }
 
-    /* ── STATISTIK ── */
+    /* ── PROFILE / STATS ── */
     .stats-header { background: var(--sort); padding: 20px; color: #F5F1EB; }
     .stats-titel { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #F5F1EB; }
     .stats-under { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(245,241,235,.3); margin-bottom: 12px; }
@@ -282,15 +236,10 @@
     .modal-meta { font-size: 13px; color: var(--tekst-3); margin-bottom: 20px; }
     .modal-luk { float: right; background: var(--baggrund); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--tekst-2); }
 
-    /* ── BRUGER MENU ── */
+    /* ── USER MENU ── */
     .bruger-menu-overlay { position: fixed; inset: 0; z-index: 150; display: none; }
     .bruger-menu-overlay.aaben { display: block; }
-    .bruger-menu {
-      position: fixed; top: calc(var(--safe-top) + 60px); right: 16px;
-      background: #221E19; border: 1px solid rgba(245,241,235,.1); border-radius: 12px;
-      padding: 8px; min-width: 180px; z-index: 160;
-      box-shadow: 0 8px 32px rgba(0,0,0,.5);
-    }
+    .bruger-menu { position: fixed; top: calc(var(--safe-top) + 60px); right: 16px; background: #221E19; border: 1px solid rgba(245,241,235,.1); border-radius: 12px; padding: 8px; min-width: 180px; z-index: 160; box-shadow: 0 8px 32px rgba(0,0,0,.5); }
     .bruger-menu-info { padding: 10px 12px 12px; border-bottom: 1px solid rgba(245,241,235,.08); margin-bottom: 6px; }
     .bruger-menu-brugernavn { font-size: 15px; font-weight: 700; color: #F5F1EB; }
     .bruger-menu-email { font-size: 12px; color: rgba(245,241,235,.35); margin-top: 2px; }
@@ -298,11 +247,11 @@
     .menu-knap:hover { background: rgba(245,241,235,.07); }
     .menu-knap.fare { color: #E07070; }
 
-    /* ── INDLÆSNING ── */
+    /* ── SPINNER ── */
     .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.2); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── GRID PÅ IPAD ── */
+    /* ── TABLET GRID ── */
     @media (min-width: 600px) {
       .kaffe-liste { display: grid; grid-template-columns: 1fr 1fr; }
       .form-container { max-width: 640px; margin: 0 auto; }
@@ -311,7 +260,7 @@
       .auth-boks { padding: 36px 32px; }
     }
 
-    /* ── HOVER (desktop) ── */
+    /* ── HOVER ── */
     @media (hover: hover) {
       .kaffe-kort:hover { background: #F0EAE0; border-color: #D4C8B8; }
       .primær-knap:hover, .gem-knap:hover { background: var(--mørkgrå); }
@@ -324,101 +273,80 @@
       .slet-knap:hover { opacity: .65; }
     }
 
-    /* ── SØGNING & SORTERING ── */
+    /* ── SEARCH & SORT ── */
     .liste-toolbar { padding: 12px 16px 0; }
-    .søg-input {
-      width: 100%; border: 1px solid var(--border); border-radius: 8px;
-      padding: 10px 13px; font-size: 15px; color: var(--tekst); background: var(--kort);
-      font-family: inherit; margin-bottom: 8px;
-    }
+    .søg-input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 13px; font-size: 15px; color: var(--tekst); background: var(--kort); font-family: inherit; margin-bottom: 8px; }
     .søg-input:focus { outline: none; border-color: var(--accent); }
     .sort-raekke { display: flex; gap: 6px; flex-wrap: wrap; }
-    .sort-knap {
-      border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px;
-      background: var(--baggrund); font-size: 12px; font-weight: 600;
-      color: var(--tekst-2); cursor: pointer; font-family: inherit; transition: all .12s;
-    }
+    .sort-knap { border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px; background: var(--baggrund); font-size: 12px; font-weight: 600; color: var(--tekst-2); cursor: pointer; font-family: inherit; transition: all .12s; }
     .sort-knap.aktiv { background: var(--accent); border-color: var(--accent); color: white; }
 
-    /* ── SMAGSBAR LABELS ── */
+    /* ── TASTE BAR LABELS ── */
     .smags-bar-labels { display: flex; gap: 2px; margin-top: 2px; margin-bottom: 8px; }
     .smags-bar-label { flex: 1; font-size: 7px; font-weight: 600; color: var(--tekst-3); text-align: center; text-transform: uppercase; letter-spacing: .3px; }
 
-    /* ── ANNULLER ── */
-    .annuller-knap {
-      background: none; color: var(--tekst-2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 15px; font-size: 15px; font-weight: 500;
-      width: 100%; cursor: pointer; font-family: inherit; margin-bottom: 8px;
-      touch-action: manipulation; -webkit-appearance: none;
-    }
+    /* ── CANCEL BUTTON ── */
+    .annuller-knap { background: none; color: var(--tekst-2); border: 1px solid var(--border); border-radius: 10px; padding: 15px; font-size: 15px; font-weight: 500; width: 100%; cursor: pointer; font-family: inherit; margin-bottom: 8px; touch-action: manipulation; -webkit-appearance: none; }
 
-    /* ── GLEMT PASSWORD ── */
-    .glemt-knap {
-      background: none; border: none; color: rgba(245,241,235,.3);
-      font-size: 13px; cursor: pointer; font-family: inherit;
-      text-decoration: underline; touch-action: manipulation;
-    }
+    /* ── FORGOT PASSWORD ── */
+    .glemt-knap { background: none; border: none; color: rgba(245,241,235,.3); font-size: 13px; cursor: pointer; font-family: inherit; text-decoration: underline; touch-action: manipulation; }
 
-    /* ── SORT BØNNE-FORSLAG ── */
+    /* ── VARIETY SUGGESTIONS ── */
     .boennesort-forslag { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
-    .forslag-knap {
-      border: 1px dashed var(--border); border-radius: 4px; padding: 3px 9px;
-      background: none; font-size: 11px; color: var(--tekst-3); cursor: pointer;
-      font-family: inherit; transition: all .12s;
-    }
+    .forslag-knap { border: 1px dashed var(--border); border-radius: 4px; padding: 3px 9px; background: none; font-size: 11px; color: var(--tekst-3); cursor: pointer; font-family: inherit; transition: all .12s; }
     .forslag-knap:hover { border-color: var(--accent); color: var(--accent); }
   </style>
 </head>
 <body>
 
 
-<!-- AUTH-SKÆRM -->
+<!-- AUTH SCREEN -->
 <div id="auth-skærm" class="vis">
   <div class="auth-logo">CoffeeBuddies</div>
   <div class="auth-sub">The grind is real</div>
   <div class="auth-boks">
     <div class="auth-faner">
-      <div class="auth-fane aktiv" id="fane-login" onclick="skiftFane('login')">Log ind</div>
-      <div class="auth-fane" id="fane-opret" onclick="skiftFane('opret')">Opret konto</div>
+      <div class="auth-fane aktiv" id="fane-login" onclick="skiftFane('login')">Sign in</div>
+      <div class="auth-fane" id="fane-opret" onclick="skiftFane('opret')">Create account</div>
     </div>
 
-    <!-- LOGIN -->
+    <!-- SIGN IN -->
     <div id="login-form">
       <form onsubmit="event.preventDefault(); logInd()">
         <div class="auth-felt-label">Email</div>
-        <input class="auth-input" type="email" id="login-email" placeholder="din@email.dk" autocomplete="email" />
+        <input class="auth-input" type="email" id="login-email" placeholder="your@email.co.uk" autocomplete="email" />
         <div class="auth-felt-label">Password</div>
         <input class="auth-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
-        <button class="auth-knap" id="login-knap" type="submit">Log ind</button>
+        <button class="auth-knap" id="login-knap" type="submit">Sign in</button>
       </form>
       <div class="auth-fejl" id="login-fejl"></div>
       <div style="text-align:center;margin-top:14px">
-        <button onclick="glemt()" class="glemt-knap">Glemt password?</button>
+        <button onclick="glemt()" class="glemt-knap">Forgot password?</button>
       </div>
     </div>
 
-    <!-- OPRET KONTO -->
+    <!-- CREATE ACCOUNT -->
     <div id="opret-form" style="display:none">
       <form onsubmit="event.preventDefault(); opretKonto()">
-        <div class="auth-felt-label">Brugernavn</div>
+        <div class="auth-felt-label">Username</div>
         <input class="auth-input" type="text" id="opret-brugernavn" placeholder="CoffeeBuddy42" autocomplete="username" />
         <div class="auth-felt-label">Email</div>
-        <input class="auth-input" type="email" id="opret-email" placeholder="din@email.dk" autocomplete="email" />
+        <input class="auth-input" type="email" id="opret-email" placeholder="your@email.co.uk" autocomplete="email" />
         <div class="auth-felt-label">Password</div>
-        <input class="auth-input" type="password" id="opret-password" placeholder="Mindst 6 tegn" autocomplete="new-password" />
-        <button class="auth-knap" id="opret-knap" type="submit">Opret konto</button>
+        <input class="auth-input" type="password" id="opret-password" placeholder="At least 6 characters" autocomplete="new-password" />
+        <button class="auth-knap" id="opret-knap" type="submit">Create account</button>
       </form>
       <div class="auth-fejl" id="opret-fejl"></div>
     </div>
   </div>
 </div>
 
-<!-- HOVED-APP -->
+<!-- MAIN APP -->
 <div id="app" style="display:none">
   <header>
     <div class="header-venstre">
       <span class="logo" id="header-logo">CoffeeBuddies</span>
-      <span class="logo-sub" id="header-sub">Smagsregistrering</span>
+      <span class="logo-sub" id="header-sub">Taste Log</span>
     </div>
     <div class="bruger-knap" onclick="toggleBrugerMenu()">
       <div class="bruger-avatar" id="avatar-bogstav">?</div>
@@ -427,63 +355,66 @@
   </header>
 
   <main>
+    <!-- COFFEES LIST -->
     <div class="side aktiv" id="side-liste">
       <div class="oversigt">
-        <div><div class="oversigt-tal" id="antal-kaffer">0</div><div class="oversigt-label">Kaffer smagt</div></div>
+        <div><div class="oversigt-tal" id="antal-kaffer">0</div><div class="oversigt-label">Coffees Tasted</div></div>
         <div class="oversigt-deler"></div>
-        <div><div class="oversigt-tal" id="gns-score">–</div><div class="oversigt-label">Gns. score</div></div>
+        <div><div class="oversigt-tal" id="gns-score">–</div><div class="oversigt-label">Avg. Score</div></div>
         <div class="oversigt-deler"></div>
-        <div><div class="oversigt-tal" id="bedste-score">–</div><div class="oversigt-label">Bedste</div></div>
+        <div><div class="oversigt-tal" id="bedste-score">–</div><div class="oversigt-label">Best</div></div>
       </div>
       <div class="liste-toolbar" id="liste-toolbar" style="display:none">
-        <input class="søg-input" type="text" id="søg-input" placeholder="Søg efter kaffe..." oninput="søgOgGengi()" />
+        <input class="søg-input" type="text" id="søg-input" placeholder="Search coffees..." oninput="søgOgGengi()" />
         <div class="sort-raekke">
-          <button class="sort-knap aktiv" id="sort-nyeste" onclick="sætSortering('nyeste')">Nyeste</button>
-          <button class="sort-knap" id="sort-score" onclick="sætSortering('score')">Bedste score</button>
-          <button class="sort-knap" id="sort-navn" onclick="sætSortering('navn')">Navn A-Z</button>
+          <button class="sort-knap aktiv" id="sort-nyeste" onclick="sætSortering('nyeste')">Latest</button>
+          <button class="sort-knap" id="sort-score" onclick="sætSortering('score')">Highest Score</button>
+          <button class="sort-knap" id="sort-navn" onclick="sætSortering('navn')">Name A–Z</button>
         </div>
       </div>
       <div id="kaffe-liste-container"></div>
     </div>
 
+    <!-- ADD / EDIT COFFEE -->
     <div class="side" id="side-ny">
       <div class="form-container">
         <div class="sektion">
-          <div class="sektion-titel">Kaffe-information</div>
-          <div class="felt-label">Kaffens navn *</div>
-          <input type="text" id="f-navn" placeholder="f.eks. Ethiopia Yirgacheffe" />
-          <div class="felt-label">Oprindelse / Producent</div>
-          <input type="text" id="f-oprindelse" placeholder="f.eks. Etiopien, La Cabra" />
-          <div class="felt-label">Bønnesort / Varietal</div>
-          <input type="text" id="f-boennesort" placeholder="f.eks. Gesha, Bourbon, Heirloom..." />
+          <div class="sektion-titel">Coffee Details</div>
+          <div class="felt-label">Coffee Name *</div>
+          <input type="text" id="f-navn" placeholder="e.g. Ethiopia Yirgacheffe" />
+          <div class="felt-label">Origin / Producer</div>
+          <input type="text" id="f-oprindelse" placeholder="e.g. Ethiopia, La Cabra" />
+          <div class="felt-label">Variety / Cultivar</div>
+          <input type="text" id="f-boennesort" placeholder="e.g. Gesha, Bourbon, Heirloom..." />
           <div class="boennesort-forslag" id="boennesort-forslag"></div>
-          <div class="felt-label">Risteringsgrad</div>
+          <div class="felt-label">Roast Level</div>
           <div class="valg-raekke" id="rister-valg"></div>
-          <div class="felt-label">Forarbejdning</div>
+          <div class="felt-label">Processing</div>
           <div class="valg-raekke" id="forarbejdning-valg"></div>
-          <div class="felt-label">Brygmetode</div>
+          <div class="felt-label">Brew Method</div>
           <div class="valg-raekke" id="bryg-valg"></div>
         </div>
         <div class="sektion">
-          <div class="sektion-titel">Smagsvurdering</div>
-          <div class="sektion-under">Skala 1 (svag) → 10 (intens)</div>
+          <div class="sektion-titel">Taste Assessment</div>
+          <div class="sektion-under">Scale 1 (mild) → 10 (intense)</div>
           <div id="smags-slidere"></div>
         </div>
         <div class="sektion">
-          <div class="sektion-titel">Samlet vurdering</div>
-          <div class="sektion-under">Hvor godt kan du lide denne kaffe?</div>
+          <div class="sektion-titel">Overall Rating</div>
+          <div class="sektion-under">How much do you enjoy this coffee?</div>
           <div class="samlet-badge-container"><div id="samlet-badge"></div></div>
           <div class="score-knapper" id="score-knapper"></div>
         </div>
         <div class="sektion">
-          <div class="sektion-titel">Noter</div>
-          <textarea id="f-noter" placeholder="Dine personlige noter om smag, aroma, tilberedning..."></textarea>
+          <div class="sektion-titel">Tasting Notes</div>
+          <textarea id="f-noter" placeholder="Your personal tasting notes on flavour, aroma, finish..."></textarea>
         </div>
-        <button class="annuller-knap" id="annuller-knap" onclick="annullerForm()">Annuller</button>
-        <button class="gem-knap" id="gem-knap" onclick="gemVurdering()">Gem vurdering</button>
+        <button class="annuller-knap" id="annuller-knap" onclick="annullerForm()">Cancel</button>
+        <button class="gem-knap" id="gem-knap" onclick="gemVurdering()">Save Rating</button>
       </div>
     </div>
 
+    <!-- PROFILE / STATS -->
     <div class="side" id="side-stats">
       <div class="stats-header" id="stats-header"></div>
       <div class="stats-grid" id="stats-indhold"></div>
@@ -492,29 +423,29 @@
 
   <nav>
     <button class="aktiv" id="nav-liste" onclick="visSide('liste')">
-      <span class="ikon">☕</span>Kaffer
+      <span class="ikon">☕</span>Coffees
     </button>
     <button id="nav-ny" onclick="visSide('ny')">
-      <span class="ikon">＋</span>Tilføj
+      <span class="ikon">＋</span>Add
     </button>
     <button id="nav-stats" onclick="visSide('stats')">
-      <span class="ikon">◎</span>Profil
+      <span class="ikon">◎</span>Profile
     </button>
   </nav>
 </div>
 
-<!-- BRUGER-MENU -->
+<!-- USER MENU -->
 <div class="bruger-menu-overlay" id="bruger-menu-overlay" onclick="lukkBrugerMenu()">
   <div class="bruger-menu" onclick="event.stopPropagation()">
     <div class="bruger-menu-info">
       <div class="bruger-menu-brugernavn" id="menu-brugernavn">–</div>
       <div class="bruger-menu-email" id="menu-email">–</div>
     </div>
-    <button class="menu-knap fare" onclick="logUd()">Log ud</button>
+    <button class="menu-knap fare" onclick="logUd()">Sign out</button>
   </div>
 </div>
 
-<!-- DETALJE MODAL -->
+<!-- DETAIL MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="lukModal(event)">
   <div class="modal" id="modal-indhold"></div>
 </div>
@@ -532,22 +463,20 @@ let _cacheTid = 0;
 let søgeord = '';
 let aktivSortering = 'nyeste';
 
-// ── OPSTART ──────────────────────────────────────────────
+// ── INIT ─────────────────────────────────────────────────
 async function start() {
   try {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   } catch (e) {
-    document.getElementById('login-fejl').textContent = 'Kunne ikke starte: ' + e.message;
+    document.getElementById('login-fejl').textContent = 'Could not start: ' + e.message;
     return;
   }
-
   try {
     const { data: { session } } = await sb.auth.getSession();
     if (session?.user) {
       await indlaesBruger(session.user);
       visApp();
     }
-
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
         await indlaesBruger(session.user);
@@ -561,7 +490,7 @@ async function start() {
       }
     });
   } catch (e) {
-    document.getElementById('login-fejl').textContent = 'Fejl: ' + e.message;
+    document.getElementById('login-fejl').textContent = 'Error: ' + e.message;
   }
 }
 
@@ -586,7 +515,6 @@ function visApp() {
   gengiListe();
 }
 
-
 // ── AUTH ─────────────────────────────────────────────────
 function skiftFane(fane) {
   document.getElementById('fane-login').classList.toggle('aktiv', fane === 'login');
@@ -603,13 +531,13 @@ async function logInd() {
   const fejlEl = document.getElementById('login-fejl');
   const knap = document.getElementById('login-knap');
   fejlEl.textContent = '';
-  if (!email || !password) { fejlEl.textContent = 'Udfyld email og password.'; return; }
+  if (!email || !password) { fejlEl.textContent = 'Please enter your email and password.'; return; }
   knap.disabled = true;
   knap.innerHTML = '<span class="spinner"></span>';
   const { error } = await sb.auth.signInWithPassword({ email, password });
   knap.disabled = false;
-  knap.textContent = 'Log ind';
-  if (error) fejlEl.textContent = 'Forkert email eller password.';
+  knap.textContent = 'Sign in';
+  if (error) fejlEl.textContent = 'Incorrect email or password.';
 }
 
 async function opretKonto() {
@@ -619,41 +547,39 @@ async function opretKonto() {
   const fejlEl = document.getElementById('opret-fejl');
   const knap = document.getElementById('opret-knap');
   fejlEl.textContent = '';
-  if (!bNavn) { fejlEl.textContent = 'Vælg et brugernavn.'; return; }
-  if (bNavn.length < 3) { fejlEl.textContent = 'Brugernavnet skal være mindst 3 tegn.'; return; }
-  if (!email) { fejlEl.textContent = 'Angiv en email.'; return; }
-  if (password.length < 6) { fejlEl.textContent = 'Password skal være mindst 6 tegn.'; return; }
+  if (!bNavn) { fejlEl.textContent = 'Please choose a username.'; return; }
+  if (bNavn.length < 3) { fejlEl.textContent = 'Username must be at least 3 characters.'; return; }
+  if (!email) { fejlEl.textContent = 'Please enter an email address.'; return; }
+  if (password.length < 6) { fejlEl.textContent = 'Password must be at least 6 characters.'; return; }
 
-  const { data: eksisterende } = await sb.from('profiles').select('username').eq('username', bNavn).single();
-  if (eksisterende) { fejlEl.textContent = 'Brugernavnet er allerede taget.'; return; }
+  const { data: existing } = await sb.from('profiles').select('username').eq('username', bNavn).single();
+  if (existing) { fejlEl.textContent = 'Username is already taken.'; return; }
 
   knap.disabled = true;
   knap.innerHTML = '<span class="spinner"></span>';
-
   const { data, error } = await sb.auth.signUp({ email, password });
   if (error) {
     knap.disabled = false;
-    knap.textContent = 'Opret konto';
-    fejlEl.textContent = error.message === 'User already registered' ? 'Email er allerede registreret.' : 'Noget gik galt. Prøv igen.';
+    knap.textContent = 'Create account';
+    fejlEl.textContent = error.message === 'User already registered' ? 'Email address is already registered.' : 'Something went wrong. Please try again.';
     return;
   }
-
   if (data.user) {
     await sb.from('profiles').insert({ id: data.user.id, username: bNavn });
   }
   knap.disabled = false;
-  knap.textContent = 'Opret konto';
+  knap.textContent = 'Create account';
 }
 
 async function glemt() {
   const email = document.getElementById('login-email').value.trim();
   const fejlEl = document.getElementById('login-fejl');
-  if (!email) { fejlEl.style.color = '#E07070'; fejlEl.textContent = 'Skriv din email øverst og prøv igen.'; return; }
+  if (!email) { fejlEl.style.color = '#E07070'; fejlEl.textContent = 'Enter your email address above and try again.'; return; }
   const { error } = await sb.auth.resetPasswordForEmail(email, {
     redirectTo: window.location.href.split('?')[0].split('#')[0]
   });
   fejlEl.style.color = error ? '#E07070' : '#7DBF82';
-  fejlEl.textContent = error ? 'Kunne ikke sende email.' : 'Reset-link sendt til ' + email;
+  fejlEl.textContent = error ? 'Could not send email.' : 'Reset link sent to ' + email;
 }
 
 async function logUd() {
@@ -661,15 +587,11 @@ async function logUd() {
   await sb.auth.signOut();
 }
 
-// ── BRUGER MENU ──────────────────────────────────────────
-function toggleBrugerMenu() {
-  document.getElementById('bruger-menu-overlay').classList.toggle('aaben');
-}
-function lukkBrugerMenu() {
-  document.getElementById('bruger-menu-overlay').classList.remove('aaben');
-}
+// ── USER MENU ─────────────────────────────────────────────
+function toggleBrugerMenu() { document.getElementById('bruger-menu-overlay').classList.toggle('aaben'); }
+function lukkBrugerMenu()   { document.getElementById('bruger-menu-overlay').classList.remove('aaben'); }
 
-// ── DATA (Supabase) ──────────────────────────────────────
+// ── DATA ─────────────────────────────────────────────────
 async function hentAlleVurderinger(forcefresh = false) {
   if (!aktivBruger) return [];
   const nu = Date.now();
@@ -689,46 +611,38 @@ function ugyldiggørCache() { _cacheData = null; }
 
 async function gemVurderingDB(v) {
   const row = {
-    id: v.id,
-    user_id: aktivBruger.id,
-    navn: v.navn,
-    oprindelse: v.oprindelse,
-    risteringsgrad: v.risteringsgrad,
-    brygmetode: v.brygmetode,
-    vurderede_af: brugernavn,
-    smag: v.smag,
-    samlet_score: v.samletScore,
-    noter: v.noter,
-    dato: v.dato,
-    forarbejdning: v.forarbejdning,
-    boennesort: v.boennesort,
+    id: v.id, user_id: aktivBruger.id, navn: v.navn, oprindelse: v.oprindelse,
+    risteringsgrad: v.risteringsgrad, forarbejdning: v.forarbejdning,
+    boennesort: v.boennesort, brygmetode: v.brygmetode,
+    vurderede_af: brugernavn, smag: v.smag, samlet_score: v.samletScore,
+    noter: v.noter, dato: v.dato,
   };
   const { error } = await sb.from('coffee_ratings').upsert(row);
-  if (error) throw new Error('Gem fejlede: ' + error.message);
+  if (error) throw new Error('Save failed: ' + error.message);
 }
 
 async function sletVurderingDB(id) {
   await sb.from('coffee_ratings').delete().eq('id', id).eq('user_id', aktivBruger.id);
 }
 
-// ── HJÆLPERE ─────────────────────────────────────────────
-const RISTERINGSGRADER = ['Lys','Medium','Mørk','Espresso'];
-const RISTER_FARVER = { Lys:'#F0E6D2', Medium:'#C4956A', Mørk:'#6B4726', Espresso:'#2A1A0E' };
-const RISTER_TEKST  = { Lys:'#6B4726', Medium:'#FFF',    Mørk:'#FFF',    Espresso:'#F5F1EB' };
+// ── CONSTANTS ────────────────────────────────────────────
+const RISTERINGSGRADER = ['Light','Medium','Dark','Espresso'];
+const RISTER_FARVER = { Light:'#F0E6D2', Medium:'#C4956A', Dark:'#6B4726', Espresso:'#2A1A0E' };
+const RISTER_TEKST  = { Light:'#6B4726', Medium:'#FFF',    Dark:'#FFF',    Espresso:'#F5F1EB' };
 
 const FORARBEJDNINGER = ['Washed','Natural','Honey','Anaerobic','Co-ferment','Wet-hulled','Experimental'];
 
-const BRYGMETODER = ['Filterkaffe','Espresso','Moka Pot','French Press','Pour Over','AeroPress','Cold Brew','Kapselmaskine'];
+const BRYGMETODER = ['Filter','Espresso','Moka Pot','French Press','Pour Over','AeroPress','Cold Brew','Capsule'];
 
 const BOENNESORTER = ['Gesha','Bourbon','Typica','Caturra','Catuai','SL28','SL34','Heirloom','Pacamara','Mundo Novo','Yellow Bourbon','Castillo'];
 
 const SMAG_FELTER = [
-  { key:'syre',      label:'Syre',      beskr:'Frisk og levende syre' },
-  { key:'bitterhed', label:'Bitterhed', beskr:'Behagelig bitterhed' },
-  { key:'soedme',    label:'Sødme',     beskr:'Naturlig sødme' },
-  { key:'fylde',     label:'Fylde',     beskr:'Kaffens krop og tykkelse' },
-  { key:'aroma',     label:'Aroma',     beskr:'Duft og aroma' },
-  { key:'eftersmag', label:'Eftersmag', beskr:'Lang og god eftersmag' },
+  { key:'syre',      label:'Acidity',    beskr:'Fresh and vibrant acidity' },
+  { key:'bitterhed', label:'Bitterness', beskr:'Pleasant bitterness' },
+  { key:'soedme',    label:'Sweetness',  beskr:'Natural sweetness' },
+  { key:'fylde',     label:'Body',       beskr:"Coffee's body and mouthfeel" },
+  { key:'aroma',     label:'Aroma',      beskr:'Fragrance and aroma' },
+  { key:'eftersmag', label:'Aftertaste', beskr:'Long and pleasant finish' },
 ];
 
 function scorefarve(s) {
@@ -738,14 +652,14 @@ function scorefarve(s) {
   return '#C4A882';
 }
 function scoretekst(s) {
-  if (s >= 9) return 'Fremragende';
-  if (s >= 7) return 'Meget god';
-  if (s >= 5) return 'God';
-  if (s >= 3) return 'Middel';
-  return 'Ikke min kop';
+  if (s >= 9) return 'Outstanding';
+  if (s >= 7) return 'Very Good';
+  if (s >= 5) return 'Good';
+  if (s >= 3) return 'Average';
+  return 'Not my cup';
 }
 function datoTekst(iso) {
-  return new Date(iso).toLocaleDateString('da-DK', { day:'numeric', month:'short', year:'numeric' });
+  return new Date(iso).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
 }
 function gns(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
 
@@ -755,8 +669,8 @@ function visSide(side) {
     document.getElementById('side-'+s).classList.toggle('aktiv', s===side);
     document.getElementById('nav-'+s).classList.toggle('aktiv', s===side);
   });
-  const logoer = { liste:'CoffeeBuddies', ny: redigeringsId ? 'Rediger' : 'CoffeeBuddies', stats:'CoffeeBuddies' };
-  const subber = { liste:'Smagsregistrering', ny: redigeringsId ? 'Opdater vurdering' : 'Ny vurdering', stats:'Din kaffeprofil' };
+  const logoer = { liste:'CoffeeBuddies', ny: redigeringsId ? 'Edit Rating' : 'CoffeeBuddies', stats:'CoffeeBuddies' };
+  const subber = { liste:'Taste Log', ny: redigeringsId ? 'Update Rating' : 'New Rating', stats:'Your Coffee Profile' };
   document.getElementById('header-logo').textContent = logoer[side];
   document.getElementById('header-sub').textContent = subber[side];
   if (side === 'liste') gengiListe();
@@ -764,7 +678,7 @@ function visSide(side) {
   window.scrollTo(0,0);
 }
 
-// ── LISTE ────────────────────────────────────────────────
+// ── COFFEE LIST ───────────────────────────────────────────
 async function gengiListe() {
   const container = document.getElementById('kaffe-liste-container');
   container.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
@@ -772,7 +686,7 @@ async function gengiListe() {
   try {
     data = await hentAlleVurderinger();
   } catch (e) {
-    container.innerHTML = `<div class="tom"><div class="tom-titel" style="font-size:16px">Fejl</div><div class="tom-tekst">${e.message}</div></div>`;
+    container.innerHTML = `<div class="tom"><div class="tom-titel" style="font-size:16px">Error</div><div class="tom-tekst">${e.message}</div></div>`;
     return;
   }
   document.getElementById('antal-kaffer').textContent = data.length;
@@ -786,9 +700,9 @@ async function gengiListe() {
     søgeord = '';
     container.innerHTML = `<div class="tom">
       <div class="tom-emoji">☕</div>
-      <div class="tom-titel">Ingen kaffer endnu</div>
-      <div class="tom-tekst">Tilføj din første kaffevurdering og begynd at kortlægge din smagsprofil!</div>
-      <button class="primær-knap" onclick="visSide('ny')">Tilføj første kaffe</button>
+      <div class="tom-titel">No Coffees Yet</div>
+      <div class="tom-tekst">Add your first coffee rating and start mapping your taste profile!</div>
+      <button class="primær-knap" onclick="visSide('ny')">Add First Coffee</button>
     </div>`;
     return;
   }
@@ -802,10 +716,10 @@ async function gengiListe() {
     ? data.filter(v => v.navn.toLowerCase().includes(søgeord) || (v.oprindelse||'').toLowerCase().includes(søgeord) || (v.boennesort||'').toLowerCase().includes(søgeord))
     : [...data];
   if (aktivSortering === 'score') vis.sort((a,b) => b.samlet_score - a.samlet_score);
-  else if (aktivSortering === 'navn') vis.sort((a,b) => a.navn.localeCompare(b.navn, 'da'));
+  else if (aktivSortering === 'navn') vis.sort((a,b) => a.navn.localeCompare(b.navn, 'en'));
 
   if (!vis.length) {
-    container.innerHTML = `<div class="tom"><div class="tom-tekst" style="margin-bottom:0">Ingen kaffe matcher søgningen.</div></div>`;
+    container.innerHTML = `<div class="tom"><div class="tom-tekst" style="margin-bottom:0">No coffees match your search.</div></div>`;
     return;
   }
 
@@ -814,7 +728,7 @@ async function gengiListe() {
       <div class="kort-top">
         <div style="flex:1;min-width:0">
           <div class="kort-navn">${v.navn}</div>
-          <div class="kort-meta">${v.oprindelse || 'Ukendt oprindelse'}${v.boennesort ? ' · ' + v.boennesort : ''}</div>
+          <div class="kort-meta">${v.oprindelse || 'Unknown origin'}${v.boennesort ? ' · ' + v.boennesort : ''}</div>
           <div class="kort-tags">
             <span class="rister-tag" style="background:${RISTER_FARVER[v.risteringsgrad]};color:${RISTER_TEKST[v.risteringsgrad]};border-color:${RISTER_FARVER[v.risteringsgrad]}">${v.risteringsgrad}</span>
             ${v.forarbejdning ? `<span class="forarbejdning-tag">${v.forarbejdning}</span>` : ''}
@@ -836,7 +750,7 @@ async function gengiListe() {
       </div>
       <div class="kort-bund">
         <span class="dato">${datoTekst(v.dato)}</span>
-        <button class="slet-knap" data-slet-id="${v.id}" onclick="sletVurdering(event,'${v.id}')">Slet</button>
+        <button class="slet-knap" data-slet-id="${v.id}" onclick="sletVurdering(event,'${v.id}')">Delete</button>
       </div>
     </div>`).join('') + '</div>';
 }
@@ -851,13 +765,13 @@ function sætSortering(s) {
   gengiListe();
 }
 
-// ── DETALJE MODAL ────────────────────────────────────────
+// ── DETAIL MODAL ──────────────────────────────────────────
 async function visDetalje(id) {
   const data = await hentAlleVurderinger();
   const v = data.find(x => x.id === id);
   if (!v) return;
   document.getElementById('modal-indhold').innerHTML = `
-    <button class="modal-luk" onclick="lukModal()">Luk</button>
+    <button class="modal-luk" onclick="lukModal()">Close</button>
     <div class="modal-titel">${v.navn}</div>
     <div class="modal-meta">
       ${[v.oprindelse, v.boennesort, v.risteringsgrad, v.forarbejdning, v.brygmetode].filter(Boolean).join(' · ')}
@@ -878,7 +792,7 @@ async function visDetalje(id) {
       </div>`).join('')}
     ${v.noter ? `<div style="margin-top:16px;padding:12px;background:var(--baggrund);border-radius:8px;font-size:14px;color:var(--tekst-2);line-height:1.6;border:1px solid var(--border)">${v.noter}</div>` : ''}
     <div style="margin-top:20px">
-      <button class="gem-knap" onclick="redigerVurdering('${id}')">Rediger</button>
+      <button class="gem-knap" onclick="redigerVurdering('${id}')">Edit</button>
     </div>`;
   document.getElementById('modal-overlay').classList.add('aaben');
 }
@@ -887,19 +801,19 @@ function lukModal(e) {
     document.getElementById('modal-overlay').classList.remove('aaben');
 }
 
-// ── SLET ─────────────────────────────────────────────────
+// ── DELETE ────────────────────────────────────────────────
 const _pendingSletter = new Set();
 async function sletVurdering(evt, id) {
   evt.stopPropagation();
   const btn = evt.currentTarget;
   if (!_pendingSletter.has(id)) {
     _pendingSletter.add(id);
-    btn.textContent = 'Er du sikker?';
+    btn.textContent = 'Are you sure?';
     btn.style.color = 'var(--sort)';
     setTimeout(() => {
       if (_pendingSletter.has(id)) {
         _pendingSletter.delete(id);
-        if (btn.isConnected) { btn.textContent = 'Slet'; btn.style.color = ''; }
+        if (btn.isConnected) { btn.textContent = 'Delete'; btn.style.color = ''; }
       }
     }, 3000);
     return;
@@ -914,7 +828,7 @@ async function sletVurdering(evt, id) {
 let redigeringsId = null;
 let valgRister = 'Medium';
 let valgForarbejdning = 'Washed';
-let valgBryg = 'Filterkaffe';
+let valgBryg = 'Filter';
 let smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
 let samletScore = 7;
 
@@ -938,7 +852,7 @@ function initForm() {
         ${[1,2,3,4,5,6,7,8,9,10].map(n => `
           <button class="skala-knap${n<=smagsVaerdier[f.key]?' aktiv':''}" onclick="saetSmag('${f.key}',${n})">${n}</button>`).join('')}
       </div>
-      <div class="skala-etiketter"><span>Svag</span><span>Intens</span></div>
+      <div class="skala-etiketter"><span>Mild</span><span>Intense</span></div>
     </div>`).join('');
   document.getElementById('score-knapper').innerHTML = [1,2,3,4,5,6,7,8,9,10].map(n => `
     <button class="score-knap${n===samletScore?' aktiv':''}" onclick="saetScore(${n})">${n}</button>`).join('');
@@ -1002,10 +916,10 @@ function opdaterSamletBadge() {
     </div>`;
 }
 
-// ── GEM ──────────────────────────────────────────────────
+// ── SAVE ─────────────────────────────────────────────────
 async function gemVurdering() {
   const navn = document.getElementById('f-navn').value.trim();
-  if (!navn) { alert('Angiv kaffens navn.'); return; }
+  if (!navn) { alert('Please enter the coffee name.'); return; }
   const knap = document.getElementById('gem-knap');
   knap.disabled = true;
   knap.innerHTML = '<span class="spinner"></span>';
@@ -1027,16 +941,16 @@ async function gemVurdering() {
     ugyldiggørCache();
   } catch (e) {
     knap.disabled = false;
-    knap.textContent = redigeringsId ? 'Opdater vurdering' : 'Gem vurdering';
-    alert('Kunne ikke gemme: ' + e.message);
+    knap.textContent = redigeringsId ? 'Update Rating' : 'Save Rating';
+    alert('Could not save: ' + e.message);
     return;
   }
   redigeringsId = null;
   smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filterkaffe';
+  samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
   ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => document.getElementById(id).value = '');
   knap.disabled = false;
-  knap.textContent = 'Gem vurdering';
+  knap.textContent = 'Save Rating';
   visSide('liste');
 }
 
@@ -1057,21 +971,21 @@ async function redigerVurdering(id) {
   document.getElementById('f-oprindelse').value = v.oprindelse || '';
   document.getElementById('f-boennesort').value = v.boennesort || '';
   document.getElementById('f-noter').value = v.noter || '';
-  document.getElementById('gem-knap').textContent = 'Opdater vurdering';
-  document.getElementById('annuller-knap').textContent = 'Annuller redigering';
+  document.getElementById('gem-knap').textContent = 'Update Rating';
+  document.getElementById('annuller-knap').textContent = 'Cancel Edit';
 }
 
 function annullerForm() {
   redigeringsId = null;
   smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filterkaffe';
+  samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
   ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   visSide('liste');
 }
 
-// ── STATISTIK ────────────────────────────────────────────
+// ── PROFILE / STATS ───────────────────────────────────────
 async function gengiStats() {
-  document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Din smagsprofil</div>`;
+  document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Your Taste Profile</div>`;
   document.getElementById('stats-indhold').innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
   let data;
   try {
@@ -1081,7 +995,7 @@ async function gengiStats() {
     return;
   }
   if (!data.length) {
-    document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Din smagsprofil</div><div class="stats-under">Ingen data endnu</div>`;
+    document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Your Taste Profile</div><div class="stats-under">No data yet</div>`;
     document.getElementById('stats-indhold').innerHTML = '';
     return;
   }
@@ -1091,11 +1005,11 @@ async function gengiStats() {
   const top = sorteret[0], anden = sorteret[1];
 
   document.getElementById('stats-header').innerHTML = `
-    <div class="stats-titel">Din smagsprofil</div>
-    <div class="stats-under">Baseret på ${data.length} vurdering${data.length!==1?'er':''}</div>
+    <div class="stats-titel">Your Taste Profile</div>
+    <div class="stats-under">Based on ${data.length} rating${data.length!==1?'s':''}</div>
     <div class="profil-boks"><div class="profil-tekst">
-      Du foretrækker kaffe med <strong>${top.label.toLowerCase()} (${smagsGns[top.key].toFixed(1)}/10)</strong>
-      og <strong>${anden.label.toLowerCase()} (${smagsGns[anden.key].toFixed(1)}/10)</strong> som fremtrædende egenskaber.
+      You prefer coffee with <strong>${top.label.toLowerCase()} (${smagsGns[top.key].toFixed(1)}/10)</strong>
+      and <strong>${anden.label.toLowerCase()} (${smagsGns[anden.key].toFixed(1)}/10)</strong> as prominent characteristics.
     </div></div>`;
 
   const risterMap = {}, brygMap = {}, forarbMap = {};
@@ -1112,7 +1026,7 @@ async function gengiStats() {
 
   document.getElementById('stats-indhold').innerHTML = `
     <div class="sektion">
-      <div class="sektion-titel">Gennemsnitlig smagsprofil</div>
+      <div class="sektion-titel">Average Taste Profile</div>
       ${SMAG_FELTER.map(f => `
         <div class="bar-container">
           <div class="bar-label-raekke"><span class="bar-label">${f.label}</span><span class="bar-vaerdi">${smagsGns[f.key].toFixed(1)}</span></div>
@@ -1120,37 +1034,37 @@ async function gengiStats() {
         </div>`).join('')}
     </div>
     <div class="sektion">
-      <div class="sektion-titel">Dine præferencer</div>
+      <div class="sektion-titel">Your Preferences</div>
       <div class="praef-raekke">
         <div class="praef-kort" style="background:#2A1C10">
           <div class="praef-emoji">🔥</div>
-          <div class="praef-label">Bedste ristering</div>
+          <div class="praef-label">Best Roast</div>
           <div class="praef-vaerdi">${bedsteRister[0]}</div>
-          <div class="praef-score">${gns(bedsteRister[1]).toFixed(1)}/10 gns.</div>
+          <div class="praef-score">${gns(bedsteRister[1]).toFixed(1)}/10 avg.</div>
         </div>
         <div class="praef-kort" style="background:#1E2A14">
           <div class="praef-emoji">☕</div>
-          <div class="praef-label">Bedste brygmetode</div>
+          <div class="praef-label">Best Brew Method</div>
           <div class="praef-vaerdi">${bedsteBryg[0]}</div>
-          <div class="praef-score">${gns(bedsteBryg[1]).toFixed(1)}/10 gns.</div>
+          <div class="praef-score">${gns(bedsteBryg[1]).toFixed(1)}/10 avg.</div>
         </div>
       </div>
       ${bedsteForarb ? `
       <div class="praef-raekke">
         <div class="praef-kort praef-fuld" style="background:#1A1E2A;display:flex">
           <div class="praef-emoji">💧</div>
-          <div><div class="praef-label">Bedste forarbejdning</div><div class="praef-vaerdi">${bedsteForarb[0]}</div><div class="praef-score">${gns(bedsteForarb[1]).toFixed(1)}/10 gns.</div></div>
+          <div><div class="praef-label">Best Processing</div><div class="praef-vaerdi">${bedsteForarb[0]}</div><div class="praef-score">${gns(bedsteForarb[1]).toFixed(1)}/10 avg.</div></div>
         </div>
       </div>` : ''}
       <div class="praef-raekke">
         <div class="praef-kort praef-fuld" style="background:#2A2015;display:flex">
           <div class="praef-emoji">⭐</div>
-          <div><div class="praef-label">Samlet gennemsnitsscore</div><div class="praef-vaerdi">${totalGns.toFixed(1)}/10</div></div>
+          <div><div class="praef-label">Overall Average Score</div><div class="praef-vaerdi">${totalGns.toFixed(1)}/10</div></div>
         </div>
       </div>
     </div>
     <div class="sektion">
-      <div class="sektion-titel">Dine bedste kaffer</div>
+      <div class="sektion-titel">Your Best Coffees</div>
       ${topKaffer.map((v,i) => `
         <div class="top-kaffe-raekke">
           <div class="top-nr">#${i+1}</div>
@@ -1165,12 +1079,12 @@ async function gengiStats() {
     </div>`;
 }
 
-// ── INIT ──────────────────────────────────────────────────
+// ── BOOT ──────────────────────────────────────────────────
 const origVisSide = visSide;
 window.visSide = function(side) {
   if (side === 'ny' && !redigeringsId) {
-    document.getElementById('gem-knap').textContent = 'Gem vurdering';
-    document.getElementById('annuller-knap').textContent = 'Annuller';
+    document.getElementById('gem-knap').textContent = 'Save Rating';
+    document.getElementById('annuller-knap').textContent = 'Cancel';
     initForm();
   }
   origVisSide(side);
