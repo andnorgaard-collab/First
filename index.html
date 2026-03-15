@@ -314,6 +314,21 @@
     .del-besked-felt { width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--baggrund); color: var(--sort); resize: none; height: 80px; margin-bottom: 16px; }
     .del-besked-felt:focus { outline: none; border-color: var(--accent); }
     .del-annuller { background: none; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-size: 15px; font-weight: 600; width: 100%; cursor: pointer; font-family: inherit; color: var(--tekst-2); margin-bottom: 8px; }
+    .del-modtager-sektion { margin-bottom: 16px; }
+    .del-modtager-label { font-size: 11px; font-weight: 600; color: var(--tekst-3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 8px; }
+    .del-modtager-liste { display: flex; flex-wrap: wrap; gap: 8px; max-height: 120px; overflow-y: auto; }
+    .del-modtager-chip { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--baggrund); cursor: pointer; font-size: 13px; font-weight: 600; color: var(--tekst-2); transition: all .15s; user-select: none; }
+    .del-modtager-chip.valgt { border-color: var(--accent); background: rgba(139,96,53,.12); color: var(--accent); }
+    .chip-avatar { width: 20px; height: 20px; border-radius: 10px; background: var(--accent); color: white; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .highscore-raekke { display: flex; align-items: center; border-radius: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+    .highscore-raekke:last-child { border-bottom: none; }
+    .highscore-nr { font-size: 14px; font-weight: 800; color: var(--accent); width: 26px; flex-shrink: 0; text-align: center; }
+    .highscore-info { flex: 1; min-width: 0; }
+    .highscore-navn { font-size: 14px; font-weight: 600; color: var(--sort); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .highscore-meta { font-size: 11px; color: var(--tekst-3); margin-top: 2px; }
+    .highscore-score { background: var(--sort); color: white; border-radius: 8px; padding: 5px 10px; text-align: center; flex-shrink: 0; }
+    .highscore-score-tal { font-size: 15px; font-weight: 800; line-height: 1; }
+    .highscore-score-lbl { font-size: 9px; letter-spacing: .4px; opacity: .65; margin-top: 2px; }
 
     /* ── MODAL ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(28,24,20,.7); display: none; align-items: flex-end; justify-content: center; z-index: 200; }
@@ -536,6 +551,14 @@
         </div>
         <div class="social-søg-resultater" id="social-søg-resultater"></div>
       </div>
+      <div style="padding:16px 16px 0">
+        <div class="sektion">
+          <div class="sektion-titel">☕ Top Coffees</div>
+          <div class="sektion-under">Highest-rated shared coffees in the community</div>
+          <div id="social-highscore-indhold"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:22px;height:22px;margin:8px auto"></div></div>
+        </div>
+      </div>
+      <div style="padding:12px 16px 4px"><div style="font-size:11px;font-weight:600;color:var(--tekst-3);text-transform:uppercase;letter-spacing:.6px">Friend Activity</div></div>
       <div class="stats-grid" id="social-feed-indhold"></div>
     </div>
   </main>
@@ -577,7 +600,13 @@
       </div>
     </div>
     <textarea class="del-besked-felt" id="del-besked" placeholder="Add a message to your friends (optional)..."></textarea>
-    <button class="gem-knap" id="del-gem-knap" onclick="bekræftDel()">Share with followers</button>
+    <div class="del-modtager-sektion">
+      <div class="del-modtager-label">Send to</div>
+      <div class="del-modtager-liste" id="del-modtager-liste">
+        <div class="del-modtager-chip valgt" id="chip-alle" onclick="toggleAlleChip()">Everyone</div>
+      </div>
+    </div>
+    <button class="gem-knap" id="del-gem-knap" onclick="bekræftDel()">Share with everyone</button>
     <button class="del-annuller" onclick="lukkDelModal()">Cancel</button>
   </div>
 </div>
@@ -1223,6 +1252,8 @@ function annullerForm() {
 
 // ── SOCIAL ────────────────────────────────────────────────
 let _følgerIds = null; // cache: set of IDs we follow
+let _mineFollowing = null; // cache: [{id, username}] of people I follow
+let _delValgte = new Set(); // selected recipients in share modal (empty = everyone)
 
 async function hentFølgerIds(force = false) {
   if (!force && _følgerIds !== null) return _følgerIds;
@@ -1231,14 +1262,64 @@ async function hentFølgerIds(force = false) {
   return _følgerIds;
 }
 
+async function hentMineFollowing(force = false) {
+  if (!force && _mineFollowing !== null) return _mineFollowing;
+  const { data } = await sb.from('follows')
+    .select('following_id, profiles!follows_following_id_fkey(username)')
+    .eq('follower_id', aktivBruger.id);
+  _mineFollowing = (data ?? []).map(r => ({ id: r.following_id, username: r.profiles?.username ?? r.following_id }));
+  return _mineFollowing;
+}
+
+async function populerModtagerListe() {
+  const liste = document.getElementById('del-modtager-liste');
+  const following = await hentMineFollowing();
+  if (!following.length) {
+    liste.innerHTML = '<span style="color:var(--tekst-3);font-size:13px;padding:4px 0">Follow people to send direct shares</span>';
+    return;
+  }
+  liste.innerHTML = `<div class="del-modtager-chip valgt" id="chip-alle" onclick="toggleAlleChip()">Everyone</div>` +
+    following.map(f => `<div class="del-modtager-chip" id="chip-${f.id}" onclick="toggleModtager('${f.id}')"><div class="chip-avatar">${f.username[0].toUpperCase()}</div><span>${f.username}</span></div>`).join('');
+}
+
+function toggleAlleChip() {
+  _delValgte.clear();
+  document.querySelectorAll('#del-modtager-liste .del-modtager-chip').forEach(c => c.classList.remove('valgt'));
+  document.getElementById('chip-alle')?.classList.add('valgt');
+  opdaterDelKnap();
+}
+
+function toggleModtager(uid) {
+  document.getElementById('chip-alle')?.classList.remove('valgt');
+  if (_delValgte.has(uid)) {
+    _delValgte.delete(uid);
+    document.getElementById(`chip-${uid}`)?.classList.remove('valgt');
+    if (_delValgte.size === 0) toggleAlleChip();
+  } else {
+    _delValgte.add(uid);
+    document.getElementById(`chip-${uid}`)?.classList.add('valgt');
+  }
+  opdaterDelKnap();
+}
+
+function opdaterDelKnap() {
+  const knap = document.getElementById('del-gem-knap');
+  if (!knap) return;
+  if (_delValgte.size === 0) knap.textContent = 'Share with everyone';
+  else if (_delValgte.size === 1) knap.textContent = 'Send to 1 person';
+  else knap.textContent = `Send to ${_delValgte.size} people`;
+}
+
 async function følg(uid) {
   await sb.from('follows').insert({ follower_id: aktivBruger.id, following_id: uid });
   _følgerIds = null;
+  _mineFollowing = null;
 }
 
 async function afFølg(uid) {
   await sb.from('follows').delete().eq('follower_id', aktivBruger.id).eq('following_id', uid);
   _følgerIds = null;
+  _mineFollowing = null;
 }
 
 async function søgBrugere() {
@@ -1277,15 +1358,58 @@ async function toggleFølg(uid, knap, navn) {
   gengiSocial(); // refresh feed
 }
 
+async function gengiHighscore() {
+  const el = document.getElementById('social-highscore-indhold');
+  if (!el) return;
+  const { data, error } = await sb.rpc('top_kaffe_highscore', { limit_n: 10 });
+  if (error || !data?.length) {
+    el.innerHTML = '<div style="color:var(--tekst-3);font-size:13px;padding:4px 0">No shared ratings yet</div>';
+    return;
+  }
+  el.innerHTML = data.map((r, i) => {
+    const meta = [r.oprindelse, r.risteringsgrad, r.brygmetode].filter(Boolean).join(' · ');
+    const antal = r.antal == 1 ? '1 rating' : `${r.antal} ratings`;
+    return `<div class="highscore-raekke">
+      <div class="highscore-nr">#${i + 1}</div>
+      <div class="highscore-info">
+        <div class="highscore-navn">${r.navn}</div>
+        <div class="highscore-meta">${[meta, antal].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div class="highscore-score">
+        <div class="highscore-score-tal">${r.avg_score}</div>
+        <div class="highscore-score-lbl">AVG</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 async function gengiSocial() {
   const feedEl = document.getElementById('social-feed-indhold');
   if (!feedEl) return;
   feedEl.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
 
+  gengiHighscore();
+
   const følgerIds = await hentFølgerIds();
   document.getElementById('social-undertitel').textContent = `Following ${følgerIds.size} ${følgerIds.size === 1 ? 'person' : 'people'}`;
 
-  if (følgerIds.size === 0) {
+  // Fetch broadcasts from followed users + direct shares to me
+  const ids = [...følgerIds];
+  let query = sb
+    .from('shared_ratings')
+    .select('id, type, besked, created_at, from_user_id, to_user_id, rating_id, profiles!shared_ratings_from_user_id_fkey(username), coffee_ratings(navn, oprindelse, samlet_score, brygmetode, risteringsgrad, forarbejdning)')
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (ids.length > 0) {
+    query = query.or(`to_user_id.eq.${aktivBruger.id},and(to_user_id.is.null,from_user_id.in.(${ids.join(',')}))`);
+  } else {
+    query = query.eq('to_user_id', aktivBruger.id);
+  }
+
+  const { data: poster, error } = await query;
+
+  if (følgerIds.size === 0 && (!poster?.length)) {
     feedEl.innerHTML = `<div class="tom">
       <div class="tom-emoji">◈</div>
       <div class="tom-titel">No one here yet</div>
@@ -1293,14 +1417,6 @@ async function gengiSocial() {
     </div>`;
     return;
   }
-
-  const ids = [...følgerIds];
-  const { data: poster, error } = await sb
-    .from('shared_ratings')
-    .select('id, type, besked, created_at, from_user_id, rating_id, profiles!shared_ratings_from_user_id_fkey(username), coffee_ratings(navn, oprindelse, samlet_score, brygmetode, risteringsgrad, forarbejdning)')
-    .in('from_user_id', ids)
-    .order('created_at', { ascending: false })
-    .limit(50);
 
   if (error || !poster?.length) {
     feedEl.innerHTML = `<div class="tom">
@@ -1356,9 +1472,12 @@ let _delType = 'recommend';
 function åbnDelModal(ratingId) {
   _delRatingId = ratingId;
   _delType = 'recommend';
+  _delValgte = new Set();
   document.getElementById('del-type-anbefal').className = 'del-type-knap aktiv-anbefal';
   document.getElementById('del-type-advarsel').className = 'del-type-knap';
   document.getElementById('del-besked').value = '';
+  document.getElementById('del-gem-knap').textContent = 'Share with everyone';
+  populerModtagerListe();
   document.getElementById('del-modal-overlay').classList.add('aaben');
 }
 
@@ -1378,14 +1497,15 @@ async function bekræftDel() {
   const besked = document.getElementById('del-besked').value.trim();
   knap.disabled = true;
   knap.innerHTML = '<span class="spinner"></span>';
-  const { error } = await sb.from('shared_ratings').insert({
-    from_user_id: aktivBruger.id,
-    rating_id: _delRatingId,
-    type: _delType,
-    besked: besked || null,
-  });
+  const base = { from_user_id: aktivBruger.id, rating_id: _delRatingId, type: _delType, besked: besked || null };
+  let error;
+  if (_delValgte.size === 0) {
+    ({ error } = await sb.from('shared_ratings').insert({ ...base, to_user_id: null }));
+  } else {
+    ({ error } = await sb.from('shared_ratings').insert([..._delValgte].map(uid => ({ ...base, to_user_id: uid }))));
+  }
   knap.disabled = false;
-  knap.textContent = 'Share with followers';
+  opdaterDelKnap();
   if (error) { alert('Could not share. Please try again.'); return; }
   document.getElementById('del-modal-overlay').classList.remove('aaben');
 }
