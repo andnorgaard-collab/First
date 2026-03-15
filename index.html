@@ -5,27 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="GrindrBros" />
-  <meta name="theme-color" content="#000000" />
-  <title>GrindrBros</title>
+  <meta name="apple-mobile-web-app-title" content="CoffeeBuddies" />
+  <meta name="theme-color" content="#1C1814" />
+  <title>CoffeeBuddies</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     :root {
-      --sort: #000;
-      --mørkgrå: #333;
-      --grå: #666;
-      --lysgrå: #999;
-      --border: #E5E5E5;
-      --baggrund: #F9F9F9;
-      --kort: #FFF;
-      --tekst: #111;
-      --tekst-2: #555;
-      --tekst-3: #999;
-      --roed: #CC0000;
-      --safe-top: env(safe-area-inset-top, 0px);
+      --sort:        #1C1814;
+      --mørkgrå:     #3D342C;
+      --grå:         #6B5E52;
+      --lysgrå:      #A89B90;
+      --border:      #E2D9CE;
+      --baggrund:    #F5F1EB;
+      --kort:        #FEFDFB;
+      --tekst:       #1C1814;
+      --tekst-2:     #6B5E52;
+      --tekst-3:     #A89B90;
+      --accent:      #8B6035;
+      --accent-lys:  #C4956A;
+      --accent-mørk: #5C3D1E;
+      --roed:        #B83232;
+      --safe-top:    env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -38,7 +41,6 @@
       min-height: 100dvh;
     }
 
-
     /* ── AUTH-SKÆRM ── */
     #auth-skærm {
       display: none;
@@ -47,39 +49,51 @@
       align-items: center;
       justify-content: center;
       padding: calc(var(--safe-top) + 32px) 24px calc(var(--safe-bottom) + 32px);
-      background: #000;
+      background: var(--sort);
     }
     #auth-skærm.vis { display: flex; }
-    .auth-logo { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: white; margin-bottom: 6px; text-align: center; }
-    .auth-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 48px; text-align: center; }
-    .auth-boks { background: #111; border: 1px solid #222; border-radius: 16px; padding: 28px 24px; width: 100%; max-width: 420px; }
-    .auth-faner { display: flex; border-bottom: 1px solid #222; margin-bottom: 24px; }
+    .auth-logo {
+      font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700;
+      color: #F5F1EB; margin-bottom: 8px; text-align: center; letter-spacing: -.5px;
+    }
+    .auth-sub {
+      font-size: 10px; letter-spacing: 3.5px; text-transform: uppercase;
+      color: rgba(245,241,235,.3); margin-bottom: 48px; text-align: center; font-weight: 500;
+    }
+    .auth-boks {
+      background: rgba(245,241,235,.04); border: 1px solid rgba(245,241,235,.09);
+      border-radius: 16px; padding: 28px 24px; width: 100%; max-width: 420px;
+    }
+    .auth-faner { display: flex; border-bottom: 1px solid rgba(245,241,235,.09); margin-bottom: 24px; }
     .auth-fane {
       flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 600;
-      color: rgba(255,255,255,.35); cursor: pointer; border-bottom: 2px solid transparent;
+      color: rgba(245,241,235,.3); cursor: pointer; border-bottom: 2px solid transparent;
       transition: all .15s; margin-bottom: -1px;
     }
-    .auth-fane.aktiv { color: white; border-bottom-color: white; }
-    .auth-felt-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 6px; margin-top: 16px; }
+    .auth-fane.aktiv { color: #F5F1EB; border-bottom-color: var(--accent-lys); }
+    .auth-felt-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      color: rgba(245,241,235,.35); margin-bottom: 6px; margin-top: 16px;
+    }
     .auth-felt-label:first-of-type { margin-top: 0; }
     .auth-input {
-      width: 100%; background: #1A1A1A; border: 1px solid #2A2A2A; border-radius: 8px;
-      padding: 13px 14px; font-size: 15px; color: white; font-family: inherit;
+      width: 100%; background: rgba(245,241,235,.05); border: 1px solid rgba(245,241,235,.1);
+      border-radius: 8px; padding: 13px 14px; font-size: 15px; color: #F5F1EB; font-family: inherit;
     }
-    .auth-input:focus { outline: none; border-color: #555; }
+    .auth-input:focus { outline: none; border-color: rgba(196,149,106,.6); }
     .auth-knap {
-      width: 100%; background: white; color: black; border: none; border-radius: 8px;
-      padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit;
-      margin-top: 24px; transition: opacity .15s; touch-action: manipulation; -webkit-appearance: none;
+      width: 100%; background: var(--accent-lys); color: var(--sort); border: none;
+      border-radius: 8px; padding: 15px; font-size: 16px; font-weight: 700;
+      cursor: pointer; font-family: inherit; margin-top: 24px; transition: opacity .15s;
+      touch-action: manipulation; -webkit-appearance: none; letter-spacing: .3px;
     }
-    .auth-knap:disabled { opacity: .5; }
-    .auth-fejl { font-size: 13px; color: #FF6B6B; margin-top: 12px; text-align: center; min-height: 18px; }
-    .auth-info { font-size: 13px; color: rgba(255,255,255,.4); margin-top: 12px; text-align: center; }
+    .auth-knap:disabled { opacity: .45; }
+    .auth-fejl { font-size: 13px; color: #E07070; margin-top: 12px; text-align: center; min-height: 18px; }
 
     /* ── HEADER ── */
     header {
-      background: #000;
-      color: white;
+      background: var(--sort);
+      color: #F5F1EB;
       padding: calc(var(--safe-top) + 14px) 16px 14px;
       position: sticky;
       top: 0;
@@ -87,18 +101,31 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #1A1A1A;
+      border-bottom: 1px solid rgba(245,241,235,.07);
     }
     .header-venstre { display: flex; align-items: baseline; gap: 10px; }
-    header .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #fff; }
-    header .logo-sub { font-size: 10px; font-weight: 500; color: rgba(255,255,255,.3); letter-spacing: 1.8px; text-transform: uppercase; }
+    header .logo {
+      font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700;
+      color: #F5F1EB; letter-spacing: -.3px;
+    }
+    header .logo-sub {
+      font-size: 9px; font-weight: 600; color: rgba(245,241,235,.28);
+      letter-spacing: 2px; text-transform: uppercase;
+    }
     .bruger-knap {
       display: flex; align-items: center; gap: 8px;
-      background: #1A1A1A; border: 1px solid #2A2A2A; border-radius: 8px;
-      padding: 7px 12px; cursor: pointer;
+      background: rgba(245,241,235,.07); border: 1px solid rgba(245,241,235,.1);
+      border-radius: 8px; padding: 7px 12px; cursor: pointer; transition: border-color .15s;
     }
-    .bruger-avatar { width: 24px; height: 24px; border-radius: 12px; background: #333; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; }
-    .bruger-navn { font-size: 13px; font-weight: 600; color: white; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bruger-avatar {
+      width: 24px; height: 24px; border-radius: 12px; background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: white;
+    }
+    .bruger-navn {
+      font-size: 13px; font-weight: 600; color: #F5F1EB;
+      max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
 
     /* ── NAV ── */
     nav {
@@ -114,7 +141,7 @@
       font-weight: 600; letter-spacing: .6px; text-transform: uppercase; transition: color .15s;
     }
     nav button .ikon { font-size: 18px; }
-    nav button.aktiv { color: #000; }
+    nav button.aktiv { color: var(--accent); }
 
     /* ── MAIN ── */
     main { padding: 0 0 calc(65px + var(--safe-bottom)) 0; min-height: 100dvh; }
@@ -122,53 +149,63 @@
     .side.aktiv { display: block; }
 
     /* ── OVERSIGT ── */
-    .oversigt { background: #000; display: flex; justify-content: space-around; padding: 14px 24px 18px; }
-    .oversigt-tal { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: #fff; }
-    .oversigt-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,.35); margin-top: 4px; }
-    .oversigt-deler { width: 1px; background: rgba(255,255,255,.1); }
+    .oversigt { background: var(--sort); display: flex; justify-content: space-around; padding: 18px 24px 22px; }
+    .oversigt-tal { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: #F5F1EB; }
+    .oversigt-label { font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(245,241,235,.3); margin-top: 5px; }
+    .oversigt-deler { width: 1px; background: rgba(245,241,235,.1); }
 
     /* ── KAFFE KORT ── */
     .kaffe-liste { padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 10px; }
     .kaffe-kort {
       background: var(--kort); border-radius: 12px; padding: 16px;
-      border: 1px solid var(--border); cursor: pointer; transition: background .1s;
+      border: 1px solid var(--border); cursor: pointer; transition: all .12s;
     }
-    .kaffe-kort:active { background: #F5F5F5; }
+    .kaffe-kort:active { background: #F0EAE0; border-color: #D4C8B8; }
     .kort-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
-    .kort-navn { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 2px; color: #000; }
+    .kort-navn { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 2px; color: var(--tekst); }
     .kort-meta { font-size: 12px; color: var(--tekst-2); margin-bottom: 6px; }
     .kort-tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .rister-tag { border-radius: 4px; padding: 2px 7px; font-size: 9px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; border: 1px solid; }
-    .vurderet-af { font-size: 11px; color: var(--tekst-3); }
+    .rister-tag {
+      border-radius: 4px; padding: 2px 7px; font-size: 9px; font-weight: 700;
+      letter-spacing: .8px; text-transform: uppercase; border: 1px solid;
+    }
+    .forarbejdning-tag {
+      border-radius: 4px; padding: 2px 7px; font-size: 9px; font-weight: 600;
+      letter-spacing: .5px; border: 1px solid var(--border); color: var(--tekst-2);
+      background: var(--baggrund); text-transform: uppercase;
+    }
     .score-badge { border-radius: 10px; padding: 8px 12px; text-align: center; flex-shrink: 0; min-width: 60px; }
     .score-badge .score-num { color: white; font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; display: block; line-height: 1; }
     .score-badge .score-tekst { color: rgba(255,255,255,.7); font-size: 9px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; display: block; margin-top: 2px; }
-    .smags-bar { display: flex; gap: 2px; margin-bottom: 10px; }
-    .smags-bar-col { flex: 1; height: 24px; border-radius: 3px; position: relative; background: #F0F0F0; overflow: hidden; }
-    .smags-bar-fill { position: absolute; bottom: 0; left: 0; right: 0; border-radius: 3px; }
+    .smags-bar { display: flex; gap: 2px; margin-bottom: 4px; }
+    .smags-bar-col { flex: 1; height: 24px; border-radius: 3px; position: relative; background: var(--baggrund); overflow: hidden; border: 1px solid var(--border); }
+    .smags-bar-fill { position: absolute; bottom: 0; left: 0; right: 0; border-radius: 2px; }
     .kort-bund { display: flex; justify-content: space-between; align-items: center; }
     .dato { font-size: 11px; color: var(--tekst-3); }
-    .slet-knap { font-size: 12px; color: var(--roed); font-weight: 600; background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 0; }
+    .slet-knap { font-size: 12px; color: var(--roed); font-weight: 600; background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 0; transition: opacity .15s; }
 
     /* ── TOM ── */
     .tom { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; padding: 40px; text-align: center; }
-    .tom-emoji { font-size: 64px; margin-bottom: 20px; filter: grayscale(1); }
+    .tom-emoji { font-size: 64px; margin-bottom: 20px; }
     .tom-titel { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 12px; }
     .tom-tekst { font-size: 15px; color: var(--tekst-2); line-height: 1.7; margin-bottom: 32px; max-width: 280px; }
-    .primær-knap { background: #000; color: white; border: none; border-radius: 8px; padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .primær-knap {
+      background: var(--sort); color: #F5F1EB; border: none; border-radius: 8px;
+      padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
 
     /* ── FORM ── */
     .form-container { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
     .sektion { background: var(--kort); border-radius: 12px; padding: 18px; border: 1px solid var(--border); }
-    .sektion-titel { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #000; margin-bottom: 2px; }
+    .sektion-titel { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--tekst); margin-bottom: 2px; }
     .sektion-under { font-size: 12px; color: var(--tekst-3); margin-bottom: 14px; }
     .felt-label { font-size: 10px; font-weight: 700; margin-bottom: 6px; margin-top: 14px; color: var(--tekst-3); letter-spacing: 1px; text-transform: uppercase; }
     .felt-label:first-of-type { margin-top: 0; }
     input[type=text], input[type=email], input[type=password], textarea {
       width: 100%; border: 1px solid var(--border); border-radius: 8px;
-      padding: 11px 13px; font-size: 15px; color: #000; background: var(--baggrund); font-family: inherit;
+      padding: 11px 13px; font-size: 15px; color: var(--tekst); background: var(--baggrund); font-family: inherit;
     }
-    input:focus, textarea:focus { outline: none; border-color: #000; }
+    input:focus, textarea:focus { outline: none; border-color: var(--accent); }
     textarea { height: 90px; resize: none; }
     .valg-raekke { display: flex; flex-wrap: wrap; gap: 7px; }
     .valg-knap {
@@ -176,53 +213,61 @@
       background: var(--baggrund); font-size: 13px; font-weight: 500; color: var(--tekst-2);
       cursor: pointer; font-family: inherit; transition: all .12s;
     }
-    .valg-knap.aktiv { background: #000; border-color: #000; color: white; }
+    .valg-knap.aktiv { background: var(--accent); border-color: var(--accent); color: white; }
 
     /* ── SMAGS SLIDER ── */
     .smags-slider { background: var(--baggrund); border-radius: 10px; padding: 12px; border: 1px solid var(--border); margin-bottom: 8px; }
     .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
-    .slider-label { font-size: 14px; font-weight: 600; color: #000; }
-    .slider-badge { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #000; }
+    .slider-label { font-size: 14px; font-weight: 600; color: var(--tekst); }
+    .slider-badge { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: var(--accent); }
     .slider-badge span { color: white; font-weight: 700; font-size: 12px; }
     .slider-beskr { font-size: 11px; color: var(--tekst-3); margin-bottom: 8px; }
     .skala { display: flex; gap: 3px; }
     .skala-knap {
-      flex: 1; height: 32px; border-radius: 4px; border: 1px solid #E8E8E8;
-      background: #F5F5F5; cursor: pointer; font-size: 10px; font-weight: 600;
-      color: #AAA; font-family: inherit; transition: all .1s;
+      flex: 1; height: 32px; border-radius: 4px; border: 1px solid var(--border);
+      background: var(--baggrund); cursor: pointer; font-size: 10px; font-weight: 600;
+      color: var(--lysgrå); font-family: inherit; transition: all .1s;
     }
-    .skala-knap.aktiv { background: #000; border-color: #000; color: white; }
+    .skala-knap.aktiv { background: var(--accent); border-color: var(--accent); color: white; }
     .skala-etiketter { display: flex; justify-content: space-between; margin-top: 3px; }
     .skala-etiketter span { font-size: 10px; color: var(--tekst-3); }
 
     /* ── SCORE ── */
     .score-knapper { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 12px; }
-    .score-knap { width: 46px; height: 46px; border-radius: 8px; border: 1px solid var(--border); background: #F5F5F5; font-size: 16px; font-weight: 700; color: #999; cursor: pointer; font-family: inherit; transition: all .12s; }
-    .score-knap.aktiv { background: #000; border-color: #000; color: white; }
+    .score-knap {
+      width: 46px; height: 46px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--baggrund); font-size: 16px; font-weight: 700; color: var(--lysgrå);
+      cursor: pointer; font-family: inherit; transition: all .12s;
+    }
+    .score-knap.aktiv { background: var(--accent); border-color: var(--accent); color: white; }
     .samlet-badge-container { display: flex; justify-content: center; margin-bottom: 4px; }
-    .gem-knap { background: #000; color: white; border: none; border-radius: 10px; padding: 17px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; font-family: inherit; margin-bottom: 8px; }
+    .gem-knap {
+      background: var(--sort); color: #F5F1EB; border: none; border-radius: 10px;
+      padding: 17px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer;
+      font-family: inherit; margin-bottom: 8px; touch-action: manipulation; letter-spacing: .3px;
+    }
 
     /* ── STATISTIK ── */
-    .stats-header { background: #000; padding: 20px; color: white; }
-    .stats-titel { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-    .stats-under { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 12px; }
-    .profil-boks { background: rgba(255,255,255,.07); border-radius: 10px; padding: 12px; border: 1px solid rgba(255,255,255,.1); }
-    .profil-tekst { font-size: 14px; color: rgba(255,255,255,.8); line-height: 1.7; }
+    .stats-header { background: var(--sort); padding: 20px; color: #F5F1EB; }
+    .stats-titel { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #F5F1EB; }
+    .stats-under { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(245,241,235,.3); margin-bottom: 12px; }
+    .profil-boks { background: rgba(245,241,235,.06); border-radius: 10px; padding: 12px; border: 1px solid rgba(245,241,235,.1); }
+    .profil-tekst { font-size: 14px; color: rgba(245,241,235,.75); line-height: 1.7; }
     .praef-raekke { display: flex; gap: 10px; margin-bottom: 10px; }
     .praef-kort { flex: 1; border-radius: 10px; padding: 14px; text-align: center; }
-    .praef-emoji { font-size: 20px; margin-bottom: 6px; filter: grayscale(1); }
-    .praef-label { font-size: 10px; color: rgba(255,255,255,.6); margin-bottom: 4px; letter-spacing: .5px; text-transform: uppercase; }
-    .praef-vaerdi { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: white; }
-    .praef-score { font-size: 10px; color: rgba(255,255,255,.5); margin-top: 2px; }
+    .praef-emoji { font-size: 20px; margin-bottom: 6px; }
+    .praef-label { font-size: 10px; color: rgba(245,241,235,.55); margin-bottom: 4px; letter-spacing: .5px; text-transform: uppercase; }
+    .praef-vaerdi { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #F5F1EB; }
+    .praef-score { font-size: 10px; color: rgba(245,241,235,.45); margin-top: 2px; }
     .praef-fuld { flex-direction: row !important; align-items: center; gap: 12px; text-align: left !important; }
     .bar-container { margin-bottom: 12px; }
     .bar-label-raekke { display: flex; justify-content: space-between; margin-bottom: 4px; }
     .bar-label { font-size: 13px; font-weight: 600; }
-    .bar-vaerdi { font-size: 13px; font-weight: 700; }
-    .bar-spor { height: 8px; background: #F0F0F0; border-radius: 4px; overflow: hidden; }
-    .bar-fyld { height: 100%; border-radius: 4px; background: #000; transition: width .5s ease; }
+    .bar-vaerdi { font-size: 13px; font-weight: 700; color: var(--accent); }
+    .bar-spor { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .bar-fyld { height: 100%; border-radius: 4px; background: var(--accent); transition: width .5s ease; }
     .top-kaffe-raekke { display: flex; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); }
-    .top-nr { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #000; width: 36px; }
+    .top-nr { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--accent); width: 36px; }
     .top-info { flex: 1; margin-right: 12px; min-width: 0; }
     .top-navn { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .top-meta { font-size: 11px; color: var(--tekst-3); }
@@ -230,28 +275,28 @@
     .top-score span { color: white; font-weight: 700; font-size: 15px; }
 
     /* ── MODAL ── */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: flex-end; justify-content: center; z-index: 200; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(28,24,20,.7); display: none; align-items: flex-end; justify-content: center; z-index: 200; }
     .modal-overlay.aaben { display: flex; }
     .modal { background: var(--kort); border-radius: 20px 20px 0 0; padding: 24px; padding-bottom: calc(24px + var(--safe-bottom)); width: 100%; max-width: 900px; max-height: 90dvh; overflow-y: auto; }
     .modal-titel { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
     .modal-meta { font-size: 13px; color: var(--tekst-3); margin-bottom: 20px; }
-    .modal-luk { float: right; background: #F0F0F0; border: none; border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .modal-luk { float: right; background: var(--baggrund); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--tekst-2); }
 
     /* ── BRUGER MENU ── */
     .bruger-menu-overlay { position: fixed; inset: 0; z-index: 150; display: none; }
     .bruger-menu-overlay.aaben { display: block; }
     .bruger-menu {
       position: fixed; top: calc(var(--safe-top) + 60px); right: 16px;
-      background: #111; border: 1px solid #2A2A2A; border-radius: 12px;
+      background: #221E19; border: 1px solid rgba(245,241,235,.1); border-radius: 12px;
       padding: 8px; min-width: 180px; z-index: 160;
-      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      box-shadow: 0 8px 32px rgba(0,0,0,.5);
     }
-    .bruger-menu-info { padding: 10px 12px 12px; border-bottom: 1px solid #222; margin-bottom: 6px; }
-    .bruger-menu-brugernavn { font-size: 15px; font-weight: 700; color: white; }
-    .bruger-menu-email { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 2px; }
-    .menu-knap { width: 100%; background: none; border: none; text-align: left; padding: 10px 12px; font-size: 14px; font-weight: 500; color: white; font-family: inherit; cursor: pointer; border-radius: 8px; }
-    .menu-knap:hover { background: #1A1A1A; }
-    .menu-knap.fare { color: #FF6B6B; }
+    .bruger-menu-info { padding: 10px 12px 12px; border-bottom: 1px solid rgba(245,241,235,.08); margin-bottom: 6px; }
+    .bruger-menu-brugernavn { font-size: 15px; font-weight: 700; color: #F5F1EB; }
+    .bruger-menu-email { font-size: 12px; color: rgba(245,241,235,.35); margin-top: 2px; }
+    .menu-knap { width: 100%; background: none; border: none; text-align: left; padding: 10px 12px; font-size: 14px; font-weight: 500; color: #F5F1EB; font-family: inherit; cursor: pointer; border-radius: 8px; }
+    .menu-knap:hover { background: rgba(245,241,235,.07); }
+    .menu-knap.fare { color: #E07070; }
 
     /* ── INDLÆSNING ── */
     .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.2); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; }
@@ -268,32 +313,32 @@
 
     /* ── HOVER (desktop) ── */
     @media (hover: hover) {
-      .kaffe-kort:hover { background: #F5F5F5; }
-      .primær-knap:hover, .gem-knap:hover { background: #222; }
-      .annuller-knap:hover { background: #F0F0F0; }
-      .valg-knap:hover:not(.aktiv) { background: #EBEBEB; border-color: #CCC; }
-      .skala-knap:hover:not(.aktiv), .score-knap:hover:not(.aktiv) { background: #E0E0E0; color: #555; border-color: #BBB; }
+      .kaffe-kort:hover { background: #F0EAE0; border-color: #D4C8B8; }
+      .primær-knap:hover, .gem-knap:hover { background: var(--mørkgrå); }
+      .annuller-knap:hover { background: #EDE5DA; }
+      .valg-knap:hover:not(.aktiv) { background: #EDE5DA; border-color: #C8B8A0; }
+      .skala-knap:hover:not(.aktiv), .score-knap:hover:not(.aktiv) { background: #EDE5DA; color: var(--grå); border-color: #C8B8A0; }
       .auth-knap:hover:not(:disabled) { opacity: .85; }
-      .bruger-knap:hover { border-color: #555; }
-      .sort-knap:hover:not(.aktiv) { background: #EBEBEB; }
-      .slet-knap:hover { opacity: .7; }
+      .bruger-knap:hover { border-color: rgba(245,241,235,.2); }
+      .sort-knap:hover:not(.aktiv) { background: #EDE5DA; border-color: #C8B8A0; }
+      .slet-knap:hover { opacity: .65; }
     }
 
     /* ── SØGNING & SORTERING ── */
     .liste-toolbar { padding: 12px 16px 0; }
     .søg-input {
       width: 100%; border: 1px solid var(--border); border-radius: 8px;
-      padding: 10px 13px; font-size: 15px; color: #000; background: var(--kort);
+      padding: 10px 13px; font-size: 15px; color: var(--tekst); background: var(--kort);
       font-family: inherit; margin-bottom: 8px;
     }
-    .søg-input:focus { outline: none; border-color: #000; }
+    .søg-input:focus { outline: none; border-color: var(--accent); }
     .sort-raekke { display: flex; gap: 6px; flex-wrap: wrap; }
     .sort-knap {
       border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px;
       background: var(--baggrund); font-size: 12px; font-weight: 600;
       color: var(--tekst-2); cursor: pointer; font-family: inherit; transition: all .12s;
     }
-    .sort-knap.aktiv { background: #000; border-color: #000; color: white; }
+    .sort-knap.aktiv { background: var(--accent); border-color: var(--accent); color: white; }
 
     /* ── SMAGSBAR LABELS ── */
     .smags-bar-labels { display: flex; gap: 2px; margin-top: 2px; margin-bottom: 8px; }
@@ -309,19 +354,28 @@
 
     /* ── GLEMT PASSWORD ── */
     .glemt-knap {
-      background: none; border: none; color: rgba(255,255,255,.35);
+      background: none; border: none; color: rgba(245,241,235,.3);
       font-size: 13px; cursor: pointer; font-family: inherit;
       text-decoration: underline; touch-action: manipulation;
     }
+
+    /* ── SORT BØNNE-FORSLAG ── */
+    .boennesort-forslag { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+    .forslag-knap {
+      border: 1px dashed var(--border); border-radius: 4px; padding: 3px 9px;
+      background: none; font-size: 11px; color: var(--tekst-3); cursor: pointer;
+      font-family: inherit; transition: all .12s;
+    }
+    .forslag-knap:hover { border-color: var(--accent); color: var(--accent); }
   </style>
 </head>
 <body>
 
 
-<!-- AUTH-SKÆRM (synlig som standard) -->
+<!-- AUTH-SKÆRM -->
 <div id="auth-skærm" class="vis">
-  <div class="auth-logo">GrindrBros</div>
-  <div class="auth-sub">Kaffe · Smag · Fællesskab</div>
+  <div class="auth-logo">CoffeeBuddies</div>
+  <div class="auth-sub">The grind is real</div>
   <div class="auth-boks">
     <div class="auth-faner">
       <div class="auth-fane aktiv" id="fane-login" onclick="skiftFane('login')">Log ind</div>
@@ -347,7 +401,7 @@
     <div id="opret-form" style="display:none">
       <form onsubmit="event.preventDefault(); opretKonto()">
         <div class="auth-felt-label">Brugernavn</div>
-        <input class="auth-input" type="text" id="opret-brugernavn" placeholder="CoffeeBro42" autocomplete="username" />
+        <input class="auth-input" type="text" id="opret-brugernavn" placeholder="CoffeeBuddy42" autocomplete="username" />
         <div class="auth-felt-label">Email</div>
         <input class="auth-input" type="email" id="opret-email" placeholder="din@email.dk" autocomplete="email" />
         <div class="auth-felt-label">Password</div>
@@ -363,7 +417,7 @@
 <div id="app" style="display:none">
   <header>
     <div class="header-venstre">
-      <span class="logo" id="header-logo">GrindrBros</span>
+      <span class="logo" id="header-logo">CoffeeBuddies</span>
       <span class="logo-sub" id="header-sub">Smagsregistrering</span>
     </div>
     <div class="bruger-knap" onclick="toggleBrugerMenu()">
@@ -400,8 +454,13 @@
           <input type="text" id="f-navn" placeholder="f.eks. Ethiopia Yirgacheffe" />
           <div class="felt-label">Oprindelse / Producent</div>
           <input type="text" id="f-oprindelse" placeholder="f.eks. Etiopien, La Cabra" />
+          <div class="felt-label">Bønnesort / Varietal</div>
+          <input type="text" id="f-boennesort" placeholder="f.eks. Gesha, Bourbon, Heirloom..." />
+          <div class="boennesort-forslag" id="boennesort-forslag"></div>
           <div class="felt-label">Risteringsgrad</div>
           <div class="valg-raekke" id="rister-valg"></div>
+          <div class="felt-label">Forarbejdning</div>
+          <div class="valg-raekke" id="forarbejdning-valg"></div>
           <div class="felt-label">Brygmetode</div>
           <div class="valg-raekke" id="bryg-valg"></div>
         </div>
@@ -418,7 +477,7 @@
         </div>
         <div class="sektion">
           <div class="sektion-titel">Noter</div>
-          <textarea id="f-noter" placeholder="Dine personlige noter..."></textarea>
+          <textarea id="f-noter" placeholder="Dine personlige noter om smag, aroma, tilberedning..."></textarea>
         </div>
         <button class="annuller-knap" id="annuller-knap" onclick="annullerForm()">Annuller</button>
         <button class="gem-knap" id="gem-knap" onclick="gemVurdering()">Gem vurdering</button>
@@ -488,7 +547,6 @@ async function start() {
       await indlaesBruger(session.user);
       visApp();
     }
-    // Hvis ingen session: auth-skærm er allerede synlig
 
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
@@ -566,7 +624,6 @@ async function opretKonto() {
   if (!email) { fejlEl.textContent = 'Angiv en email.'; return; }
   if (password.length < 6) { fejlEl.textContent = 'Password skal være mindst 6 tegn.'; return; }
 
-  // Tjek om brugernavn er taget
   const { data: eksisterende } = await sb.from('profiles').select('username').eq('username', bNavn).single();
   if (eksisterende) { fejlEl.textContent = 'Brugernavnet er allerede taget.'; return; }
 
@@ -581,7 +638,6 @@ async function opretKonto() {
     return;
   }
 
-  // Gem profil
   if (data.user) {
     await sb.from('profiles').insert({ id: data.user.id, username: bNavn });
   }
@@ -592,11 +648,11 @@ async function opretKonto() {
 async function glemt() {
   const email = document.getElementById('login-email').value.trim();
   const fejlEl = document.getElementById('login-fejl');
-  if (!email) { fejlEl.style.color = '#FF6B6B'; fejlEl.textContent = 'Skriv din email øverst og prøv igen.'; return; }
+  if (!email) { fejlEl.style.color = '#E07070'; fejlEl.textContent = 'Skriv din email øverst og prøv igen.'; return; }
   const { error } = await sb.auth.resetPasswordForEmail(email, {
     redirectTo: window.location.href.split('?')[0].split('#')[0]
   });
-  fejlEl.style.color = error ? '#FF6B6B' : '#6BFF8E';
+  fejlEl.style.color = error ? '#E07070' : '#7DBF82';
   fejlEl.textContent = error ? 'Kunne ikke sende email.' : 'Reset-link sendt til ' + email;
 }
 
@@ -644,6 +700,8 @@ async function gemVurderingDB(v) {
     samlet_score: v.samletScore,
     noter: v.noter,
     dato: v.dato,
+    forarbejdning: v.forarbejdning,
+    boennesort: v.boennesort,
   };
   const { error } = await sb.from('coffee_ratings').upsert(row);
   if (error) throw new Error('Gem fejlede: ' + error.message);
@@ -655,9 +713,15 @@ async function sletVurderingDB(id) {
 
 // ── HJÆLPERE ─────────────────────────────────────────────
 const RISTERINGSGRADER = ['Lys','Medium','Mørk','Espresso'];
-const RISTER_FARVER = { Lys:'#CCC', Medium:'#888', Mørk:'#444', Espresso:'#111' };
-const RISTER_TEKST  = { Lys:'#444', Medium:'#FFF', Mørk:'#FFF', Espresso:'#FFF' };
+const RISTER_FARVER = { Lys:'#F0E6D2', Medium:'#C4956A', Mørk:'#6B4726', Espresso:'#2A1A0E' };
+const RISTER_TEKST  = { Lys:'#6B4726', Medium:'#FFF',    Mørk:'#FFF',    Espresso:'#F5F1EB' };
+
+const FORARBEJDNINGER = ['Washed','Natural','Honey','Anaerobic','Co-ferment','Wet-hulled','Experimental'];
+
 const BRYGMETODER = ['Filterkaffe','Espresso','Moka Pot','French Press','Pour Over','AeroPress','Cold Brew','Kapselmaskine'];
+
+const BOENNESORTER = ['Gesha','Bourbon','Typica','Caturra','Catuai','SL28','SL34','Heirloom','Pacamara','Mundo Novo','Yellow Bourbon','Castillo'];
+
 const SMAG_FELTER = [
   { key:'syre',      label:'Syre',      beskr:'Frisk og levende syre' },
   { key:'bitterhed', label:'Bitterhed', beskr:'Behagelig bitterhed' },
@@ -668,10 +732,10 @@ const SMAG_FELTER = [
 ];
 
 function scorefarve(s) {
-  if (s >= 8) return '#000';
-  if (s >= 6) return '#333';
-  if (s >= 4) return '#666';
-  return '#999';
+  if (s >= 9) return '#5C3D1E';
+  if (s >= 7) return '#8B6035';
+  if (s >= 5) return '#B8916A';
+  return '#C4A882';
 }
 function scoretekst(s) {
   if (s >= 9) return 'Fremragende';
@@ -691,7 +755,7 @@ function visSide(side) {
     document.getElementById('side-'+s).classList.toggle('aktiv', s===side);
     document.getElementById('nav-'+s).classList.toggle('aktiv', s===side);
   });
-  const logoer = { liste:'GrindrBros', ny: redigeringsId ? 'Rediger' : 'GrindrBros', stats:'GrindrBros' };
+  const logoer = { liste:'CoffeeBuddies', ny: redigeringsId ? 'Rediger' : 'CoffeeBuddies', stats:'CoffeeBuddies' };
   const subber = { liste:'Smagsregistrering', ny: redigeringsId ? 'Opdater vurdering' : 'Ny vurdering', stats:'Din kaffeprofil' };
   document.getElementById('header-logo').textContent = logoer[side];
   document.getElementById('header-sub').textContent = subber[side];
@@ -703,7 +767,7 @@ function visSide(side) {
 // ── LISTE ────────────────────────────────────────────────
 async function gengiListe() {
   const container = document.getElementById('kaffe-liste-container');
-  container.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:#000;border-color:#DDD;width:28px;height:28px"></div></div>';
+  container.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
   let data;
   try {
     data = await hentAlleVurderinger();
@@ -729,15 +793,13 @@ async function gengiListe() {
     return;
   }
 
-  // Sync sort buttons
   ['nyeste','score','navn'].forEach(k => {
     const btn = document.getElementById('sort-'+k);
     if (btn) btn.classList.toggle('aktiv', k === aktivSortering);
   });
 
-  // Apply search + sort
   let vis = søgeord
-    ? data.filter(v => v.navn.toLowerCase().includes(søgeord) || (v.oprindelse||'').toLowerCase().includes(søgeord))
+    ? data.filter(v => v.navn.toLowerCase().includes(søgeord) || (v.oprindelse||'').toLowerCase().includes(søgeord) || (v.boennesort||'').toLowerCase().includes(søgeord))
     : [...data];
   if (aktivSortering === 'score') vis.sort((a,b) => b.samlet_score - a.samlet_score);
   else if (aktivSortering === 'navn') vis.sort((a,b) => a.navn.localeCompare(b.navn, 'da'));
@@ -752,9 +814,10 @@ async function gengiListe() {
       <div class="kort-top">
         <div style="flex:1;min-width:0">
           <div class="kort-navn">${v.navn}</div>
-          <div class="kort-meta">${v.oprindelse || 'Ukendt oprindelse'} · ${v.brygmetode}</div>
+          <div class="kort-meta">${v.oprindelse || 'Ukendt oprindelse'}${v.boennesort ? ' · ' + v.boennesort : ''}</div>
           <div class="kort-tags">
             <span class="rister-tag" style="background:${RISTER_FARVER[v.risteringsgrad]};color:${RISTER_TEKST[v.risteringsgrad]};border-color:${RISTER_FARVER[v.risteringsgrad]}">${v.risteringsgrad}</span>
+            ${v.forarbejdning ? `<span class="forarbejdning-tag">${v.forarbejdning}</span>` : ''}
           </div>
         </div>
         <div class="score-badge" style="background:${scorefarve(v.samlet_score)}">
@@ -765,7 +828,7 @@ async function gengiListe() {
       <div class="smags-bar">
         ${SMAG_FELTER.map(f => `
           <div class="smags-bar-col" title="${f.label}: ${v.smag[f.key]}/10">
-            <div class="smags-bar-fill" style="height:${v.smag[f.key]*10}%;background:#000"></div>
+            <div class="smags-bar-fill" style="height:${v.smag[f.key]*10}%;background:var(--accent)"></div>
           </div>`).join('')}
       </div>
       <div class="smags-bar-labels">
@@ -796,7 +859,9 @@ async function visDetalje(id) {
   document.getElementById('modal-indhold').innerHTML = `
     <button class="modal-luk" onclick="lukModal()">Luk</button>
     <div class="modal-titel">${v.navn}</div>
-    <div class="modal-meta">${v.oprindelse || ''} · ${v.risteringsgrad} · ${v.brygmetode}</div>
+    <div class="modal-meta">
+      ${[v.oprindelse, v.boennesort, v.risteringsgrad, v.forarbejdning, v.brygmetode].filter(Boolean).join(' · ')}
+    </div>
     <div style="display:flex;justify-content:center;margin-bottom:20px">
       <div class="score-badge" style="background:${scorefarve(v.samlet_score)};padding:12px 24px">
         <span class="score-num" style="font-size:28px">${v.samlet_score}/10</span>
@@ -811,7 +876,7 @@ async function visDetalje(id) {
         </div>
         <div class="bar-spor"><div class="bar-fyld" style="width:${v.smag[f.key]*10}%"></div></div>
       </div>`).join('')}
-    ${v.noter ? `<div style="margin-top:16px;padding:12px;background:var(--baggrund);border-radius:8px;font-size:14px;color:var(--tekst-2);line-height:1.6">${v.noter}</div>` : ''}
+    ${v.noter ? `<div style="margin-top:16px;padding:12px;background:var(--baggrund);border-radius:8px;font-size:14px;color:var(--tekst-2);line-height:1.6;border:1px solid var(--border)">${v.noter}</div>` : ''}
     <div style="margin-top:20px">
       <button class="gem-knap" onclick="redigerVurdering('${id}')">Rediger</button>
     </div>`;
@@ -830,7 +895,7 @@ async function sletVurdering(evt, id) {
   if (!_pendingSletter.has(id)) {
     _pendingSletter.add(id);
     btn.textContent = 'Er du sikker?';
-    btn.style.color = '#000';
+    btn.style.color = 'var(--sort)';
     setTimeout(() => {
       if (_pendingSletter.has(id)) {
         _pendingSletter.delete(id);
@@ -848,6 +913,7 @@ async function sletVurdering(evt, id) {
 // ── FORM ─────────────────────────────────────────────────
 let redigeringsId = null;
 let valgRister = 'Medium';
+let valgForarbejdning = 'Washed';
 let valgBryg = 'Filterkaffe';
 let smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
 let samletScore = 7;
@@ -855,8 +921,12 @@ let samletScore = 7;
 function initForm() {
   document.getElementById('rister-valg').innerHTML = RISTERINGSGRADER.map(r => `
     <button class="valg-knap${r===valgRister?' aktiv':''}" onclick="vaelgRister('${r}')">${r}</button>`).join('');
+  document.getElementById('forarbejdning-valg').innerHTML = FORARBEJDNINGER.map(f => `
+    <button class="valg-knap${f===valgForarbejdning?' aktiv':''}" onclick="vaelgForarbejdning('${f}')">${f}</button>`).join('');
   document.getElementById('bryg-valg').innerHTML = BRYGMETODER.map(b => `
     <button class="valg-knap${b===valgBryg?' aktiv':''}" onclick="vaelgBryg('${b}')">${b}</button>`).join('');
+  document.getElementById('boennesort-forslag').innerHTML = BOENNESORTER.map(s => `
+    <button class="forslag-knap" onclick="vaelgBoennesort('${s}')">${s}</button>`).join('');
   document.getElementById('smags-slidere').innerHTML = SMAG_FELTER.map(f => `
     <div class="smags-slider" id="slider-${f.key}">
       <div class="slider-header">
@@ -880,8 +950,18 @@ function vaelgRister(r) {
   document.querySelectorAll('#rister-valg .valg-knap').forEach(btn => {
     const er = btn.textContent === r;
     btn.classList.toggle('aktiv', er);
-    btn.style.background = er ? '#000' : '';
-    btn.style.borderColor = er ? '#000' : '';
+    btn.style.background = er ? 'var(--accent)' : '';
+    btn.style.borderColor = er ? 'var(--accent)' : '';
+    btn.style.color = er ? 'white' : '';
+  });
+}
+function vaelgForarbejdning(f) {
+  valgForarbejdning = f;
+  document.querySelectorAll('#forarbejdning-valg .valg-knap').forEach(btn => {
+    const er = btn.textContent === f;
+    btn.classList.toggle('aktiv', er);
+    btn.style.background = er ? 'var(--accent)' : '';
+    btn.style.borderColor = er ? 'var(--accent)' : '';
     btn.style.color = er ? 'white' : '';
   });
 }
@@ -890,10 +970,13 @@ function vaelgBryg(b) {
   document.querySelectorAll('#bryg-valg .valg-knap').forEach(btn => {
     const er = btn.textContent === b;
     btn.classList.toggle('aktiv', er);
-    btn.style.background = er ? '#000' : '';
-    btn.style.borderColor = er ? '#000' : '';
+    btn.style.background = er ? 'var(--accent)' : '';
+    btn.style.borderColor = er ? 'var(--accent)' : '';
     btn.style.color = er ? 'white' : '';
   });
+}
+function vaelgBoennesort(s) {
+  document.getElementById('f-boennesort').value = s;
 }
 function saetSmag(key, val) {
   smagsVaerdier[key] = val;
@@ -901,8 +984,8 @@ function saetSmag(key, val) {
   document.querySelectorAll(`#slider-${key} .skala-knap`).forEach((btn, i) => {
     const aktiv = i+1 <= val;
     btn.classList.toggle('aktiv', aktiv);
-    btn.style.background = aktiv ? '#000' : '';
-    btn.style.borderColor = aktiv ? '#000' : '';
+    btn.style.background = aktiv ? 'var(--accent)' : '';
+    btn.style.borderColor = aktiv ? 'var(--accent)' : '';
     btn.style.color = aktiv ? 'white' : '';
   });
 }
@@ -931,7 +1014,9 @@ async function gemVurdering() {
       id: redigeringsId ?? Date.now().toString(),
       navn,
       oprindelse: document.getElementById('f-oprindelse').value.trim(),
+      boennesort: document.getElementById('f-boennesort').value.trim(),
       risteringsgrad: valgRister,
+      forarbejdning: valgForarbejdning,
       brygmetode: valgBryg,
       smag: { ...smagsVaerdier },
       samletScore,
@@ -942,14 +1027,14 @@ async function gemVurdering() {
     ugyldiggørCache();
   } catch (e) {
     knap.disabled = false;
-    knap.textContent = 'Gem vurdering';
+    knap.textContent = redigeringsId ? 'Opdater vurdering' : 'Gem vurdering';
     alert('Kunne ikke gemme: ' + e.message);
     return;
   }
   redigeringsId = null;
   smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = 7; valgRister = 'Medium'; valgBryg = 'Filterkaffe';
-  ['f-navn','f-oprindelse','f-noter'].forEach(id => document.getElementById(id).value = '');
+  samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filterkaffe';
+  ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => document.getElementById(id).value = '');
   knap.disabled = false;
   knap.textContent = 'Gem vurdering';
   visSide('liste');
@@ -962,13 +1047,15 @@ async function redigerVurdering(id) {
   if (!v) return;
   redigeringsId = id;
   valgRister = v.risteringsgrad;
+  valgForarbejdning = v.forarbejdning || 'Washed';
   valgBryg = v.brygmetode;
   smagsVaerdier = { ...v.smag };
   samletScore = v.samlet_score;
   visSide('ny');
-  initForm(); // Rebuild form UI with the loaded values
+  initForm();
   document.getElementById('f-navn').value = v.navn;
   document.getElementById('f-oprindelse').value = v.oprindelse || '';
+  document.getElementById('f-boennesort').value = v.boennesort || '';
   document.getElementById('f-noter').value = v.noter || '';
   document.getElementById('gem-knap').textContent = 'Opdater vurdering';
   document.getElementById('annuller-knap').textContent = 'Annuller redigering';
@@ -977,15 +1064,15 @@ async function redigerVurdering(id) {
 function annullerForm() {
   redigeringsId = null;
   smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = 7; valgRister = 'Medium'; valgBryg = 'Filterkaffe';
-  ['f-navn','f-oprindelse','f-noter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filterkaffe';
+  ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   visSide('liste');
 }
 
 // ── STATISTIK ────────────────────────────────────────────
 async function gengiStats() {
   document.getElementById('stats-header').innerHTML = `<div class="stats-titel">Din smagsprofil</div>`;
-  document.getElementById('stats-indhold').innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:#000;border-color:#DDD;width:28px;height:28px"></div></div>';
+  document.getElementById('stats-indhold').innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
   let data;
   try {
     data = await hentAlleVurderinger();
@@ -1011,15 +1098,17 @@ async function gengiStats() {
       og <strong>${anden.label.toLowerCase()} (${smagsGns[anden.key].toFixed(1)}/10)</strong> som fremtrædende egenskaber.
     </div></div>`;
 
-  const risterMap = {}, brygMap = {};
+  const risterMap = {}, brygMap = {}, forarbMap = {};
   data.forEach(v => {
     (risterMap[v.risteringsgrad] ??= []).push(v.samlet_score);
     (brygMap[v.brygmetode] ??= []).push(v.samlet_score);
+    if (v.forarbejdning) (forarbMap[v.forarbejdning] ??= []).push(v.samlet_score);
   });
   const bedsteRister = Object.entries(risterMap).sort(([,a],[,b]) => gns(b)-gns(a))[0];
   const bedsteBryg   = Object.entries(brygMap).sort(([,a],[,b]) => gns(b)-gns(a))[0];
-  const topKaffer = [...data].sort((a,b) => b.samlet_score - a.samlet_score).slice(0,5);
-  const totalGns = gns(data.map(v=>v.samlet_score));
+  const bedsteForarb = Object.entries(forarbMap).sort(([,a],[,b]) => gns(b)-gns(a))[0];
+  const topKaffer    = [...data].sort((a,b) => b.samlet_score - a.samlet_score).slice(0,5);
+  const totalGns     = gns(data.map(v=>v.samlet_score));
 
   document.getElementById('stats-indhold').innerHTML = `
     <div class="sektion">
@@ -1033,22 +1122,31 @@ async function gengiStats() {
     <div class="sektion">
       <div class="sektion-titel">Dine præferencer</div>
       <div class="praef-raekke">
-        <div class="praef-kort" style="background:#111">
+        <div class="praef-kort" style="background:#2A1C10">
           <div class="praef-emoji">🔥</div>
           <div class="praef-label">Bedste ristering</div>
           <div class="praef-vaerdi">${bedsteRister[0]}</div>
           <div class="praef-score">${gns(bedsteRister[1]).toFixed(1)}/10 gns.</div>
         </div>
-        <div class="praef-kort" style="background:#333">
+        <div class="praef-kort" style="background:#1E2A14">
           <div class="praef-emoji">☕</div>
           <div class="praef-label">Bedste brygmetode</div>
           <div class="praef-vaerdi">${bedsteBryg[0]}</div>
           <div class="praef-score">${gns(bedsteBryg[1]).toFixed(1)}/10 gns.</div>
         </div>
       </div>
-      <div class="praef-kort praef-fuld" style="background:#555;display:flex">
-        <div class="praef-emoji">⭐</div>
-        <div><div class="praef-label">Samlet gennemsnitsscore</div><div class="praef-vaerdi">${totalGns.toFixed(1)}/10</div></div>
+      ${bedsteForarb ? `
+      <div class="praef-raekke">
+        <div class="praef-kort praef-fuld" style="background:#1A1E2A;display:flex">
+          <div class="praef-emoji">💧</div>
+          <div><div class="praef-label">Bedste forarbejdning</div><div class="praef-vaerdi">${bedsteForarb[0]}</div><div class="praef-score">${gns(bedsteForarb[1]).toFixed(1)}/10 gns.</div></div>
+        </div>
+      </div>` : ''}
+      <div class="praef-raekke">
+        <div class="praef-kort praef-fuld" style="background:#2A2015;display:flex">
+          <div class="praef-emoji">⭐</div>
+          <div><div class="praef-label">Samlet gennemsnitsscore</div><div class="praef-vaerdi">${totalGns.toFixed(1)}/10</div></div>
+        </div>
       </div>
     </div>
     <div class="sektion">
@@ -1058,7 +1156,7 @@ async function gengiStats() {
           <div class="top-nr">#${i+1}</div>
           <div class="top-info">
             <div class="top-navn">${v.navn}</div>
-            <div class="top-meta">${v.oprindelse||''} · ${v.brygmetode}</div>
+            <div class="top-meta">${[v.oprindelse, v.boennesort, v.brygmetode].filter(Boolean).join(' · ')}</div>
           </div>
           <div class="top-score" style="background:${scorefarve(v.samlet_score)}">
             <span>${v.samlet_score}</span>

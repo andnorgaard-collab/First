@@ -1,4 +1,4 @@
--- GrindrBros — Supabase opsætning
+-- CoffeeBuddies — Supabase opsætning
 -- Kør dette i Supabase SQL Editor
 
 -- Brugerprofiler
@@ -15,6 +15,8 @@ create table if not exists coffee_ratings (
   navn text not null,
   oprindelse text default '',
   risteringsgrad text default 'Medium',
+  forarbejdning text default '',
+  boennesort text default '',
   brygmetode text default 'Filterkaffe',
   vurderede_af text default '',
   smag jsonb not null,
@@ -48,3 +50,8 @@ create policy "Brugere kan opdatere egne vurderinger"
 
 create policy "Brugere kan slette egne vurderinger"
   on coffee_ratings for delete using (auth.uid() = user_id);
+
+-- ── MIGRATION (kør hvis tabellen allerede eksisterer) ──
+-- Tilføjer forarbejdning og bønnesort til eksisterende tabel
+alter table coffee_ratings add column if not exists forarbejdning text default '';
+alter table coffee_ratings add column if not exists boennesort text default '';
