@@ -48,17 +48,20 @@ create policy "Brugere kan se relevante delinger"
 
 
 -- ─────────────────────────────────────────────────────────────────────────────
--- 4. Highscore-funktion: Top kaffer baseret på delte vurderinger
---    Bruger security definer så den kan aggregere på tværs af brugere
+-- 4. Highscore-funktion: Top kaffer på tværs af ALLE brugere
+--    - Aggregerer direkte fra coffee_ratings (ikke kun delte)
+--    - Returnerer din_score: den aktuelle brugers score for den kaffe (NULL = ikke smagt)
+--    - security definer: nødvendigt for at læse andre brugeres ratings
 -- ─────────────────────────────────────────────────────────────────────────────
 create or replace function top_kaffe_highscore(limit_n int default 10)
 returns table(
-  navn          text,
-  oprindelse    text,
-  brygmetode    text,
+  navn           text,
+  oprindelse     text,
+  brygmetode     text,
   risteringsgrad text,
-  avg_score     numeric,
-  antal         bigint
+  avg_score      numeric,
+  antal          bigint,
+  din_score      integer
 )
 language sql
 security definer
@@ -69,11 +72,10 @@ as $$
     cr.oprindelse,
     cr.brygmetode,
     cr.risteringsgrad,
-    round(avg(cr.samlet_score)::numeric, 1) as avg_score,
-    count(distinct cr.user_id)              as antal
-  from shared_ratings sr
-  join coffee_ratings  cr on cr.id = sr.rating_id
-  where sr.to_user_id is null   -- kun offentlige broadcasts tæller med
+    round(avg(cr.samlet_score)::numeric, 1)                          as avg_score,
+    count(distinct cr.user_id)                                       as antal,
+    max(case when cr.user_id = auth.uid() then cr.samlet_score end)  as din_score
+  from coffee_ratings cr
   group by cr.navn, cr.oprindelse, cr.brygmetode, cr.risteringsgrad
   order by avg_score desc, antal desc
   limit limit_n;

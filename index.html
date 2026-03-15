@@ -329,6 +329,7 @@
     .highscore-score { background: var(--sort); color: white; border-radius: 8px; padding: 5px 10px; text-align: center; flex-shrink: 0; }
     .highscore-score-tal { font-size: 15px; font-weight: 800; line-height: 1; }
     .highscore-score-lbl { font-size: 9px; letter-spacing: .4px; opacity: .65; margin-top: 2px; }
+    .highscore-din { background: rgba(139,96,53,.12); color: var(--accent); border-radius: 6px; padding: 3px 7px; font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
 
     /* ── MODAL ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(28,24,20,.7); display: none; align-items: flex-end; justify-content: center; z-index: 200; }
@@ -554,7 +555,7 @@
       <div style="padding:16px 16px 0">
         <div class="sektion">
           <div class="sektion-titel">☕ Top Coffees</div>
-          <div class="sektion-under">Highest-rated shared coffees in the community</div>
+          <div class="sektion-under">Highest-rated across all users</div>
           <div id="social-highscore-indhold"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:22px;height:22px;margin:8px auto"></div></div>
         </div>
       </div>
@@ -1363,18 +1364,20 @@ async function gengiHighscore() {
   if (!el) return;
   const { data, error } = await sb.rpc('top_kaffe_highscore', { limit_n: 10 });
   if (error || !data?.length) {
-    el.innerHTML = '<div style="color:var(--tekst-3);font-size:13px;padding:4px 0">No shared ratings yet</div>';
+    el.innerHTML = '<div style="color:var(--tekst-3);font-size:13px;padding:4px 0">No ratings yet</div>';
     return;
   }
   el.innerHTML = data.map((r, i) => {
     const meta = [r.oprindelse, r.risteringsgrad, r.brygmetode].filter(Boolean).join(' · ');
-    const antal = r.antal == 1 ? '1 rating' : `${r.antal} ratings`;
+    const antal = r.antal == 1 ? '1 person' : `${r.antal} people`;
+    const dinBadge = r.din_score != null ? `<div class="highscore-din">You: ${r.din_score}</div>` : '';
     return `<div class="highscore-raekke">
       <div class="highscore-nr">#${i + 1}</div>
       <div class="highscore-info">
         <div class="highscore-navn">${r.navn}</div>
         <div class="highscore-meta">${[meta, antal].filter(Boolean).join(' · ')}</div>
       </div>
+      ${dinBadge}
       <div class="highscore-score">
         <div class="highscore-score-tal">${r.avg_score}</div>
         <div class="highscore-score-lbl">AVG</div>
