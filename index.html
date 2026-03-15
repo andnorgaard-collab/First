@@ -1503,13 +1503,27 @@ async function bekræftDel() {
   const base = { from_user_id: aktivBruger.id, rating_id: _delRatingId, type: _delType, besked: besked || null };
   let error;
   if (_delValgte.size === 0) {
-    ({ error } = await sb.from('shared_ratings').insert({ ...base, to_user_id: null }));
+    // Broadcast: do NOT include to_user_id so this works both before and after v2 migration
+    ({ error } = await sb.from('shared_ratings').insert(base));
   } else {
     ({ error } = await sb.from('shared_ratings').insert([..._delValgte].map(uid => ({ ...base, to_user_id: uid }))));
   }
   knap.disabled = false;
   opdaterDelKnap();
-  if (error) { alert('Could not share. Please try again.'); return; }
+  if (error) {
+    if (error.code === '23505') {
+      // Unique constraint — already shared this coffee, treat as success
+      document.getElementById('del-modal-overlay').classList.remove('aaben');
+      return;
+    }
+    if (error.code === '42703') {
+      // to_user_id column missing — v2 migration not yet applied
+      alert('Database needs updating. Please run social_v2_migration.sql in Supabase.');
+      return;
+    }
+    alert('Could not share. Please try again.');
+    return;
+  }
   document.getElementById('del-modal-overlay').classList.remove('aaben');
 }
 
