@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="CoffeeBuddies" />
-  <meta name="theme-color" content="#1C1814" />
+  <meta name="theme-color" content="#FEFDFB" />
   <title>CoffeeBuddies</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -91,6 +91,16 @@
     .auth-fejl { font-size: 13px; color: #E07070; margin-top: 12px; text-align: center; min-height: 18px; }
 
 
+    /* ── HEADER ── */
+    header {
+      background: var(--kort);
+      border-bottom: 1px solid var(--border);
+      padding: calc(var(--safe-top) + 14px) 20px 14px;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--sort); letter-spacing: -.3px; }
+    .logo-tagline { font-size: 9px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--tekst-3); margin-top: 2px; }
+
     /* ── NAV ── */
     nav {
       position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
@@ -113,10 +123,10 @@
     .side.aktiv { display: block; }
 
     /* ── STATS BAR ── */
-    .oversigt { background: var(--sort); display: flex; justify-content: space-around; padding: 18px 24px 22px; }
-    .oversigt-tal { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: #F5F1EB; }
-    .oversigt-label { font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(245,241,235,.3); margin-top: 5px; }
-    .oversigt-deler { width: 1px; background: rgba(245,241,235,.1); }
+    .oversigt { background: var(--kort); border-bottom: 1px solid var(--border); display: flex; justify-content: space-around; padding: 18px 24px 20px; }
+    .oversigt-tal { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--accent); }
+    .oversigt-label { font-size: 9px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--tekst-3); margin-top: 5px; }
+    .oversigt-deler { width: 1px; background: var(--border); }
 
     /* ── COFFEE CARDS ── */
     .kaffe-liste { padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 10px; }
@@ -183,17 +193,17 @@
     .gem-knap { background: var(--sort); color: #F5F1EB; border: none; border-radius: 10px; padding: 17px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; font-family: inherit; margin-bottom: 8px; touch-action: manipulation; letter-spacing: .3px; }
 
     /* ── PROFILE / STATS ── */
-    .stats-header { background: var(--sort); padding: 20px; color: #F5F1EB; }
-    .stats-titel { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; color: #F5F1EB; }
-    .stats-under { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(245,241,235,.3); margin-bottom: 12px; }
-    .profil-boks { background: rgba(245,241,235,.06); border-radius: 10px; padding: 12px; border: 1px solid rgba(245,241,235,.1); }
-    .profil-tekst { font-size: 14px; color: rgba(245,241,235,.75); line-height: 1.7; }
+    .stats-header { background: var(--kort); border-bottom: 1px solid var(--border); padding: 20px; }
+    .stats-titel { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; color: var(--sort); }
+    .stats-under { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--tekst-3); margin-bottom: 12px; }
+    .profil-boks { background: var(--baggrund); border-radius: 10px; padding: 12px; border: 1px solid var(--border); }
+    .profil-tekst { font-size: 14px; color: var(--tekst-2); line-height: 1.7; }
     .praef-raekke { display: flex; gap: 10px; margin-bottom: 10px; }
-    .praef-kort { flex: 1; border-radius: 10px; padding: 14px; text-align: center; }
+    .praef-kort { flex: 1; border-radius: 10px; padding: 14px; text-align: center; background: var(--baggrund); border: 1px solid var(--border); }
     .praef-emoji { font-size: 20px; margin-bottom: 6px; }
-    .praef-label { font-size: 10px; color: rgba(245,241,235,.55); margin-bottom: 4px; letter-spacing: .5px; text-transform: uppercase; }
-    .praef-vaerdi { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #F5F1EB; }
-    .praef-score { font-size: 10px; color: rgba(245,241,235,.45); margin-top: 2px; }
+    .praef-label { font-size: 10px; color: var(--tekst-3); margin-bottom: 4px; letter-spacing: .5px; text-transform: uppercase; }
+    .praef-vaerdi { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--sort); }
+    .praef-score { font-size: 10px; color: var(--tekst-3); margin-top: 2px; }
     .praef-fuld { flex-direction: row !important; align-items: center; gap: 12px; text-align: left !important; }
     .bar-container { margin-bottom: 12px; }
     .bar-label-raekke { display: flex; justify-content: space-between; margin-bottom: 4px; }
@@ -218,13 +228,13 @@
     .modal-luk { float: right; background: var(--baggrund); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--tekst-2); }
 
     /* ── SIGN OUT (profile page) ── */
-    .profil-signout { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .profil-signout { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .profil-bruger { display: flex; align-items: center; gap: 10px; }
     .profil-avatar { width: 36px; height: 36px; border-radius: 18px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: white; flex-shrink: 0; }
-    .profil-navn { font-size: 16px; font-weight: 700; color: #F5F1EB; }
-    .profil-email { font-size: 12px; color: rgba(245,241,235,.35); margin-top: 1px; }
-    .signout-knap { background: rgba(245,241,235,.07); border: 1px solid rgba(245,241,235,.12); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: rgba(245,241,235,.6); cursor: pointer; font-family: inherit; transition: all .15s; white-space: nowrap; }
-    .signout-knap:hover { background: rgba(245,241,235,.12); color: #F5F1EB; }
+    .profil-navn { font-size: 15px; font-weight: 700; color: var(--sort); }
+    .profil-email { font-size: 12px; color: var(--tekst-3); margin-top: 1px; }
+    .signout-knap { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 7px 13px; font-size: 13px; font-weight: 600; color: var(--tekst-2); cursor: pointer; font-family: inherit; transition: all .15s; white-space: nowrap; }
+    .signout-knap:hover { border-color: var(--roed); color: var(--roed); }
 
     /* ── SPINNER ── */
     .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.2); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; }
@@ -321,7 +331,11 @@
 
 <!-- MAIN APP -->
 <div id="app" style="display:none">
-  <main style="padding-top:var(--safe-top)">
+  <header>
+    <div class="logo">CoffeeBuddies</div>
+    <div class="logo-tagline">The grind is real</div>
+  </header>
+  <main>
     <!-- COFFEES LIST -->
     <div class="side aktiv" id="side-liste">
       <div class="oversigt">
@@ -928,8 +942,8 @@ function annullerForm() {
 }
 
 // ── PROFILE / STATS ───────────────────────────────────────
-async function gengiStats() {
-  document.getElementById('stats-header').innerHTML = `
+function statsHeaderHTML(undertitel) {
+  return `
     <div class="profil-signout">
       <div class="profil-bruger">
         <div class="profil-avatar">${brugernavn[0]?.toUpperCase() ?? '?'}</div>
@@ -937,7 +951,12 @@ async function gengiStats() {
       </div>
       <button class="signout-knap" onclick="logUd()">Sign out</button>
     </div>
-    <div class="stats-titel">Your Taste Profile</div>`;
+    <div class="stats-titel">Your Taste Profile</div>
+    ${undertitel ? `<div class="stats-under">${undertitel}</div>` : ''}`;
+}
+
+async function gengiStats() {
+  document.getElementById('stats-header').innerHTML = statsHeaderHTML('');
   document.getElementById('stats-indhold').innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
   let data;
   try {
@@ -947,15 +966,7 @@ async function gengiStats() {
     return;
   }
   if (!data.length) {
-    document.getElementById('stats-header').innerHTML = `
-      <div class="profil-signout">
-        <div class="profil-bruger">
-          <div class="profil-avatar">${brugernavn[0]?.toUpperCase() ?? '?'}</div>
-          <div><div class="profil-navn">${brugernavn}</div><div class="profil-email">${aktivBruger?.email ?? ''}</div></div>
-        </div>
-        <button class="signout-knap" onclick="logUd()">Sign out</button>
-      </div>
-      <div class="stats-titel">Your Taste Profile</div><div class="stats-under">No data yet</div>`;
+    document.getElementById('stats-header').innerHTML = statsHeaderHTML('No data yet');
     document.getElementById('stats-indhold').innerHTML = '';
     return;
   }
@@ -964,10 +975,8 @@ async function gengiStats() {
   const sorteret = [...SMAG_FELTER].sort((a,b) => smagsGns[b.key] - smagsGns[a.key]);
   const top = sorteret[0], anden = sorteret[1];
 
-  document.getElementById('stats-header').innerHTML = `
-    <div class="stats-titel">Your Taste Profile</div>
-    <div class="stats-under">Based on ${data.length} rating${data.length!==1?'s':''}</div>
-    <div class="profil-boks"><div class="profil-tekst">
+  document.getElementById('stats-header').innerHTML = statsHeaderHTML(`Based on ${data.length} rating${data.length!==1?'s':''}`) + `
+    <div class="profil-boks" style="margin-top:12px"><div class="profil-tekst">
       You prefer coffee with <strong>${top.label.toLowerCase()} (${smagsGns[top.key].toFixed(1)}/10)</strong>
       and <strong>${anden.label.toLowerCase()} (${smagsGns[anden.key].toFixed(1)}/10)</strong> as prominent characteristics.
     </div></div>`;
@@ -996,13 +1005,13 @@ async function gengiStats() {
     <div class="sektion">
       <div class="sektion-titel">Your Preferences</div>
       <div class="praef-raekke">
-        <div class="praef-kort" style="background:#2A1C10">
+        <div class="praef-kort">
           <div class="praef-emoji">🔥</div>
           <div class="praef-label">Best Roast</div>
           <div class="praef-vaerdi">${bedsteRister[0]}</div>
           <div class="praef-score">${gns(bedsteRister[1]).toFixed(1)}/10 avg.</div>
         </div>
-        <div class="praef-kort" style="background:#1E2A14">
+        <div class="praef-kort">
           <div class="praef-emoji">☕</div>
           <div class="praef-label">Best Brew Method</div>
           <div class="praef-vaerdi">${bedsteBryg[0]}</div>
@@ -1011,13 +1020,13 @@ async function gengiStats() {
       </div>
       ${bedsteForarb ? `
       <div class="praef-raekke">
-        <div class="praef-kort praef-fuld" style="background:#1A1E2A;display:flex">
+        <div class="praef-kort praef-fuld" style="display:flex">
           <div class="praef-emoji">💧</div>
           <div><div class="praef-label">Best Processing</div><div class="praef-vaerdi">${bedsteForarb[0]}</div><div class="praef-score">${gns(bedsteForarb[1]).toFixed(1)}/10 avg.</div></div>
         </div>
       </div>` : ''}
       <div class="praef-raekke">
-        <div class="praef-kort praef-fuld" style="background:#2A2015;display:flex">
+        <div class="praef-kort praef-fuld" style="display:flex">
           <div class="praef-emoji">⭐</div>
           <div><div class="praef-label">Overall Average Score</div><div class="praef-vaerdi">${totalGns.toFixed(1)}/10</div></div>
         </div>
