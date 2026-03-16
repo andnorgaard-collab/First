@@ -575,6 +575,12 @@
         <div class="home-smag-raekke" id="home-smag-indhold"></div>
       </div>
 
+      <!-- Recommendations (shown when enough data) -->
+      <div class="home-section" id="home-anbefaling-sektion" style="display:none">
+        <div class="home-section-titel">⭐ Recommended for You</div>
+        <div id="home-anbefaling-indhold"></div>
+      </div>
+
       <!-- Your coffees divider + search/sort -->
       <div class="home-deler"></div>
       <div class="home-coffees-header">
@@ -686,14 +692,11 @@
     <button class="aktiv" id="nav-liste" onclick="visSide('liste')">
       <span class="ikon">☕</span>Coffees
     </button>
-    <button id="nav-ny" onclick="visSide('ny')">
+    <button id="nav-ny" onclick="aabneNyKaffe()">
       <span class="ikon">＋</span>Add
     </button>
     <button id="nav-social" onclick="visSide('social')">
       <span class="ikon">◈</span>Social
-    </button>
-    <button id="nav-stats" onclick="visSide('stats')">
-      <span class="ikon">◎</span>Profile
     </button>
   </nav>
 </div>
@@ -778,6 +781,11 @@ async function indlaesBruger(user) {
   aktivBruger = user;
   const { data } = await sb.from('profiles').select('username').eq('id', user.id).single();
   brugernavn = data?.username ?? user.email.split('@')[0];
+  // Load localStorage cache so home renders instantly for returning users
+  try {
+    const s = localStorage.getItem('cb_v2_' + user.id);
+    if (s) { _cacheData = JSON.parse(s); _cacheTid = 0; }
+  } catch(e) {}
   opdaterBrugerUI();
 }
 
@@ -918,6 +926,7 @@ async function hentAlleVurderinger(forcefresh = false) {
   if (error) throw new Error(error.message);
   _cacheData = data ?? [];
   _cacheTid = nu;
+  try { localStorage.setItem('cb_v2_' + aktivBruger.id, JSON.stringify(_cacheData)); } catch(e) {}
   return _cacheData;
 }
 
@@ -1352,21 +1361,34 @@ function renderSmagSnapshot(vurderinger) {
 async function gengiListe() {
   renderWelcome();
   const container = document.getElementById('kaffe-liste-container');
-  container.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
 
-  // Load user coffees and trending in parallel
-  const [dataResult, trendingData] = await Promise.all([
-    hentAlleVurderinger().then(d => ({ ok: true, data: d })).catch(e => ({ ok: false, error: e })),
-    hentTrendingMaaned()
-  ]);
-
-  renderTrending(trendingData);
-
-  if (!dataResult.ok) {
-    container.innerHTML = `<div class="tom"><div class="tom-titel" style="font-size:16px">Error</div><div class="tom-tekst">${dataResult.error.message}</div></div>`;
-    return;
+  // If we have cached data, render immediately — no spinner
+  if (_cacheData !== null) {
+    renderKaffeData(_cacheData);
+    // Refresh in background; re-render only if data changed
+    hentAlleVurderinger(true)
+      .then(fresh => {
+        if (JSON.stringify(fresh) !== JSON.stringify(_cacheData)) renderKaffeData(fresh);
+      })
+      .catch(() => {});
+  } else {
+    container.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
+    const dataResult = await hentAlleVurderinger()
+      .then(d => ({ ok: true, data: d }))
+      .catch(e => ({ ok: false, error: e }));
+    if (!dataResult.ok) {
+      container.innerHTML = `<div class="tom"><div class="tom-titel" style="font-size:16px">Error</div><div class="tom-tekst">${dataResult.error.message}</div></div>`;
+      return;
+    }
+    renderKaffeData(dataResult.data);
   }
-  const data = dataResult.data;
+
+  // Trending loads independently — never blocks the coffee list
+  hentTrendingMaaned().then(renderTrending).catch(() => renderTrending([]));
+}
+
+function renderKaffeData(data) {
+  const container = document.getElementById('kaffe-liste-container');
 
   document.getElementById('antal-kaffer').textContent = data.length;
   document.getElementById('gns-score').textContent = data.length ? gns(data.map(v=>v.samlet_score)).toFixed(1) : '–';
@@ -1382,6 +1404,7 @@ async function gengiListe() {
   }
 
   renderSmagSnapshot(data);
+  renderAnbefalinger(data);
 
   const toolbar = document.getElementById('liste-toolbar');
   toolbar.style.display = data.length ? '' : 'none';
@@ -2168,8 +2191,46 @@ async function gengiStats() {
     </div>`;
 }
 
+// ── RECOMMENDATIONS ON HOME ───────────────────────────────
+function renderAnbefalinger(data) {
+  const sektion = document.getElementById('home-anbefaling-sektion');
+  const indhold = document.getElementById('home-anbefaling-indhold');
+  if (!sektion || !indhold || data.length < 2) return;
+  const smagsGns = {};
+  SMAG_FELTER.forEach(f => { smagsGns[f.key] = gns(data.map(v => v.smag[f.key])); });
+  const anbefalinger = genererAnbefalinger(smagsGns).slice(0, 3);
+  indhold.innerHTML = anbefalinger.map(k => `
+    <div class="anbefalet-kort">
+      <div class="anbefalet-top">
+        <div class="anbefalet-navn">${k.navn}</div>
+        <div class="anbefalet-match">${k.matchPct}% match</div>
+      </div>
+      <div class="anbefalet-risteri">${k.risteri}</div>
+      <div class="anbefalet-meta">${[k.oprindelse, k.boennesort, k.forarbejdning].filter(Boolean).join(' · ')}</div>
+      <div class="anbefalet-begrundelse">${k.begrundelse}</div>
+      <a class="anbefalet-koeb" href="${k.url}" target="_blank" rel="noopener">Buy online →</a>
+    </div>`).join('');
+  sektion.style.display = '';
+}
+
+// ── NAV ADD BUTTON ────────────────────────────────────────
+function aabneNyKaffe() {
+  // Always reset to fresh "add new" mode when using the nav button
+  redigeringsId = null;
+  smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
+  samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
+  ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  nulstilFotoUI();
+  document.getElementById('gem-knap').textContent = 'Save Rating';
+  document.getElementById('annuller-knap').textContent = 'Cancel';
+  initForm();
+  visSide('ny');
+}
+
 // ── BOOT ──────────────────────────────────────────────────
-// patch visSide so navigating to 'ny' resets the form when not editing
+// patch visSide: when navigating to 'ny' without edit mode, reset form
 (function() {
   const orig = visSide;
   visSide = function(side) {
