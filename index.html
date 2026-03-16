@@ -483,6 +483,15 @@
     .boennesort-forslag { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
     .forslag-knap { border: 1px dashed var(--border); border-radius: 4px; padding: 3px 9px; background: none; font-size: 11px; color: var(--tekst-3); cursor: pointer; font-family: inherit; transition: all .12s; }
     .forslag-knap:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── COFFEE NAME AUTOCOMPLETE ── */
+    .navn-autocomplete-wrapper { position: relative; }
+    .navn-autocomplete { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--kort); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; z-index: 200; box-shadow: 0 6px 20px rgba(0,0,0,.10); }
+    .navn-forslag { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--border); }
+    .navn-forslag:last-child { border-bottom: none; }
+    .navn-forslag:active { background: var(--bg); }
+    .navn-forslag-navn { display: block; font-size: 14px; font-weight: 600; color: var(--tekst-1); }
+    .navn-forslag-meta { display: block; font-size: 11px; color: var(--tekst-3); margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -649,7 +658,12 @@
         <div class="sektion">
           <div class="sektion-titel">Coffee Details</div>
           <div class="felt-label">Coffee Name *</div>
-          <input type="text" id="f-navn" placeholder="e.g. Ethiopia Yirgacheffe" />
+          <div class="navn-autocomplete-wrapper">
+            <input type="text" id="f-navn" placeholder="e.g. Ethiopia Yirgacheffe" autocomplete="off"
+              oninput="søgKaffeNavn(this.value)"
+              onblur="setTimeout(skjulNavnSuggestioner, 150)" />
+            <div id="navn-autocomplete" class="navn-autocomplete" style="display:none"></div>
+          </div>
           <div class="felt-label">Origin / Producer</div>
           <input type="text" id="f-oprindelse" placeholder="e.g. Ethiopia, La Cabra" />
           <div class="felt-label">Variety / Cultivar</div>
@@ -1634,6 +1648,54 @@ function vaelgBryg(b) {
 function vaelgBoennesort(s) {
   document.getElementById('f-boennesort').value = s;
 }
+
+// ── COFFEE NAME AUTOCOMPLETE ──────────────────────────────
+let _navnForslagData = [];
+let _navnTimer = null;
+
+async function søgKaffeNavn(val) {
+  clearTimeout(_navnTimer);
+  const container = document.getElementById('navn-autocomplete');
+  const q = val.trim();
+  if (!q || q.length < 2) { skjulNavnSuggestioner(); return; }
+  _navnTimer = setTimeout(async () => {
+    const { data } = await sb.from('coffee_ratings')
+      .select('navn, oprindelse, risteringsgrad')
+      .ilike('navn', `%${q}%`)
+      .limit(40);
+    if (!data?.length) { skjulNavnSuggestioner(); return; }
+    // Deduplicate by normalized name (case + whitespace insensitive)
+    const seen = new Map();
+    data.forEach(r => {
+      const key = r.navn.trim().replace(/\s+/g, ' ').toLowerCase();
+      if (!seen.has(key)) seen.set(key, r);
+    });
+    _navnForslagData = [...seen.values()].slice(0, 6);
+    container.innerHTML = _navnForslagData.map((r, i) => {
+      const meta = [r.oprindelse, r.risteringsgrad].filter(Boolean).join(' · ');
+      return `<div class="navn-forslag" onmousedown="vaelgKaffeNavn(${i})">
+        <span class="navn-forslag-navn">${r.navn.replace(/</g,'&lt;')}</span>
+        ${meta ? `<span class="navn-forslag-meta">${meta.replace(/</g,'&lt;')}</span>` : ''}
+      </div>`;
+    }).join('');
+    container.style.display = _navnForslagData.length ? '' : 'none';
+  }, 220);
+}
+
+function vaelgKaffeNavn(i) {
+  const r = _navnForslagData[i];
+  if (!r) return;
+  document.getElementById('f-navn').value = r.navn;
+  const opEl = document.getElementById('f-oprindelse');
+  if (r.oprindelse && !opEl.value) opEl.value = r.oprindelse;
+  skjulNavnSuggestioner();
+}
+
+function skjulNavnSuggestioner() {
+  const c = document.getElementById('navn-autocomplete');
+  if (c) { c.style.display = 'none'; c.innerHTML = ''; }
+  _navnForslagData = [];
+}
 function saetSmag(key, val) {
   smagsVaerdier[key] = val;
   document.querySelector(`#badge-${key} span`).textContent = val;
@@ -1667,7 +1729,7 @@ function visFormFejl(besked) {
 }
 
 async function gemVurdering() {
-  const navn = document.getElementById('f-navn').value.trim();
+  const navn = document.getElementById('f-navn').value.trim().replace(/\s+/g, ' ');
   if (!navn) { visFormFejl('Please enter the coffee name.'); return; }
   if (samletScore === null) { visFormFejl('Please give a personal score before saving.'); document.getElementById('score-knapper').scrollIntoView({behavior:'smooth',block:'center'}); return; }
   visFormFejl('');
