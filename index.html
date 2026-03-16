@@ -282,6 +282,13 @@
     .bruger-følger-count { font-size: 11px; color: var(--tekst-3); margin-top: 1px; }
     .følg-knap { background: var(--sort); color: white; border: none; border-radius: 8px; padding: 7px 14px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; }
     .følg-knap.følger { background: none; border: 1px solid var(--border); color: var(--tekst-2); }
+    .following-kort { background: var(--kort); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; }
+    .following-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .following-info { flex: 1; min-width: 0; }
+    .following-navn { font-weight: 600; font-size: 15px; color: var(--tekst-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .following-stats { font-size: 12px; color: var(--tekst-3); margin-top: 2px; }
+    .following-smag { font-size: 12px; color: var(--tekst-2); margin-top: 6px; }
+    .smag-chip { display: inline-block; background: var(--baggrund); border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; font-size: 11px; color: var(--tekst-2); margin: 2px 2px 0 0; }
     .feed-post { background: var(--kort); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
     .feed-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .feed-avatar { width: 32px; height: 32px; border-radius: 16px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; flex-shrink: 0; }
@@ -622,6 +629,10 @@
           <div class="sektion-under">Highest-rated across all users</div>
           <div id="social-highscore-indhold"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:22px;height:22px;margin:8px auto"></div></div>
         </div>
+      </div>
+      <div id="following-sektion" style="display:none">
+        <div style="padding:12px 16px 4px"><div style="font-size:11px;font-weight:600;color:var(--tekst-3);text-transform:uppercase;letter-spacing:.6px">People You Follow</div></div>
+        <div style="padding:0 16px 8px" id="following-liste-indhold"></div>
       </div>
       <div style="padding:12px 16px 4px"><div style="font-size:11px;font-weight:600;color:var(--tekst-3);text-transform:uppercase;letter-spacing:.6px">Friend Activity</div></div>
       <div class="stats-grid" id="social-feed-indhold"></div>
@@ -1435,6 +1446,69 @@ async function hentMineFollowing(force = false) {
   return _mineFollowing;
 }
 
+// ── FOLLOWING LIST ───────────────────────────────────────
+const SMAG_LABELS = {
+  syre: 'Acidic', bitterhed: 'Bitter', soedme: 'Sweet',
+  fylde: 'Full-bodied', aroma: 'Aromatic', eftersmag: 'Long finish'
+};
+
+function beregnSmagsProfil(smagSum, count) {
+  if (!count || !smagSum || !Object.keys(smagSum).length) return null;
+  const sorted = Object.entries(smagSum)
+    .map(([k, v]) => [k, v / count])
+    .filter(([k]) => SMAG_LABELS[k])
+    .sort(([, a], [, b]) => b - a);
+  // Show top traits with score >= 6, max 3
+  const top = sorted.filter(([, v]) => v >= 6).slice(0, 3).map(([k]) => SMAG_LABELS[k]);
+  return top.length ? top : null;
+}
+
+async function gengiFollowingListe(poster) {
+  const el = document.getElementById('following-liste-indhold');
+  const sektion = document.getElementById('following-sektion');
+  if (!el || !sektion) return;
+
+  const following = await hentMineFollowing();
+  if (!following.length) { sektion.style.display = 'none'; return; }
+
+  // Aggregate stats per followed user from the shared_ratings data
+  const stats = {};
+  following.forEach(f => { stats[f.id] = { count: 0, smagSum: {}, scoreSum: 0 }; });
+  (poster ?? []).forEach(p => {
+    const s = stats[p.from_user_id];
+    if (!s || !p.coffee_ratings) return;
+    s.count++;
+    s.scoreSum += p.coffee_ratings.samlet_score ?? 0;
+    const smag = p.coffee_ratings.smag;
+    if (smag && typeof smag === 'object') {
+      Object.entries(smag).forEach(([k, v]) => { s.smagSum[k] = (s.smagSum[k] || 0) + v; });
+    }
+  });
+
+  el.innerHTML = following.map(f => {
+    const st = stats[f.id];
+    const avgScore = st.count ? (st.scoreSum / st.count).toFixed(1) : null;
+    const chips = beregnSmagsProfil(st.smagSum, st.count);
+    const chipsHtml = chips
+      ? `<div class="following-smag">${chips.map(c => `<span class="smag-chip">${c}</span>`).join('')}</div>`
+      : '';
+    const statsLinje = st.count
+      ? `${st.count} shared rating${st.count !== 1 ? 's' : ''}${avgScore ? ` · avg ${avgScore}/10` : ''}`
+      : 'No shared ratings yet';
+    return `<div class="following-kort">
+      <div class="following-avatar">${f.username[0].toUpperCase()}</div>
+      <div class="following-info">
+        <div class="following-navn">${f.username}</div>
+        <div class="following-stats">${statsLinje}</div>
+        ${chipsHtml}
+      </div>
+      <button class="følg-knap følger" onclick="toggleFølg('${f.id}', this, '${f.username}')">Following</button>
+    </div>`;
+  }).join('');
+
+  sektion.style.display = '';
+}
+
 async function populerModtagerListe() {
   const liste = document.getElementById('del-modtager-liste');
   const following = await hentMineFollowing();
@@ -1563,7 +1637,7 @@ async function gengiSocial() {
   const ids = [...følgerIds];
   let query = sb
     .from('shared_ratings')
-    .select('id, type, besked, created_at, from_user_id, to_user_id, rating_id, profiles!shared_ratings_from_user_id_fkey(username), coffee_ratings(navn, oprindelse, samlet_score, brygmetode, risteringsgrad, forarbejdning)')
+    .select('id, type, besked, created_at, from_user_id, to_user_id, rating_id, profiles!shared_ratings_from_user_id_fkey(username), coffee_ratings(navn, oprindelse, samlet_score, brygmetode, risteringsgrad, forarbejdning, smag)')
     .order('created_at', { ascending: false })
     .limit(50);
 
@@ -1574,6 +1648,8 @@ async function gengiSocial() {
   }
 
   const { data: poster, error } = await query;
+
+  gengiFollowingListe(poster);
 
   if (følgerIds.size === 0 && (!poster?.length)) {
     feedEl.innerHTML = `<div class="tom">
