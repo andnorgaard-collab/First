@@ -579,6 +579,19 @@
     <div class="side" id="side-ny">
       <div class="form-container">
         <div class="sektion">
+          <div class="sektion-titel">Photo</div>
+          <div class="sektion-under">Optional — tap to take a photo or pick from gallery</div>
+          <div class="foto-zone" id="foto-zone" onclick="document.getElementById('foto-input').click()">
+            <div class="foto-zone-placeholder" id="foto-placeholder">
+              <div class="foto-zone-ikon">📷</div>
+              <div class="foto-zone-tekst">Add photo</div>
+            </div>
+            <img id="foto-preview" style="display:none" alt="preview">
+            <button class="foto-fjern-knap" id="foto-fjern" style="display:none" onclick="event.stopPropagation();fjernFoto()">Remove</button>
+          </div>
+          <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="fotoValgt(event)">
+        </div>
+        <div class="sektion">
           <div class="sektion-titel">Coffee Details</div>
           <div class="felt-label">Coffee Name *</div>
           <input type="text" id="f-navn" placeholder="e.g. Ethiopia Yirgacheffe" />
@@ -604,19 +617,6 @@
           <div class="sektion-under">How much do you enjoy this coffee?</div>
           <div class="samlet-badge-container"><div id="samlet-badge"></div></div>
           <div class="score-knapper" id="score-knapper"></div>
-        </div>
-        <div class="sektion">
-          <div class="sektion-titel">Photo</div>
-          <div class="sektion-under">Optional — tap to take a photo or pick from gallery</div>
-          <div class="foto-zone" id="foto-zone" onclick="document.getElementById('foto-input').click()">
-            <div class="foto-zone-placeholder" id="foto-placeholder">
-              <div class="foto-zone-ikon">📷</div>
-              <div class="foto-zone-tekst">Add photo</div>
-            </div>
-            <img id="foto-preview" style="display:none" alt="preview">
-            <button class="foto-fjern-knap" id="foto-fjern" style="display:none" onclick="event.stopPropagation();fjernFoto()">Remove</button>
-          </div>
-          <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="fotoValgt(event)">
         </div>
         <div class="sektion">
           <div class="sektion-titel">Tasting Notes</div>
@@ -1137,8 +1137,24 @@ function renderWelcome() {
 }
 
 async function hentTrendingMaaned() {
+  // Try RPC first — requires homepage_migration.sql to be run in Supabase
   const { data, error } = await sb.rpc('top_kaffe_maaned', { limit_n: 5 });
-  return error ? [] : (data || []);
+  if (!error && data?.length) return data;
+
+  // Fallback: show current user's own coffees from the last 30 days
+  if (!aktivBruger) return [];
+  const siden = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const { data: mine } = await sb.from('coffee_ratings')
+    .select('navn, oprindelse, brygmetode, risteringsgrad, samlet_score')
+    .eq('user_id', aktivBruger.id)
+    .gte('dato', siden)
+    .order('samlet_score', { ascending: false })
+    .limit(5);
+  return (mine ?? []).map(r => ({
+    navn: r.navn, oprindelse: r.oprindelse,
+    brygmetode: r.brygmetode, risteringsgrad: r.risteringsgrad,
+    avg_score: r.samlet_score, antal: 1, din_score: r.samlet_score,
+  }));
 }
 
 function renderTrending(data) {
