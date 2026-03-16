@@ -993,18 +993,32 @@ function nulstilFotoUI() {
 let _aiKey = null;
 async function hentAiKey() {
   if (_aiKey) return _aiKey;
-  const { data } = await sb.from('app_config').select('value').eq('key', 'ai_key').single();
+  const { data, error } = await sb.from('app_config').select('value').eq('key', 'ai_key').single();
+  if (error) throw new Error('Key load: ' + error.message);
   _aiKey = data?.value || null;
   return _aiKey;
 }
 
 async function analyserFotoMedAI(dataUrl) {
-  const apiKey = await hentAiKey();
-  if (!apiKey) return;
-
+  let apiKey;
   const raekke = document.getElementById('ai-raekke');
   const tekst = document.getElementById('ai-raekke-tekst');
   const status = document.getElementById('ai-raekke-status');
+  try {
+    apiKey = await hentAiKey();
+  } catch (e) {
+    raekke.className = 'ai-raekke fejl';
+    tekst.textContent = 'Analysis failed';
+    status.textContent = e.message.length > 40 ? e.message.slice(0, 40) + '…' : e.message;
+    return;
+  }
+  if (!apiKey) {
+    raekke.className = 'ai-raekke fejl';
+    tekst.textContent = 'Analysis failed';
+    status.textContent = 'No API key in app_config';
+    return;
+  }
+
   raekke.className = 'ai-raekke analyserer';
   tekst.textContent = 'Analysing image...';
   status.textContent = '';
