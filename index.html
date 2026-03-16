@@ -584,8 +584,6 @@
         <div><div class="oversigt-tal" id="antal-kaffer">–</div><div class="oversigt-label">Coffees Tasted</div></div>
         <div class="oversigt-deler"></div>
         <div><div class="oversigt-tal" id="gns-score">–</div><div class="oversigt-label">Avg. Score</div></div>
-        <div class="oversigt-deler"></div>
-        <div><div class="oversigt-tal" id="bedste-score">–</div><div class="oversigt-label">Best</div></div>
       </div>
 
       <!-- Trending this month -->
@@ -1434,7 +1432,6 @@ function renderKaffeData(data) {
 
   document.getElementById('antal-kaffer').textContent = data.length;
   document.getElementById('gns-score').textContent = data.length ? gns(data.map(v=>v.samlet_score)).toFixed(1) : '–';
-  document.getElementById('bedste-score').textContent = data.length ? Math.max(...data.map(v=>v.samlet_score)) : '–';
 
   // Update welcome tagline
   const taglineEl = document.getElementById('home-tagline');
