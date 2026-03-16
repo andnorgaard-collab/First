@@ -1575,7 +1575,7 @@ let valgRister = 'Medium';
 let valgForarbejdning = 'Washed';
 let valgBryg = 'Filter';
 let smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-let samletScore = 7;
+let samletScore = null;
 
 function initForm() {
   document.getElementById('rister-valg').innerHTML = RISTERINGSGRADER.map(r => `
@@ -1654,11 +1654,12 @@ function saetScore(n) {
   opdaterSamletBadge();
 }
 function opdaterSamletBadge() {
-  document.getElementById('samlet-badge').innerHTML = `
-    <div class="score-badge" style="background:${scorefarve(samletScore)}">
-      <span class="score-num">${samletScore}/10</span>
-      <span class="score-tekst">${scoretekst(samletScore)}</span>
-    </div>`;
+  document.getElementById('samlet-badge').innerHTML = samletScore === null
+    ? `<div style="font-size:13px;color:var(--tekst-3);padding:4px 0">Tap a number below ↓</div>`
+    : `<div class="score-badge" style="background:${scorefarve(samletScore)}">
+        <span class="score-num">${samletScore}/10</span>
+        <span class="score-tekst">${scoretekst(samletScore)}</span>
+      </div>`;
 }
 
 // ── SAVE ─────────────────────────────────────────────────
@@ -1671,6 +1672,7 @@ function visFormFejl(besked) {
 async function gemVurdering() {
   const navn = document.getElementById('f-navn').value.trim();
   if (!navn) { visFormFejl('Please enter the coffee name.'); return; }
+  if (samletScore === null) { visFormFejl('Please give a personal score before saving.'); document.getElementById('score-knapper').scrollIntoView({behavior:'smooth',block:'center'}); return; }
   visFormFejl('');
   const knap = document.getElementById('gem-knap');
   knap.disabled = true;
@@ -1707,7 +1709,7 @@ async function gemVurdering() {
   visFormFejl('');
   redigeringsId = null;
   smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
+  samletScore = null; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
   ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => document.getElementById(id).value = '');
   nulstilFotoUI();
   knap.disabled = false;
@@ -1749,7 +1751,7 @@ async function redigerVurdering(id) {
 function annullerForm() {
   redigeringsId = null;
   smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
+  samletScore = null; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
   ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   nulstilFotoUI();
   visSide('liste');
@@ -2427,7 +2429,7 @@ function aabneNyKaffe() {
   // Always reset to fresh "add new" mode when using the nav button
   redigeringsId = null;
   smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = 7; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
+  samletScore = null; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
   ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
