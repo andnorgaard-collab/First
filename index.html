@@ -1660,19 +1660,22 @@ async function søgKaffeNavn(val) {
   if (!q || q.length < 2) { skjulNavnSuggestioner(); return; }
   _navnTimer = setTimeout(async () => {
     const { data } = await sb.from('coffee_ratings')
-      .select('navn, oprindelse, risteringsgrad')
+      .select('navn, oprindelse, risteringsgrad, forarbejdning')
       .ilike('navn', `%${q}%`)
       .limit(40);
     if (!data?.length) { skjulNavnSuggestioner(); return; }
-    // Deduplicate by normalized name (case + whitespace insensitive)
+    // Deduplicate by navn + forarbejdning — same coffee with different
+    // processing (e.g. Washed vs Natural) counts as distinct entries
     const seen = new Map();
     data.forEach(r => {
-      const key = r.navn.trim().replace(/\s+/g, ' ').toLowerCase();
+      const key = r.navn.trim().replace(/\s+/g, ' ').toLowerCase()
+        + '|' + (r.forarbejdning || '').toLowerCase();
       if (!seen.has(key)) seen.set(key, r);
     });
     _navnForslagData = [...seen.values()].slice(0, 6);
     container.innerHTML = _navnForslagData.map((r, i) => {
-      const meta = [r.oprindelse, r.risteringsgrad].filter(Boolean).join(' · ');
+      const tags = [r.forarbejdning, r.risteringsgrad].filter(Boolean).join(' · ');
+      const meta = [r.oprindelse, tags].filter(Boolean).join(' — ');
       return `<div class="navn-forslag" onmousedown="vaelgKaffeNavn(${i})">
         <span class="navn-forslag-navn">${r.navn.replace(/</g,'&lt;')}</span>
         ${meta ? `<span class="navn-forslag-meta">${meta.replace(/</g,'&lt;')}</span>` : ''}
@@ -1688,6 +1691,8 @@ function vaelgKaffeNavn(i) {
   document.getElementById('f-navn').value = r.navn;
   const opEl = document.getElementById('f-oprindelse');
   if (r.oprindelse && !opEl.value) opEl.value = r.oprindelse;
+  if (r.forarbejdning) vaelgForarbejdning(r.forarbejdning);
+  if (r.risteringsgrad) vaelgRister(r.risteringsgrad);
   skjulNavnSuggestioner();
 }
 
