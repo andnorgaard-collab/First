@@ -25,7 +25,7 @@ export default function RootLayout() {
         name="index"
         options={{
           title: 'Kaffeklub',
-          tabBarLabel: 'Mine kaffer',
+          tabBarLabel: 'Hjem',
           tabBarIcon: ({ color, size }) => (
             <TabIcon emoji="☕" color={color} size={size} />
           ),
@@ -44,11 +44,7 @@ export default function RootLayout() {
       <Tabs.Screen
         name="statistik"
         options={{
-          title: 'Min smagsprofil',
-          tabBarLabel: 'Smagsprofil',
-          tabBarIcon: ({ color, size }) => (
-            <TabIcon emoji="📊" color={color} size={size} />
-          ),
+          href: null,
         }}
       />
       <Tabs.Screen

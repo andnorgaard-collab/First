@@ -51,7 +51,9 @@ const RISTER_FARVER: Record<RisteringsGrad, string> = {
 };
 
 export default function NyVurderingScreen() {
-  const { id } = useLocalSearchParams<{ id?: string }>();
+  const params = useLocalSearchParams<{ id?: string }>();
+  // useLocalSearchParams can return string | string[] — normalise to string | undefined
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
   const erRedigering = !!id;
 
@@ -63,6 +65,7 @@ export default function NyVurderingScreen() {
   const [smag, setSmag] = useState<SmagsProfil>(DEFAULT_SMAG);
   const [samletScore, setSamletScore] = useState(7);
   const [noter, setNoter] = useState('');
+  const [originalDato, setOriginalDato] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (id) {
@@ -74,11 +77,23 @@ export default function NyVurderingScreen() {
           setRisteringsgrad(eksisterende.risteringsgrad);
           setBrygmetode(eksisterende.brygmetode);
           setVurderedeAf(eksisterende.vurderedeAf);
-          setSmag(eksisterende.smag);
+          setSmag({ ...eksisterende.smag });
           setSamletScore(eksisterende.samletScore);
           setNoter(eksisterende.noter);
+          setOriginalDato(eksisterende.dato);
         }
       });
+    } else {
+      // Reset form when navigating to "add new coffee"
+      setNavn('');
+      setOprindelse('');
+      setRisteringsgrad('Medium');
+      setBrygmetode('Filterkaffe');
+      setVurderedeAf('');
+      setSmag({ ...DEFAULT_SMAG });
+      setSamletScore(7);
+      setNoter('');
+      setOriginalDato(undefined);
     }
   }, [id]);
 
@@ -102,7 +117,7 @@ export default function NyVurderingScreen() {
       smag,
       samletScore,
       noter: noter.trim(),
-      dato: new Date().toISOString(),
+      dato: originalDato ?? new Date().toISOString(),
     };
 
     await gemVurdering(vurdering);
