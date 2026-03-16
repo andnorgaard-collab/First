@@ -131,6 +131,24 @@
     .dd-knap:hover { background: var(--baggrund); }
     .dd-knap.fare { color: var(--roed); }
 
+    /* ── TERMS MODAL ── */
+    .vilkaar-overlay { position: fixed; inset: 0; background: rgba(28,24,20,.6); display: none; align-items: flex-end; justify-content: center; z-index: 300; padding: 0; }
+    .vilkaar-overlay.aaben { display: flex; }
+    .vilkaar-boks { background: var(--kort); border-radius: 20px 20px 0 0; width: 100%; max-width: 640px; max-height: 88dvh; display: flex; flex-direction: column; }
+    .vilkaar-header { padding: 20px 20px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .vilkaar-titel { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; }
+    .vilkaar-luk { background: var(--baggrund); border: none; border-radius: 8px; padding: 6px 14px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; color: var(--tekst); }
+    .vilkaar-indhold { padding: 20px; overflow-y: auto; flex: 1; font-size: 13px; color: var(--tekst-2); line-height: 1.7; }
+    .vilkaar-indhold h3 { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--tekst-3); margin: 20px 0 6px; }
+    .vilkaar-indhold h3:first-child { margin-top: 0; }
+    .vilkaar-indhold p { margin-bottom: 10px; }
+    .vilkaar-dato { font-size: 11px; color: var(--tekst-3); margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
+    /* Auth-screen terms checkbox */
+    .auth-vilkaar { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; }
+    .auth-vilkaar input[type=checkbox] { width: 17px; height: 17px; flex-shrink: 0; margin-top: 2px; accent-color: var(--accent-lys); cursor: pointer; }
+    .auth-vilkaar label { font-size: 12px; color: rgba(245,241,235,.45); line-height: 1.5; cursor: pointer; }
+    .auth-vilkaar a { color: rgba(196,149,106,.85); text-decoration: underline; cursor: pointer; }
+
     /* ── EDIT PROFILE MODAL ── */
     .rediger-overlay { position: fixed; inset: 0; background: rgba(28,24,20,.5); display: none; align-items: center; justify-content: center; z-index: 200; padding: 24px; }
     .rediger-overlay.aaben { display: flex; }
@@ -504,6 +522,10 @@
         <input class="auth-input" type="email" id="opret-email" placeholder="your@email.co.uk" autocomplete="email" />
         <div class="auth-felt-label">Password</div>
         <input class="auth-input" type="password" id="opret-password" placeholder="At least 6 characters" autocomplete="new-password" />
+        <div class="auth-vilkaar">
+          <input type="checkbox" id="vilkaar-check" />
+          <label for="vilkaar-check">I have read and agree to the <a onclick="visVilkaar()">Terms of Use &amp; Privacy Policy</a></label>
+        </div>
         <button class="auth-knap" id="opret-knap" type="submit">Create account</button>
       </form>
       <div class="auth-fejl" id="opret-fejl"></div>
@@ -529,6 +551,7 @@
         <div class="dd-email" id="dd-email">–</div>
       </div>
       <button class="dd-knap" onclick="åbnRedigerProfil()">✏️  Edit profile</button>
+      <button class="dd-knap" style="color:var(--tekst-3);font-size:13px" onclick="lukkDropdown();visVilkaar()">📋  Terms of Use</button>
       <button class="dd-knap fare" onclick="logUd()">Sign out</button>
     </div>
   </div>
@@ -853,6 +876,7 @@ async function opretKonto() {
   if (bNavn.length < 3) { fejlEl.textContent = 'Username must be at least 3 characters.'; return; }
   if (!email) { fejlEl.textContent = 'Please enter an email address.'; return; }
   if (password.length < 6) { fejlEl.textContent = 'Password must be at least 6 characters.'; return; }
+  if (!document.getElementById('vilkaar-check').checked) { fejlEl.textContent = 'You must agree to the Terms of Use to create an account.'; return; }
 
   const { data: existing } = await sb.from('profiles').select('username').eq('username', bNavn).single();
   if (existing) { fejlEl.textContent = 'Username is already taken.'; return; }
@@ -2416,7 +2440,69 @@ function aabneNyKaffe() {
   };
 })();
 
+// ── TERMS OF USE ──────────────────────────────────────────
+function visVilkaar() {
+  document.getElementById('vilkaar-overlay').classList.add('aaben');
+}
+function lukVilkaar(e) {
+  if (e && e.target !== document.getElementById('vilkaar-overlay')) return;
+  document.getElementById('vilkaar-overlay').classList.remove('aaben');
+}
+
 document.addEventListener('DOMContentLoaded', start);
 </script>
+
+<!-- TERMS OF USE MODAL -->
+<div class="vilkaar-overlay" id="vilkaar-overlay" onclick="lukVilkaar(event)">
+  <div class="vilkaar-boks" onclick="event.stopPropagation()">
+    <div class="vilkaar-header">
+      <div class="vilkaar-titel">Terms of Use &amp; Privacy Policy</div>
+      <button class="vilkaar-luk" onclick="lukVilkaar()">Close</button>
+    </div>
+    <div class="vilkaar-indhold">
+
+      <h3>1. About CoffeeBuddies</h3>
+      <p>CoffeeBuddies ("the App", "the Service") is a personal, non-commercial hobby project operated by a private individual ("the Operator"). The App is provided free of charge on an entirely voluntary basis. The Operator is under no obligation to maintain, update, or continue operating the Service at any time.</p>
+
+      <h3>2. Acceptance of Terms</h3>
+      <p>By creating an account or using CoffeeBuddies in any way, you confirm that you are at least 13 years of age and that you agree to these Terms of Use. If you do not agree, you must not use the Service.</p>
+
+      <h3>3. No Warranty — Service Provided "As Is"</h3>
+      <p>The App is provided <strong>"as is"</strong> and <strong>"as available"</strong> without any warranty of any kind, either express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, accuracy, or non-infringement. The Operator makes no guarantee that the Service will be available, error-free, secure, or uninterrupted at any time.</p>
+
+      <h3>4. Limitation of Liability</h3>
+      <p>To the maximum extent permitted by applicable law, the Operator shall not be liable for any direct, indirect, incidental, special, consequential, or exemplary damages, including but not limited to: loss of data, loss of revenue, personal injury, or any other loss arising from your use of — or inability to use — the App, even if the Operator has been advised of the possibility of such damages.</p>
+      <p>This includes, without limitation, any harm arising from reliance on coffee ratings, taste descriptions, or purchase recommendations generated by or displayed within the App.</p>
+
+      <h3>5. AI-Generated Content</h3>
+      <p>CoffeeBuddies uses artificial intelligence (the Anthropic Claude API) to generate taste profile analyses, coffee descriptions, and purchase recommendations. All AI-generated content is produced automatically and has not been reviewed, verified, or endorsed by the Operator.</p>
+      <p>AI-generated recommendations are for personal entertainment and inspiration only. They do not constitute professional advice of any kind. Purchase links suggested by the AI may be inaccurate, outdated, or lead to products no longer available. The Operator is not responsible for any purchases you make, any costs incurred, or any dissatisfaction with products obtained through links displayed in the App.</p>
+      <p>The Operator has no commercial relationship, affiliate agreement, or sponsorship with any coffee roastery or retailer mentioned in AI-generated content.</p>
+
+      <h3>6. User-Generated Content</h3>
+      <p>You retain ownership of the coffee ratings, notes, and photos you submit ("Your Content"). By submitting content to the App, you grant the Operator a non-exclusive, royalty-free licence to store and display Your Content solely for the purpose of operating the Service. You are solely responsible for Your Content and warrant that it does not violate any applicable law or third-party rights.</p>
+
+      <h3>7. Data Storage &amp; Privacy (GDPR)</h3>
+      <p>Your account data (email address, username, coffee ratings, and uploaded photos) is stored using Supabase, a third-party infrastructure provider, on servers which may be located within the European Economic Area. By using the App you consent to this storage.</p>
+      <p>The Operator does not sell, rent, or share your personal data with third parties for marketing purposes. Your email address is used solely for authentication and account recovery.</p>
+      <p>Under the General Data Protection Regulation (GDPR), if you are located in the EU/EEA, you have the right to access, correct, or request deletion of your personal data. To exercise these rights, contact the Operator using the email address associated with your account, or delete your account directly within the App. Upon account deletion, all associated data will be removed within 30 days.</p>
+
+      <h3>8. Health &amp; Allergen Disclaimer</h3>
+      <p>The App does not provide allergen information, health advice, or dietary guidance. Coffee and coffee products may cause adverse reactions in some individuals. You consume any coffee product entirely at your own risk. The Operator accepts no liability for any health-related consequences arising from coffee consumption.</p>
+
+      <h3>9. Service Changes &amp; Termination</h3>
+      <p>The Operator reserves the right to modify, suspend, or permanently discontinue the Service at any time and without prior notice. The Operator may also terminate or suspend individual user accounts at their sole discretion. Upon discontinuation, user data may be permanently deleted.</p>
+
+      <h3>10. Governing Law</h3>
+      <p>These Terms are governed by the laws of Denmark. Any dispute arising from these Terms or your use of the Service shall be subject to the exclusive jurisdiction of the Danish courts.</p>
+
+      <h3>11. Changes to These Terms</h3>
+      <p>The Operator may update these Terms from time to time. Continued use of the App after changes are posted constitutes acceptance of the revised Terms. It is your responsibility to review these Terms periodically.</p>
+
+      <div class="vilkaar-dato">Last updated: March 2026 &nbsp;·&nbsp; CoffeeBuddies is a private, non-commercial project.</div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
