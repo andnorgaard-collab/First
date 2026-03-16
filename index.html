@@ -914,7 +914,8 @@ async function gemVurderingDB(v) {
     risteringsgrad: v.risteringsgrad, forarbejdning: v.forarbejdning,
     boennesort: v.boennesort, brygmetode: v.brygmetode,
     vurderede_af: brugernavn, smag: v.smag, samlet_score: v.samletScore,
-    noter: v.noter, dato: v.dato, image_url: v.imageUrl ?? null,
+    noter: v.noter, dato: v.dato,
+    ...(v.imageUrl != null ? { image_url: v.imageUrl } : {}),
   };
   const { error } = await medTimeout(sb.from('coffee_ratings').upsert(row, { onConflict: 'id' }));
   if (error) throw new Error(error.message);
