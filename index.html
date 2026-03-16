@@ -178,6 +178,22 @@
     .foto-zone-tekst { font-size: 13px; color: var(--tekst-3); }
     .foto-zone img { width: 100%; max-height: 200px; object-fit: cover; display: block; }
     .foto-fjern-knap { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,.55); color: #fff; border: none; border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: inherit; }
+    .ai-raekke { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 10px 12px; background: var(--baggrund); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; }
+    .ai-raekke-ikon { font-size: 16px; flex-shrink: 0; }
+    .ai-raekke-tekst { font-size: 13px; color: var(--tekst-2); flex: 1; }
+    .ai-raekke-status { font-size: 12px; font-weight: 600; color: var(--accent); }
+    .ai-raekke.analyserer { border-color: var(--accent-lys); background: #FDF6EE; }
+    .ai-raekke.success { border-color: #5B8C5A; background: #F2F8F2; }
+    .ai-raekke.fejl { border-color: var(--roed); background: #FDF2F2; }
+    .ai-raekke.success .ai-raekke-status { color: #3A6B39; }
+    .ai-raekke.fejl .ai-raekke-status { color: var(--roed); }
+    .ai-key-boks { margin-top: 8px; display: none; }
+    .ai-key-boks.vis { display: block; }
+    .ai-key-input-raekke { display: flex; gap: 8px; margin-top: 4px; }
+    .ai-key-input { flex: 1; background: var(--baggrund); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px; color: var(--tekst); font-family: inherit; }
+    .ai-key-input:focus { outline: none; border-color: var(--accent-lys); }
+    .ai-key-gem-knap { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; }
+    .ai-key-slet-knap { font-size: 12px; color: var(--tekst-3); background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 0; text-decoration: underline; }
     .kaffe-kort:active { background: #F0EAE0; border-color: #D4C8B8; }
     .kort-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
     .kort-navn { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 2px; color: var(--tekst); }
@@ -590,6 +606,19 @@
             <button class="foto-fjern-knap" id="foto-fjern" style="display:none" onclick="event.stopPropagation();fjernFoto()">Remove</button>
           </div>
           <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="fotoValgt(event)">
+          <div class="ai-raekke" id="ai-raekke" onclick="aiRaekkeKlik()">
+            <div class="ai-raekke-ikon">✦</div>
+            <div class="ai-raekke-tekst" id="ai-raekke-tekst">Auto-analyse with AI</div>
+            <div class="ai-raekke-status" id="ai-raekke-status"></div>
+          </div>
+          <div class="ai-key-boks" id="ai-key-boks">
+            <div class="felt-label" style="margin-top:8px">Anthropic API Key</div>
+            <div class="ai-key-input-raekke">
+              <input type="password" class="ai-key-input" id="ai-key-input" placeholder="sk-ant-api03-..." />
+              <button class="ai-key-gem-knap" onclick="gemAiKey()">Save</button>
+            </div>
+            <button class="ai-key-slet-knap" id="ai-key-slet" style="display:none" onclick="sletAiKey()">Remove saved key</button>
+          </div>
         </div>
         <div class="sektion">
           <div class="sektion-titel">Coffee Details</div>
@@ -771,6 +800,7 @@ function visApp() {
   document.getElementById('auth-skærm').classList.remove('vis');
   document.getElementById('app').style.display = 'block';
   initForm();
+  opdaterAiRaekke();
   gengiListe();
 }
 
@@ -941,9 +971,10 @@ function fotoValgt(e) {
     document.getElementById('foto-preview').style.display = 'block';
     document.getElementById('foto-placeholder').style.display = 'none';
     document.getElementById('foto-fjern').style.display = '';
+    if (hentAiKey()) analyserFotoMedAI(ev.target.result);
   };
   reader.readAsDataURL(file);
-  e.target.value = ''; // allow re-selecting same file
+  e.target.value = '';
 }
 
 function fjernFoto() {
@@ -964,6 +995,134 @@ function nulstilFotoUI() {
   if (placeholder) placeholder.style.display = '';
   const fjern = document.getElementById('foto-fjern');
   if (fjern) fjern.style.display = 'none';
+}
+
+// ── AI ANALYSE ────────────────────────────────────────────
+function hentAiKey() { return localStorage.getItem('cb_ai_key') || ''; }
+
+function opdaterAiRaekke() {
+  const harNøgle = !!hentAiKey();
+  const raekke = document.getElementById('ai-raekke');
+  const tekst = document.getElementById('ai-raekke-tekst');
+  const status = document.getElementById('ai-raekke-status');
+  const slet = document.getElementById('ai-key-slet');
+  if (!raekke) return;
+  raekke.className = 'ai-raekke';
+  tekst.textContent = harNøgle ? 'AI analysis ready — add a photo to analyse' : 'Set up AI auto-analysis';
+  status.textContent = harNøgle ? '✓ Key saved' : 'Tap to configure';
+  if (slet) slet.style.display = harNøgle ? '' : 'none';
+}
+
+function aiRaekkeKlik() {
+  const boks = document.getElementById('ai-key-boks');
+  boks.classList.toggle('vis');
+  if (boks.classList.contains('vis') && hentAiKey()) {
+    document.getElementById('ai-key-input').value = '••••••••';
+  }
+}
+
+function gemAiKey() {
+  const val = document.getElementById('ai-key-input').value.trim();
+  if (!val || val === '••••••••') return;
+  localStorage.setItem('cb_ai_key', val);
+  document.getElementById('ai-key-boks').classList.remove('vis');
+  opdaterAiRaekke();
+}
+
+function sletAiKey() {
+  localStorage.removeItem('cb_ai_key');
+  document.getElementById('ai-key-input').value = '';
+  opdaterAiRaekke();
+}
+
+async function analyserFotoMedAI(dataUrl) {
+  const apiKey = hentAiKey();
+  if (!apiKey) return;
+
+  const raekke = document.getElementById('ai-raekke');
+  const tekst = document.getElementById('ai-raekke-tekst');
+  const status = document.getElementById('ai-raekke-status');
+  raekke.className = 'ai-raekke analyserer';
+  tekst.textContent = 'Analysing image...';
+  status.textContent = '';
+
+  try {
+    const base64 = dataUrl.split(',')[1];
+    const mediaType = dataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5',
+        max_tokens: 1024,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+            { type: 'text', text: `Analyse this coffee bag/packaging image and return ONLY a valid JSON object — no prose, no markdown. Use these exact fields:
+{
+  "navn": "coffee name from label",
+  "oprindelse": "origin country or roastery name",
+  "boennesort": "variety/cultivar if visible, else empty string",
+  "risteringsgrad": "one of exactly: Light, Medium, Dark, Espresso",
+  "forarbejdning": "one of exactly: Washed, Natural, Honey, Anaerobic, Co-ferment, Wet-hulled, Experimental",
+  "brygmetode": "one of exactly: Filter, Espresso, Moka Pot, French Press, Pour Over, AeroPress, Cold Brew, Capsule",
+  "smag": { "syre": 5, "bitterhed": 4, "soedme": 6, "fylde": 5, "aroma": 6, "eftersmag": 5 },
+  "samlet_score": 7,
+  "noter": "2-3 sentences of expected flavour notes based on origin, process and roast"
+}
+All smag values must be integers 1–10. If information is not visible, use a sensible default. Return only the JSON object.` }
+          ]
+        }]
+      })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || `HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const raw = data.content?.[0]?.text || '';
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON in response');
+    const result = JSON.parse(jsonMatch[0]);
+    udfyldFormFraAI(result);
+
+    raekke.className = 'ai-raekke success';
+    tekst.textContent = 'AI filled in the details — review and adjust';
+    status.textContent = '✓';
+  } catch (e) {
+    raekke.className = 'ai-raekke fejl';
+    tekst.textContent = 'Analysis failed';
+    status.textContent = e.message.length > 40 ? e.message.slice(0, 40) + '…' : e.message;
+  }
+}
+
+function udfyldFormFraAI(d) {
+  if (d.navn)       document.getElementById('f-navn').value = d.navn;
+  if (d.oprindelse) document.getElementById('f-oprindelse').value = d.oprindelse;
+  if (d.boennesort) document.getElementById('f-boennesort').value = d.boennesort;
+  if (d.risteringsgrad && RISTERINGSGRADER.includes(d.risteringsgrad)) vaelgRister(d.risteringsgrad);
+  if (d.forarbejdning && FORARBEJDNINGER.includes(d.forarbejdning))    vaelgForarbejdning(d.forarbejdning);
+  if (d.brygmetode && BRYGMETODER.includes(d.brygmetode))              vaelgBryg(d.brygmetode);
+  if (d.smag) {
+    Object.entries(d.smag).forEach(([key, val]) => {
+      const n = Math.min(10, Math.max(1, Math.round(Number(val))));
+      if (!isNaN(n)) saetSmag(key, n);
+    });
+  }
+  if (d.samlet_score) {
+    const s = Math.min(10, Math.max(1, Math.round(Number(d.samlet_score))));
+    if (!isNaN(s)) saetScore(s);
+  }
+  if (d.noter) document.getElementById('f-noter').value = d.noter;
 }
 
 async function komprimer(file, maxWidth = 1200, kvalitet = 0.82) {
@@ -1527,6 +1686,7 @@ async function redigerVurdering(id) {
   samletScore = v.samlet_score;
   visSide('ny');
   initForm();
+  opdaterAiRaekke();
   document.getElementById('f-navn').value = v.navn;
   document.getElementById('f-oprindelse').value = v.oprindelse || '';
   document.getElementById('f-boennesort').value = v.boennesort || '';
