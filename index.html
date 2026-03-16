@@ -2285,14 +2285,14 @@ async function analyserSmagMedAI() {
     const smagsGns = {};
     SMAG_FELTER.forEach(f => { smagsGns[f.key] = gns(data.map(v => v.smag[f.key])); });
 
-    const top3 = [...data].sort((a,b) => b.samletScore - a.samletScore).slice(0,3);
+    const top3 = [...data].sort((a,b) => (b.samlet_score ?? b.samletScore ?? 0) - (a.samlet_score ?? a.samletScore ?? 0)).slice(0,3);
     const brygCount = {};
     data.forEach(v => { brygCount[v.brygmetode] = (brygCount[v.brygmetode]||0) + 1; });
     const topBryg = Object.entries(brygCount).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]);
     const risterCount = {};
     data.forEach(v => { risterCount[v.risteringsgrad] = (risterCount[v.risteringsgrad]||0) + 1; });
     const topRister = Object.entries(risterCount).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]);
-    const avgScore = gns(data.map(v => v.samletScore)).toFixed(1);
+    const avgScore = gns(data.map(v => v.samlet_score ?? v.samletScore ?? 0)).toFixed(1);
 
     const desc = k => k >= 7 ? 'high' : k <= 4 ? 'low' : 'medium';
     const prompt = `You are a specialty coffee expert. A user has rated ${data.length} coffees. Analyse their taste data and recommend 4 specific coffees to buy online.
@@ -2305,7 +2305,7 @@ Body: ${smagsGns.fylde.toFixed(1)} (${desc(smagsGns.fylde)})
 Aroma: ${smagsGns.aroma.toFixed(1)} (${desc(smagsGns.aroma)})
 Aftertaste: ${smagsGns.eftersmag.toFixed(1)} (${desc(smagsGns.eftersmag)})
 Average overall score given: ${avgScore}/10
-Top-rated coffees: ${top3.map(v => `"${v.navn}" ${v.samletScore}/10 (${v.oprindelse||'unknown'})`).join(', ')}
+Top-rated coffees: ${top3.map(v => `"${v.navn}" ${(v.samlet_score ?? v.samletScore ?? '?')}/10 (${v.oprindelse||'unknown'})`).join(', ')}
 Brew methods: ${topBryg.join(', ')}
 Roast preference: ${topRister.join(', ')}
 
@@ -2328,20 +2328,28 @@ Respond ONLY with a valid JSON object, no prose, no markdown:
 
 Use only real, active specialty roasteries with real webshops. Prefer Scandinavian/European: La Cabra (lacabra.dk), The Coffee Collective (coffeecollective.dk), Tim Wendelboe (timwendelboe.no), Drop Coffee (dropcoffee.com), Gardelli (gardellicoffee.com), Calendar Coffee (calendarcoffee.com), Koppi (koppi.se), Five Elephant (fiveelephant.com), The Barn (thebarn.de). URLs must be real. Return exactly 4 recommendations.`;
 
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
-      body: JSON.stringify({
-        model: 'claude-opus-4-6',
-        max_tokens: 2048,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), 45000);
+    let resp;
+    try {
+      resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 2048,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+    } finally {
+      clearTimeout(tid);
+    }
 
     if (!resp.ok) {
       const err = await resp.json().catch(() => ({}));
@@ -2358,7 +2366,8 @@ Use only real, active specialty roasteries with real webshops. Prefer Scandinavi
     visAiAnbefalinger(analyse);
     if (knap) { knap.textContent = '✦ Refresh'; knap.disabled = false; }
   } catch(e) {
-    indhold.innerHTML = `<div style="font-size:13px;color:var(--roed);padding:8px 0">AI analysis failed: ${e.message.slice(0,80)}</div>`;
+    const msg = e?.name === 'AbortError' ? 'Request timed out — try again' : String(e?.message || e).slice(0, 80);
+    indhold.innerHTML = `<div style="font-size:13px;color:var(--roed);padding:8px 0">AI analysis failed: ${msg}</div>`;
     if (knap) { knap.disabled = false; knap.textContent = '✦ Retry'; }
   }
 }
