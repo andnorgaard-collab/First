@@ -2022,6 +2022,7 @@ async function gengiStats() {
     if (side === 'ny' && !redigeringsId) {
       document.getElementById('gem-knap').textContent = 'Save Rating';
       document.getElementById('annuller-knap').textContent = 'Cancel';
+      nulstilFotoUI();
       initForm();
     }
     orig(side);
