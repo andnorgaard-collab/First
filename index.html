@@ -606,18 +606,10 @@
             <button class="foto-fjern-knap" id="foto-fjern" style="display:none" onclick="event.stopPropagation();fjernFoto()">Remove</button>
           </div>
           <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="fotoValgt(event)">
-          <div class="ai-raekke" id="ai-raekke" onclick="aiRaekkeKlik()">
+          <div class="ai-raekke" id="ai-raekke">
             <div class="ai-raekke-ikon">✦</div>
-            <div class="ai-raekke-tekst" id="ai-raekke-tekst">Auto-analyse with AI</div>
+            <div class="ai-raekke-tekst" id="ai-raekke-tekst">AI analysis ready — add a photo to analyse</div>
             <div class="ai-raekke-status" id="ai-raekke-status"></div>
-          </div>
-          <div class="ai-key-boks" id="ai-key-boks">
-            <div class="felt-label" style="margin-top:8px">Anthropic API Key</div>
-            <div class="ai-key-input-raekke">
-              <input type="password" class="ai-key-input" id="ai-key-input" placeholder="sk-ant-api03-..." />
-              <button class="ai-key-gem-knap" onclick="gemAiKey()">Save</button>
-            </div>
-            <button class="ai-key-slet-knap" id="ai-key-slet" style="display:none" onclick="sletAiKey()">Remove saved key</button>
           </div>
         </div>
         <div class="sektion">
@@ -998,45 +990,16 @@ function nulstilFotoUI() {
 }
 
 // ── AI ANALYSE ────────────────────────────────────────────
-function hentAiKey() { return localStorage.getItem('cb_ai_key') || ''; }
-
-function opdaterAiRaekke() {
-  const harNøgle = !!hentAiKey();
-  const raekke = document.getElementById('ai-raekke');
-  const tekst = document.getElementById('ai-raekke-tekst');
-  const status = document.getElementById('ai-raekke-status');
-  const slet = document.getElementById('ai-key-slet');
-  if (!raekke) return;
-  raekke.className = 'ai-raekke';
-  tekst.textContent = harNøgle ? 'AI analysis ready — add a photo to analyse' : 'Set up AI auto-analysis';
-  status.textContent = harNøgle ? '✓ Key saved' : 'Tap to configure';
-  if (slet) slet.style.display = harNøgle ? '' : 'none';
-}
-
-function aiRaekkeKlik() {
-  const boks = document.getElementById('ai-key-boks');
-  boks.classList.toggle('vis');
-  if (boks.classList.contains('vis') && hentAiKey()) {
-    document.getElementById('ai-key-input').value = '••••••••';
-  }
-}
-
-function gemAiKey() {
-  const val = document.getElementById('ai-key-input').value.trim();
-  if (!val || val === '••••••••') return;
-  localStorage.setItem('cb_ai_key', val);
-  document.getElementById('ai-key-boks').classList.remove('vis');
-  opdaterAiRaekke();
-}
-
-function sletAiKey() {
-  localStorage.removeItem('cb_ai_key');
-  document.getElementById('ai-key-input').value = '';
-  opdaterAiRaekke();
+let _aiKey = null;
+async function hentAiKey() {
+  if (_aiKey) return _aiKey;
+  const { data } = await sb.from('app_config').select('value').eq('key', 'ai_key').single();
+  _aiKey = data?.value || null;
+  return _aiKey;
 }
 
 async function analyserFotoMedAI(dataUrl) {
-  const apiKey = hentAiKey();
+  const apiKey = await hentAiKey();
   if (!apiKey) return;
 
   const raekke = document.getElementById('ai-raekke');
