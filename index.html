@@ -673,6 +673,13 @@
         <div class="social-søg-resultater" id="social-søg-resultater"></div>
       </div>
       <div style="padding:16px 16px 0">
+        <div class="sektion" id="mine-kaffer-sektion">
+          <div class="sektion-titel">My Ratings</div>
+          <div class="sektion-under" id="mine-kaffer-under">Your coffee ratings</div>
+          <div id="mine-kaffer-indhold"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:22px;height:22px;margin:8px auto"></div></div>
+        </div>
+      </div>
+      <div style="padding:16px 16px 0">
         <div class="sektion">
           <div class="sektion-titel">☕ Top Coffees</div>
           <div class="sektion-under">Highest-rated across all users</div>
@@ -1928,9 +1935,36 @@ async function gengiHighscore() {
   }).join('');
 }
 
+async function gengiMineKafferPåSocial() {
+  const el = document.getElementById('mine-kaffer-indhold');
+  const under = document.getElementById('mine-kaffer-under');
+  if (!el) return;
+  const data = await hentAlleVurderinger().catch(() => []);
+  if (!data.length) {
+    under.textContent = 'No ratings yet';
+    el.innerHTML = '<div style="color:var(--tekst-3);font-size:13px;padding:4px 0">Add your first coffee to see it here.</div>';
+    return;
+  }
+  under.textContent = `${data.length} rating${data.length !== 1 ? 's' : ''} · avg. ${gns(data.map(v => v.samlet_score)).toFixed(1)}/10`;
+  const top = [...data].sort((a, b) => b.samlet_score - a.samlet_score).slice(0, 5);
+  el.innerHTML = top.map((v, i) => `
+    <div class="top-kaffe-raekke" style="cursor:pointer" onclick="visDetalje('${v.id}')">
+      <div class="top-nr">#${i + 1}</div>
+      <div class="top-info">
+        <div class="top-navn">${v.navn}</div>
+        <div class="top-meta">${[v.oprindelse, v.boennesort, v.risteringsgrad, v.brygmetode].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div class="top-score" style="background:${scorefarve(v.samlet_score)}">
+        <span>${v.samlet_score}</span>
+      </div>
+    </div>`).join('') +
+    (data.length > 5 ? `<div style="font-size:12px;color:var(--tekst-3);padding:10px 0 2px;text-align:center">+${data.length - 5} more on the Coffees tab</div>` : '');
+}
+
 async function gengiSocial() {
   const feedEl = document.getElementById('social-feed-indhold');
   if (!feedEl) return;
+  gengiMineKafferPåSocial();
   feedEl.innerHTML = '<div class="tom"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px"></div></div>';
 
   gengiHighscore();
