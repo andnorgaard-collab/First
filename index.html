@@ -292,6 +292,10 @@
     .anbefalet-begrundelse { font-size: 13px; color: var(--tekst-2); line-height: 1.6; margin-bottom: 12px; }
     .anbefalet-koeb { display: inline-block; background: var(--sort); color: #F5F1EB; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; text-decoration: none; font-family: inherit; }
     .anbefalet-koeb:hover { opacity: .85; }
+    .ai-analyse-knap { background: var(--sort); color: #F5F1EB; border: none; border-radius: 8px; padding: 7px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity .15s; white-space: nowrap; touch-action: manipulation; }
+    .ai-analyse-knap:disabled { opacity: .45; cursor: wait; }
+    .ai-badge { background: rgba(28,24,20,.08) !important; color: var(--sort) !important; }
+    .ai-profil-kort { background: linear-gradient(135deg, var(--accent-mørk), var(--accent)); color: #F5F1EB; border-radius: 12px; padding: 16px; margin-bottom: 12px; font-size: 14px; line-height: 1.65; font-style: italic; }
 
     /* ── SOCIAL ── */
     .social-header { background: var(--kort); border-bottom: 1px solid var(--border); padding: 20px; }
@@ -577,7 +581,10 @@
 
       <!-- Recommendations (shown when enough data) -->
       <div class="home-section" id="home-anbefaling-sektion" style="display:none">
-        <div class="home-section-titel">⭐ Recommended for You</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="home-section-titel" style="padding-bottom:10px">⭐ Recommended for You</div>
+          <button class="ai-analyse-knap" id="ai-anbefaling-knap" onclick="analyserSmagMedAI()">✦ AI Analysis</button>
+        </div>
         <div id="home-anbefaling-indhold"></div>
       </div>
 
@@ -2224,6 +2231,138 @@ async function gengiStats() {
           <a class="anbefalet-koeb" href="${k.url}" target="_blank" rel="noopener">Buy online</a>
         </div>`).join('')}
     </div>`;
+}
+
+// ── AI TASTE ANALYSIS ─────────────────────────────────────
+async function analyserSmagMedAI() {
+  const knap = document.getElementById('ai-anbefaling-knap');
+  const indhold = document.getElementById('home-anbefaling-indhold');
+  if (!indhold) return;
+
+  // Session cache per user
+  const cacheKey = 'ai_analyse_' + (aktivBruger?.id || '');
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) {
+    try { visAiAnbefalinger(JSON.parse(cached)); if (knap) { knap.textContent = '✦ Refresh'; knap.disabled = false; } return; } catch(e) {}
+  }
+
+  if (knap) { knap.disabled = true; knap.textContent = '…'; }
+  indhold.innerHTML = '<div style="text-align:center;padding:28px 0"><div class="spinner" style="border-top-color:var(--accent);border-color:var(--border);width:28px;height:28px;margin:0 auto 12px"></div><div style="font-size:13px;color:var(--tekst-3)">AI is analysing your taste profile…</div></div>';
+
+  try {
+    const apiKey = await hentAiKey();
+    if (!apiKey) throw new Error('No API key configured');
+
+    const data = (_cacheData && _cacheData.length > 0) ? _cacheData : await hentAlleVurderinger();
+    if (!data || data.length < 2) {
+      indhold.innerHTML = '<div style="font-size:13px;color:var(--tekst-3);padding:8px 0">Rate at least 2 coffees to get AI recommendations.</div>';
+      if (knap) { knap.disabled = false; knap.textContent = '✦ AI Analysis'; }
+      return;
+    }
+
+    const smagsGns = {};
+    SMAG_FELTER.forEach(f => { smagsGns[f.key] = gns(data.map(v => v.smag[f.key])); });
+
+    const top3 = [...data].sort((a,b) => b.samletScore - a.samletScore).slice(0,3);
+    const brygCount = {};
+    data.forEach(v => { brygCount[v.brygmetode] = (brygCount[v.brygmetode]||0) + 1; });
+    const topBryg = Object.entries(brygCount).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]);
+    const risterCount = {};
+    data.forEach(v => { risterCount[v.risteringsgrad] = (risterCount[v.risteringsgrad]||0) + 1; });
+    const topRister = Object.entries(risterCount).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]);
+    const avgScore = gns(data.map(v => v.samletScore)).toFixed(1);
+
+    const desc = k => k >= 7 ? 'high' : k <= 4 ? 'low' : 'medium';
+    const prompt = `You are a specialty coffee expert. A user has rated ${data.length} coffees. Analyse their taste data and recommend 4 specific coffees to buy online.
+
+TASTE AVERAGES (1–10 scale):
+Acidity: ${smagsGns.syre.toFixed(1)} (${desc(smagsGns.syre)})
+Bitterness: ${smagsGns.bitterhed.toFixed(1)} (${desc(smagsGns.bitterhed)})
+Sweetness: ${smagsGns.soedme.toFixed(1)} (${desc(smagsGns.soedme)})
+Body: ${smagsGns.fylde.toFixed(1)} (${desc(smagsGns.fylde)})
+Aroma: ${smagsGns.aroma.toFixed(1)} (${desc(smagsGns.aroma)})
+Aftertaste: ${smagsGns.eftersmag.toFixed(1)} (${desc(smagsGns.eftersmag)})
+Average overall score given: ${avgScore}/10
+Top-rated coffees: ${top3.map(v => `"${v.navn}" ${v.samletScore}/10 (${v.oprindelse||'unknown'})`).join(', ')}
+Brew methods: ${topBryg.join(', ')}
+Roast preference: ${topRister.join(', ')}
+
+Respond ONLY with a valid JSON object, no prose, no markdown:
+{
+  "profil": "2–3 sentences: a specific, insightful personal taste profile that references their actual numbers",
+  "anbefalinger": [
+    {
+      "navn": "exact coffee name",
+      "risteri": "real roastery name",
+      "oprindelse": "origin country",
+      "boennesort": "cultivar or variety",
+      "forarbejdning": "processing method",
+      "smagsnote": "3–5 specific flavor descriptors",
+      "begrundelse": "1–2 sentences explaining why this matches their profile",
+      "url": "real product or collection URL from the roastery webshop"
+    }
+  ]
+}
+
+Use only real, active specialty roasteries with real webshops. Prefer Scandinavian/European: La Cabra (lacabra.dk), The Coffee Collective (coffeecollective.dk), Tim Wendelboe (timwendelboe.no), Drop Coffee (dropcoffee.com), Gardelli (gardellicoffee.com), Calendar Coffee (calendarcoffee.com), Koppi (koppi.se), Five Elephant (fiveelephant.com), The Barn (thebarn.de). URLs must be real. Return exactly 4 recommendations.`;
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-opus-4-6',
+        max_tokens: 2048,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || `HTTP ${resp.status}`);
+    }
+
+    const result = await resp.json();
+    const raw = result.content?.[0]?.text || '';
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Unexpected AI response format');
+    const analyse = JSON.parse(jsonMatch[0]);
+
+    try { sessionStorage.setItem(cacheKey, JSON.stringify(analyse)); } catch(e) {}
+    visAiAnbefalinger(analyse);
+    if (knap) { knap.textContent = '✦ Refresh'; knap.disabled = false; }
+  } catch(e) {
+    indhold.innerHTML = `<div style="font-size:13px;color:var(--roed);padding:8px 0">AI analysis failed: ${e.message.slice(0,80)}</div>`;
+    if (knap) { knap.disabled = false; knap.textContent = '✦ Retry'; }
+  }
+}
+
+function visAiAnbefalinger(analyse) {
+  const indhold = document.getElementById('home-anbefaling-indhold');
+  if (!indhold) return;
+  let html = '';
+  if (analyse.profil) {
+    html += `<div class="ai-profil-kort">${analyse.profil}</div>`;
+  }
+  if (Array.isArray(analyse.anbefalinger)) {
+    html += analyse.anbefalinger.map(k => `
+    <div class="anbefalet-kort">
+      <div class="anbefalet-top">
+        <div class="anbefalet-navn">${k.navn}</div>
+        <div class="anbefalet-match ai-badge">✦ AI Pick</div>
+      </div>
+      <div class="anbefalet-risteri">${k.risteri}</div>
+      <div class="anbefalet-meta">${[k.oprindelse, k.boennesort, k.forarbejdning].filter(Boolean).join(' · ')}</div>
+      ${k.smagsnote ? `<div class="anbefalet-meta" style="font-style:italic;margin-top:-4px;margin-bottom:8px">${k.smagsnote}</div>` : ''}
+      <div class="anbefalet-begrundelse">${k.begrundelse}</div>
+      <a class="anbefalet-koeb" href="${k.url}" target="_blank" rel="noopener">Buy online →</a>
+    </div>`).join('');
+  }
+  indhold.innerHTML = html;
 }
 
 // ── RECOMMENDATIONS ON HOME ───────────────────────────────
