@@ -1468,25 +1468,40 @@ async function gengiFollowingListe(poster) {
   const sektion = document.getElementById('following-sektion');
   if (!el || !sektion) return;
 
-  const following = await hentMineFollowing();
-  if (!following.length) { sektion.style.display = 'none'; return; }
+  // Use hentFølgerIds (known to work — no broken join) instead of hentMineFollowing
+  const følgerIds = await hentFølgerIds();
+  if (!følgerIds.size) { sektion.style.display = 'none'; return; }
 
-  // Aggregate stats per followed user from the shared_ratings data
+  // Build username map: first from poster data (already fetched, has profile join)
+  const userMap = {};
+  (poster ?? []).forEach(p => {
+    if (p.from_user_id && p.profiles?.username && !userMap[p.from_user_id])
+      userMap[p.from_user_id] = p.profiles.username;
+  });
+
+  // For users not covered by poster, query profiles directly
+  const mangler = [...følgerIds].filter(id => !userMap[id]);
+  if (mangler.length) {
+    const { data } = await sb.from('profiles').select('id, username').in('id', mangler);
+    (data ?? []).forEach(p => { userMap[p.id] = p.username; });
+  }
+
+  // Aggregate stats per followed user from shared_ratings data
   const stats = {};
-  following.forEach(f => { stats[f.id] = { count: 0, smagSum: {}, scoreSum: 0 }; });
+  [...følgerIds].forEach(id => { stats[id] = { count: 0, smagSum: {}, scoreSum: 0 }; });
   (poster ?? []).forEach(p => {
     const s = stats[p.from_user_id];
     if (!s || !p.coffee_ratings) return;
     s.count++;
     s.scoreSum += p.coffee_ratings.samlet_score ?? 0;
     const smag = p.coffee_ratings.smag;
-    if (smag && typeof smag === 'object') {
+    if (smag && typeof smag === 'object')
       Object.entries(smag).forEach(([k, v]) => { s.smagSum[k] = (s.smagSum[k] || 0) + v; });
-    }
   });
 
-  el.innerHTML = following.map(f => {
-    const st = stats[f.id];
+  el.innerHTML = [...følgerIds].map(id => {
+    const username = userMap[id] ?? id.substring(0, 8) + '…';
+    const st = stats[id];
     const avgScore = st.count ? (st.scoreSum / st.count).toFixed(1) : null;
     const chips = beregnSmagsProfil(st.smagSum, st.count);
     const chipsHtml = chips
@@ -1496,13 +1511,13 @@ async function gengiFollowingListe(poster) {
       ? `${st.count} shared rating${st.count !== 1 ? 's' : ''}${avgScore ? ` · avg ${avgScore}/10` : ''}`
       : 'No shared ratings yet';
     return `<div class="following-kort">
-      <div class="following-avatar">${f.username[0].toUpperCase()}</div>
+      <div class="following-avatar">${username[0].toUpperCase()}</div>
       <div class="following-info">
-        <div class="following-navn">${f.username}</div>
+        <div class="following-navn">${username}</div>
         <div class="following-stats">${statsLinje}</div>
         ${chipsHtml}
       </div>
-      <button class="følg-knap følger" onclick="toggleFølg('${f.id}', this, '${f.username}')">Following</button>
+      <button class="følg-knap følger" onclick="toggleFølg('${id}', this, '${username}')">Following</button>
     </div>`;
   }).join('');
 
