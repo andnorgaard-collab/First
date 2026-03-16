@@ -1269,7 +1269,8 @@ function gns(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
 function visSide(side) {
   ['liste','ny','stats','social'].forEach(s => {
     document.getElementById('side-'+s).classList.toggle('aktiv', s===side);
-    document.getElementById('nav-'+s).classList.toggle('aktiv', s===side);
+    const navEl = document.getElementById('nav-'+s);
+    if (navEl) navEl.classList.toggle('aktiv', s===side);
   });
   if (side === 'liste') gengiListe();
   if (side === 'stats') gengiStats();
