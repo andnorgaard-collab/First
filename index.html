@@ -814,7 +814,6 @@ function visApp() {
   document.getElementById('auth-skærm').classList.remove('vis');
   document.getElementById('app').style.display = 'block';
   initForm();
-  opdaterAiRaekke();
   gengiListe();
 }
 
@@ -1701,7 +1700,6 @@ async function redigerVurdering(id) {
   samletScore = v.samlet_score;
   visSide('ny');
   initForm();
-  opdaterAiRaekke();
   document.getElementById('f-navn').value = v.navn;
   document.getElementById('f-oprindelse').value = v.oprindelse || '';
   document.getElementById('f-boennesort').value = v.boennesort || '';
