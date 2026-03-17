@@ -983,7 +983,7 @@ async function hentAlleVurderinger(forcefresh = false) {
   return _cacheData;
 }
 
-function ugyldiggørCache() { _cacheData = null; }
+function ugyldiggørCache() { _cacheData = null; _cacheTid = 0; }
 
 function medTimeout(promise, ms = 12000) {
   return Promise.race([
@@ -1031,14 +1031,7 @@ function fotoValgt(e) {
   e.target.value = '';
 }
 
-function fjernFoto() {
-  _valgFoto = null;
-  _eksisterendeFotoUrl = null;
-  document.getElementById('foto-preview').src = '';
-  document.getElementById('foto-preview').style.display = 'none';
-  document.getElementById('foto-placeholder').style.display = '';
-  document.getElementById('foto-fjern').style.display = 'none';
-}
+function fjernFoto() { nulstilFotoUI(); }
 
 function nulstilFotoUI() {
   _valgFoto = null;
@@ -1588,6 +1581,17 @@ let valgBryg = 'Filter';
 let smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
 let samletScore = null;
 
+function resetForm() {
+  redigeringsId = null;
+  samletScore = null;
+  valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
+  smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
+  ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  nulstilFotoUI();
+}
+
 function initForm() {
   document.getElementById('rister-valg').innerHTML = RISTERINGSGRADER.map(r => `
     <button class="valg-knap${r===valgRister?' aktiv':''}" onclick="vaelgRister('${r}')">${r}</button>`).join('');
@@ -1771,11 +1775,7 @@ async function gemVurdering() {
     return;
   }
   visFormFejl('');
-  redigeringsId = null;
-  smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = null; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
-  ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => document.getElementById(id).value = '');
-  nulstilFotoUI();
+  resetForm();
   knap.disabled = false;
   knap.textContent = 'Save Rating';
   visSide('liste');
@@ -1813,11 +1813,7 @@ async function redigerVurdering(id) {
 }
 
 function annullerForm() {
-  redigeringsId = null;
-  smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = null; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
-  ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  nulstilFotoUI();
+  resetForm();
   visSide('liste');
 }
 
@@ -2355,14 +2351,14 @@ async function analyserSmagMedAI() {
     const smagsGns = {};
     SMAG_FELTER.forEach(f => { smagsGns[f.key] = gns(data.map(v => v.smag[f.key])); });
 
-    const top3 = [...data].sort((a,b) => (b.samlet_score ?? b.samletScore ?? 0) - (a.samlet_score ?? a.samletScore ?? 0)).slice(0,3);
+    const top3 = [...data].sort((a,b) => (b.samlet_score ?? 0) - (a.samlet_score ?? 0)).slice(0,3);
     const brygCount = {};
     data.forEach(v => { brygCount[v.brygmetode] = (brygCount[v.brygmetode]||0) + 1; });
     const topBryg = Object.entries(brygCount).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]);
     const risterCount = {};
     data.forEach(v => { risterCount[v.risteringsgrad] = (risterCount[v.risteringsgrad]||0) + 1; });
     const topRister = Object.entries(risterCount).sort((a,b)=>b[1]-a[1]).slice(0,2).map(e=>e[0]);
-    const avgScore = gns(data.map(v => v.samlet_score ?? v.samletScore ?? 0)).toFixed(1);
+    const avgScore = gns(data.map(v => v.samlet_score ?? 0)).toFixed(1);
 
     const desc = k => k >= 7 ? 'high' : k <= 4 ? 'low' : 'medium';
     const prompt = `You are a specialty coffee expert. A user has rated ${data.length} coffees. Analyse their taste data and recommend 4 specific coffees to buy online.
@@ -2490,14 +2486,7 @@ function renderAnbefalinger(data) {
 
 // ── NAV ADD BUTTON ────────────────────────────────────────
 function aabneNyKaffe() {
-  // Always reset to fresh "add new" mode when using the nav button
-  redigeringsId = null;
-  smagsVaerdier = { syre:5, bitterhed:5, soedme:5, fylde:5, aroma:5, eftersmag:5 };
-  samletScore = null; valgRister = 'Medium'; valgForarbejdning = 'Washed'; valgBryg = 'Filter';
-  ['f-navn','f-oprindelse','f-boennesort','f-noter'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
-  });
-  nulstilFotoUI();
+  resetForm();
   document.getElementById('gem-knap').textContent = 'Save Rating';
   document.getElementById('annuller-knap').textContent = 'Cancel';
   initForm();
@@ -2508,14 +2497,14 @@ function aabneNyKaffe() {
 // patch visSide: when navigating to 'ny' without edit mode, reset form
 (function() {
   const orig = visSide;
-  visSide = function(side) {
+  visSide = async function(side) {
     if (side === 'ny' && !redigeringsId) {
       document.getElementById('gem-knap').textContent = 'Save Rating';
       document.getElementById('annuller-knap').textContent = 'Cancel';
       nulstilFotoUI();
       initForm();
     }
-    orig(side);
+    return orig(side);
   };
 })();
 
