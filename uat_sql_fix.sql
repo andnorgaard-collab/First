@@ -51,7 +51,7 @@ create table if not exists follows (
   created_at   timestamptz default now(),
   primary key (follower_id, following_id),
   -- Forhindrer self-follow på databaseniveau
-  constraint ingen_self_follow check (follower_id <> following_id)
+  constraint ingen_self_follow check (follower_id != following_id)
 );
 
 alter table follows enable row level security;
