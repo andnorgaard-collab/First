@@ -48,6 +48,16 @@ export default function RootLayout() {
         }}
       />
       <Tabs.Screen
+        name="feed"
+        options={{
+          title: 'Vennernes kaffer',
+          tabBarLabel: 'Feed',
+          tabBarIcon: ({ color, size }) => (
+            <TabIcon emoji="👥" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="soeg"
         options={{
           title: 'Søg brugere',
